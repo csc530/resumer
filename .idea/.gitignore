@@ -5,5 +5,4 @@
 /dataSources/
 /dataSources.local.xml
 
-/.idea/sonarlint/
-*.sqlite
+/sonarlint/
