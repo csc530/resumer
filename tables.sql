@@ -45,3 +45,16 @@ CREATE TABLE job_skills
 
 CREATE UNIQUE INDEX job_skills_jobID_uindex
     ON job_skills (jobID);
+
+CREATE TABLE user
+(
+    "first name"   varchar(100) NOT NULL,
+    "middle name"  varchar(100),
+    "last name"    integer TEXT,
+    "phone number" integer,
+    email          varchar(100),
+    website        varchar(500),
+    summary        text
+);
+
+
