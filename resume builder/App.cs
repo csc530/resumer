@@ -13,49 +13,57 @@ namespace resume_builder
 {
 	public sealed class App
 	{
-		private SqliteConnection _connection;
-		private IAnsiConsole Console = AnsiConsole.Console;
-
 		public App(IAnsiConsole? console = null)
 		{
 			if(console != null)
 				AnsiConsole.Console = console;
-			_connection = new SqliteConnection();
 		}
 
 		public int Run(string[] args)
 		{
-			SqliteConnectionStringBuilder sqliteConnectionStringBuilder = new SqliteConnectionStringBuilder();
-			sqliteConnectionStringBuilder.DataSource = "resume.db";
+			var sqldb = InitSqliteConnection();
 
-			sqliteConnectionStringBuilder.Mode = SqliteOpenMode.ReadWriteCreate;
+			var app = new CommandApp();
+			app.Configure(config =>
+			{
+
+#if DEBUG
+				config.PropagateExceptions();
+				config.ValidateExamples();
+#endif
+
+				config.AddBranch<AddSetting>("add", add =>
+				{
+					add.SetDescription("add new information to job database/bank");
+					add.AddCommand<AddJobCommand>("job")
+						.WithDescription("add a new job")
+						.WithExample("add", "job", "-s", "2022-01-01", "-e", "2022-01-01", "-t", "foreman");
+				});
+			});
+
+			int exitCode = app.Run(args);
+			sqldb.Close();
+			return exitCode;
+		}
+
+		private static SqliteConnection InitSqliteConnection()
+		{
+			SqliteConnectionStringBuilder sqliteConnectionStringBuilder = new()
+			{
+				DataSource = "resume.sqlite",
+				Mode = SqliteOpenMode.ReadWriteCreate
+			};
 
 			Console.WriteLine($"sqlite connection string: {sqliteConnectionStringBuilder.ConnectionString}");
 
 			var sqldb = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
 			sqldb.Open();
-
-			var app = new CommandApp();
-			app.Configure(config =>
-			{
-#if DEBUG
-				config.PropagateExceptions();
-				config.ValidateExamples();
-#endif
-				config.AddBranch<>("add")
-
-
-				AddCommand<AddJob>("add job")
-				.WithDescription("add a new job");
-			});
-
-			int exitcode = app.Run(args);
-			sqldb.Close();
-			return exitcode;
+			return sqldb;
 		}
 
 		public class AddSetting : CommandSettings { }
-		public class AddJobSettings: AddSetting
+
+		public class AddJobSettings : AddSetting
 		{
 			[Description("start date at the job")]
 			[CommandOption("-s|--start")]
@@ -67,16 +75,17 @@ namespace resume_builder
 
 			[Description("job title")]
 			[CommandOption("-t|--title")]
+
 			public string? JobTitle { get; init; }
 		}
-	
+
 
 		internal sealed class AddJobCommand : Command<AddJobSettings>
 		{
-
 			public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
 			{
-				throw new NotImplementedException();
+				AnsiConsole.WriteLine($"{context}\ntitle: {settings.JobTitle}\n start: {settings.StartDate}\n end: {settings.EndDate}");
+				return 0;
 			}
 		}
 	}
