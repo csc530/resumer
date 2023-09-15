@@ -6,6 +6,7 @@ namespace TestResumeBuilder
 	{
 		resume_builder.App cliapp;
 		TestConsole console;
+
 		[SetUp]
 		public void Setup()
 		{
@@ -14,12 +15,10 @@ namespace TestResumeBuilder
 		}
 
 		[Test]
-		public void Test1()
+		public void AddJob_WithNoArguments_ShouldFail()
 		{
 			var args = new string[] { };
-			cliapp.Run(new[] { "add", "" });
-
-			Assert.That(console.Output, Does.Contain("err"));
+			Assert.Catch(()=>cliapp.Run(new[] { "add", "job" }), "Expected to fail");
 		}
 	}
 }

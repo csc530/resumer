@@ -8,85 +8,57 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using resume_builder.commands.add;
 
 namespace resume_builder
 {
-	public sealed class App
-	{
-		public App(IAnsiConsole? console = null)
-		{
-			if(console != null)
-				AnsiConsole.Console = console;
-		}
+    public sealed class App
+    {
+        public App(IAnsiConsole? console = null)
+        {
+            if (console != null)
+                AnsiConsole.Console = console;
+        }
 
-		public int Run(string[] args)
-		{
-			var sqldb = InitSqliteConnection();
+        public int Run(string[] args)
+        {
+            var sqldb = InitSqliteConnection();
 
-			var app = new CommandApp();
-			app.Configure(config =>
-			{
+            var app = new CommandApp();
+            app.Configure(config =>
+            {
+            #if DEBUG
+                config.PropagateExceptions();
+                config.ValidateExamples();
+            #endif
 
-#if DEBUG
-				config.PropagateExceptions();
-				config.ValidateExamples();
-#endif
+                config.AddBranch<AddSetting>("add", add =>
+                {
+                    add.SetDescription("add new information to job database/bank");
+                    add.AddCommand<AddJobCommand>("job")
+                        .WithDescription("add a new job")
+                        .WithExample("add", "job", "-s", "2022-01-01", "-e", "2026-11-01", "-t", "foreman");
+                });
+            });
 
-				config.AddBranch<AddSetting>("add", add =>
-				{
-					add.SetDescription("add new information to job database/bank");
-					add.AddCommand<AddJobCommand>("job")
-						.WithDescription("add a new job")
-						.WithExample("add", "job", "-s", "2022-01-01", "-e", "2022-01-01", "-t", "foreman");
-				});
-			});
+            int exitCode = app.Run(args);
+            sqldb.Close();
+            return exitCode;
+        }
 
-			int exitCode = app.Run(args);
-			sqldb.Close();
-			return exitCode;
-		}
+        private static SqliteConnection InitSqliteConnection()
+        {
+            SqliteConnectionStringBuilder sqliteConnectionStringBuilder = new()
+            {
+                DataSource = "resume.sqlite",
+                Mode = SqliteOpenMode.ReadWriteCreate
+            };
 
-		private static SqliteConnection InitSqliteConnection()
-		{
-			SqliteConnectionStringBuilder sqliteConnectionStringBuilder = new()
-			{
-				DataSource = "resume.sqlite",
-				Mode = SqliteOpenMode.ReadWriteCreate
-			};
+            Console.WriteLine($"sqlite connection string: {sqliteConnectionStringBuilder.ConnectionString}");
 
-			Console.WriteLine($"sqlite connection string: {sqliteConnectionStringBuilder.ConnectionString}");
-
-			var sqldb = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
-			sqldb.Open();
-			return sqldb;
-		}
-
-		public class AddSetting : CommandSettings { }
-
-		public class AddJobSettings : AddSetting
-		{
-			[Description("start date at the job")]
-			[CommandOption("-s|--start")]
-			public DateOnly? StartDate { get; init; }
-
-			[Description("last date at the job")]
-			[CommandOption("-e|--end")]
-			public DateOnly? EndDate { get; init; }
-
-			[Description("job title")]
-			[CommandOption("-t|--title")]
-
-			public string? JobTitle { get; init; }
-		}
-
-
-		internal sealed class AddJobCommand : Command<AddJobSettings>
-		{
-			public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
-			{
-				AnsiConsole.WriteLine($"{context}\ntitle: {settings.JobTitle}\n start: {settings.StartDate}\n end: {settings.EndDate}");
-				return 0;
-			}
-		}
-	}
+            var sqldb = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
+            sqldb.Open();
+            return sqldb;
+        }
+    }
 }
