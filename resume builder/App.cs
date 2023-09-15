@@ -8,13 +8,17 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using resume_builder.commands.add;
+using resume_builder;
 
 namespace resume_builder
 {
-    public sealed class App
+    public sealed partial class App
     {
-        public App(IAnsiConsole? console = null)
+		static readonly string APPDATAPATH = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create)}/resume_builder";
+		static private SqliteConnection SQLDBConnection = InitSqliteConnection();
+		static private SqliteConnection BackupSQLDBConnection = InitSqliteConnection(backup: true);
+
+		public App(IAnsiConsole? console = null)
         {
             if (console != null)
                 AnsiConsole.Console = console;
@@ -22,7 +26,7 @@ namespace resume_builder
 
         public int Run(string[] args)
         {
-            var sqldb = InitSqliteConnection();
+            
 
             var app = new CommandApp();
             app.Configure(config =>
@@ -42,15 +46,15 @@ namespace resume_builder
             });
 
             int exitCode = app.Run(args);
-            sqldb.Close();
+            SQLDBConnection.Close();
             return exitCode;
         }
 
-        private static SqliteConnection InitSqliteConnection()
+        private static SqliteConnection InitSqliteConnection(bool backup = false)
         {
             SqliteConnectionStringBuilder sqliteConnectionStringBuilder = new()
             {
-                DataSource = "resume.sqlite",
+                DataSource = backup ? $"{APPDATAPATH}/resume.sqlite" : $"{APPDATAPATH}/backup_resume.sqlite",
                 Mode = SqliteOpenMode.ReadWriteCreate
             };
 
