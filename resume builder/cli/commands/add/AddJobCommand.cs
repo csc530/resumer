@@ -1,10 +1,9 @@
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics.CodeAnalysis;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace resume_builder;
+namespace resume_builder.cli.commands.add;
 
 public partial class App
 {
@@ -34,6 +33,10 @@ public partial class App
         [CommandOption("-x|--experience")]
         public string? Experience { get; init; }
 
+        [Description("The company or employer name")]
+        [CommandOption("-c|--company")]
+        public string? Company { get; }
+
         public override ValidationResult Validate()
         {
             if(string.IsNullOrWhiteSpace(JobTitle))
@@ -42,30 +45,41 @@ public partial class App
                 return ValidationResult.Error("Start date is required");
             return ValidationResult.Success();
         }
+
+        public void Deconstruct(out DateOnly? startDate, out DateOnly? endDate, out string? jobTitle,
+            out string? jobDescription, out string? experience, out string? company)
+        {
+            startDate = StartDate;
+            endDate = EndDate;
+            jobTitle = JobTitle;
+            jobDescription = JobDescription;
+            experience = Experience;
+            company = Company;
+        }
+
+        public void Deconstruct(out string? title, out DateOnly? start)
+        {
+            start = StartDate;
+            title = JobTitle;
+        }
     }
+
 
     internal sealed class AddJobCommand : Command<AddJobSettings>
     {
+        private static readonly Database Database = new();
+
         public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
         {
-            var cmd = SQLDBConnection.CreateCommand();
+            var (startDate, endDate, jobTitle, jobDescription, experience, company) = settings;
+            if(string.IsNullOrWhiteSpace(jobTitle))
+                return ExitCode.InvalidArgument.ToInt();
+            if(startDate == null)
+                return ExitCode.InvalidArgument.ToInt();
 
-            cmd.CommandText = "INSERT INTO jobs(title,'start date', 'end date') VALUES(@title, $start, :end);";
-            cmd.Parameters.AddWithValue("title",settings.JobTitle);
-            cmd.Parameters.AddWithValue("start", settings.StartDate);
-            cmd.Parameters.AddWithValue("end", settings.EndDate);
-
-            AnsiConsole.WriteLine(cmd.CommandText);
-            cmd.Prepare();
-            AnsiConsole.WriteLine(cmd.CommandText);
-            cmd.ExecuteReader();
-            cmd.ExecuteNonQuery();
-
-            SQLDBConnection.BackupDatabase(BackupSQLDBConnection);
-
-            AnsiConsole.WriteLine(
-                $"{context}\ntitle: {settings.JobTitle}\n start: {settings.StartDate}\n end: {settings.EndDate}");
-            return ReturnCode(ExitCode.Success);
+            Database.AddJob(new Job(jobTitle, startDate, endDate, company, jobDescription, experience));
+            AnsiConsole.WriteLine($"{context}\ntitle: {jobTitle}\n start: {startDate}\n end: {endDate}");
+            return (ExitCode.Success).ToInt();
         }
     }
 }
