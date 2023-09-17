@@ -6,10 +6,11 @@ public enum ExitCode
     Error = 1,
     Success = 0,
     Canceled = 2,
-    InvalidArgument = 3,
+    InvalidArgument = 8,
     MissingArgument = 4,
     InvalidOption = 5,
     MissingOption = 6,
     TooManyArguments = 7,
-
+    Fail = 3,
+    NotFound = 404,
 }
