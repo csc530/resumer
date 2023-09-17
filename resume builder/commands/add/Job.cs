@@ -8,7 +8,6 @@ namespace resume_builder;
 
 public partial class App
 {
-
     public class AddSetting : CommandSettings
     {
     }
@@ -17,7 +16,7 @@ public partial class App
     {
         [Description("start date at the job")]
         [CommandOption("-s|--start <StartDate>")]
-        public DateOnly? StartDate { get; }
+        public DateOnly? StartDate { get; init; }
 
         [Description("last date at the job")]
         [CommandOption("-e|--end")]
@@ -50,17 +49,23 @@ public partial class App
         public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
         {
             var cmd = SQLDBConnection.CreateCommand();
-            cmd.CommandType = CommandType.StoredProcedure;
-			Microsoft.Data.Sqlite.SqliteParameter sqliteParameter = cmd.CreateParameter();
-            sqliteParameter.ParameterName = "title";
-            sqliteParameter.Value = settings.JobTitle;
-            sqliteParameter.DbType = DbType.String;
-            cmd.CommandText = "INSERT INTO jobs VALUES($title,);";
-            SQLDBConnection.CreateFunction<int>("add job", pop => Console.WriteLine());
-            SQLDBConnection.
-            SQLDBConnection.BackupDatabase(BackupSQLDBConnection)
-            AnsiConsole.WriteLine($"{context}\ntitle: {settings.JobTitle}\n start: {settings.StartDate}\n end: {settings.EndDate}");
-            return (int)ExitCode.Success;
+
+            cmd.CommandText = "INSERT INTO jobs(title,'start date', 'end date') VALUES(@title, $start, :end);";
+            cmd.Parameters.AddWithValue("title",settings.JobTitle);
+            cmd.Parameters.AddWithValue("start", settings.StartDate);
+            cmd.Parameters.AddWithValue("end", settings.EndDate);
+
+            AnsiConsole.WriteLine(cmd.CommandText);
+            cmd.Prepare();
+            AnsiConsole.WriteLine(cmd.CommandText);
+            cmd.ExecuteReader();
+            cmd.ExecuteNonQuery();
+
+            SQLDBConnection.BackupDatabase(BackupSQLDBConnection);
+
+            AnsiConsole.WriteLine(
+                $"{context}\ntitle: {settings.JobTitle}\n start: {settings.StartDate}\n end: {settings.EndDate}");
+            return ReturnCode(ExitCode.Success);
         }
     }
 }
