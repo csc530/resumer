@@ -1,10 +1,23 @@
 namespace resume_builder;
+
 /// <summary>
 /// Modeled after and for the database jobs rows/columns
 /// </summary>
 public sealed class Job
 {
-    public Job(string title, DateOnly? startDate = null, DateOnly? endDate = null, string? company = null, string? description = null, string? experience = null)
+    public void Deconstruct(out string? company, out string? description, out string? experience, out string title,
+        out DateOnly startDate, out DateOnly? endDate)
+    {
+        company = _company;
+        description = _description;
+        experience = _experience;
+        title = Title;
+        startDate = StartDate;
+        endDate = EndDate;
+    }
+
+    public Job(string title, DateOnly? startDate = null, DateOnly? endDate = null, string? company = null,
+        string? description = null, string? experience = null)
     {
         Company = company;
         _description = description;
@@ -13,6 +26,9 @@ public sealed class Job
         StartDate = startDate ?? DateOnly.FromDateTime(DateTime.Now);
         EndDate = endDate;
     }
+
+    public Job(DateOnly startDate, DateOnly? endDate, string jobTitle, string? jobDescription, string? experience,string?company) :
+        this(jobTitle, startDate, endDate, company, jobDescription, experience){}
 
     private string? _company;
     private string? _description;
