@@ -1,4 +1,5 @@
-﻿using resume_builder.cli;
+﻿using resume_builder;
+using resume_builder.cli;
 using resume_builder.cli.commands;
 using Spectre.Console.Testing;
 
@@ -12,7 +13,7 @@ namespace TestResumeBuilder
 		public void Setup()
 		{
 			TestApp = new();
-			TestApp.Configure(Program.appConfiguration);
+			TestApp.Configure(Program.AppConfiguration);
 		}
 	}
 }

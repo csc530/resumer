@@ -1,7 +1,7 @@
 using resume_builder;
 using Spectre.Console.Testing;
 using System.ComponentModel;
-using static resume_builder.cli.commands.add.App;
+using resume_builder.cli.commands.add;
 
 namespace TestResumeBuilder
 {
