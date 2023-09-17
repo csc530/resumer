@@ -1,17 +1,18 @@
-﻿using Spectre.Console.Testing;
+﻿using resume_builder.cli;
+using resume_builder.cli.commands;
+using Spectre.Console.Testing;
 
 namespace TestResumeBuilder
 {
 	public class AppTest
 	{
-		internal resume_builder.App cliapp;
-		internal TestConsole console;
+		internal Spectre.Console.Testing.CommandAppTester TestApp;
 
 		[SetUp]
 		public void Setup()
 		{
-			console = new TestConsole();
-			cliapp = new resume_builder.App(console);
+			TestApp = new();
+			TestApp.Configure(Program.appConfiguration);
 		}
 	}
 }
