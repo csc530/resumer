@@ -1,10 +1,11 @@
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using Microsoft.Data.Sqlite;
-using Spectre.Console;
 
 namespace resume_builder;
 
-public class Database //perhaps implement IDisposable
+public sealed class Database : IDisposable, IAsyncDisposable
 {
     private const string SqliteFileName = "resume.sqlite";
 
@@ -40,13 +41,7 @@ public class Database //perhaps implement IDisposable
     private SqliteConnection MainConnection { get; }
     private SqliteConnection BackupConnection { get; }
 
-    ~Database()
-    {
-        MainConnection.Close();
-        BackupConnection.Close();
-    }
-
-    public bool IsInitialized()=>HasRequiredTables(MainConnection);
+    public bool IsInitialized() => HasRequiredTables(MainConnection);
 
     private void Open()
     {
@@ -79,6 +74,10 @@ public class Database //perhaps implement IDisposable
     {
         MainConnection.Close();
         BackupConnection.Close();
+        BackupConnection.Dispose();
+        BackupConnection.Dispose();
+        SqliteConnection.ClearPool(MainConnection);
+        SqliteConnection.ClearPool(BackupConnection);
     }
 
     public void Initialize()
@@ -114,5 +113,21 @@ public class Database //perhaps implement IDisposable
         result.Close();
         return tables.TrueForAll(name => RequiredTables.Contains(name));
     }
-    public bool BackupExists()=>HasRequiredTables(BackupConnection);
+
+    public bool BackupExists() => HasRequiredTables(BackupConnection);
+
+    public void Dispose()
+    {
+        Close();
+        MainConnection.Dispose();
+        BackupConnection.Dispose();
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        await MainConnection.DisposeAsync();
+        await BackupConnection.DisposeAsync();
+    }
+
+    ~Database() => Dispose();
 }
