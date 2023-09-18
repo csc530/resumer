@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.Sqlite;
 
-namespace resume_builder;
+namespace resume_builder.models;
 
 public sealed class Database : IDisposable, IAsyncDisposable
 {

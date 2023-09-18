@@ -1,4 +1,5 @@
-﻿using Spectre.Console;
+﻿using resume_builder.models;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace resume_builder.cli.commands;
