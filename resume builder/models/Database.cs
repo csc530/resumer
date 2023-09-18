@@ -130,4 +130,9 @@ public sealed class Database : IDisposable, IAsyncDisposable
     }
 
     ~Database() => Dispose();
+
+    public string? GetJob(Job job)
+    {
+        throw new NotImplementedException();
+    }
 }

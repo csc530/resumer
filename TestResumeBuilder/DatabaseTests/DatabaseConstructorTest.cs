@@ -1,13 +1,5 @@
-﻿using resume_builder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TestResumeBuilder.DatabaseTests
+﻿namespace TestResumeBuilder.DatabaseTests
 {
-	[SingleThreaded]
 	internal class DatabaseConstructorTest : DatabaseTest
 	{
 		[TearDown]
@@ -76,12 +68,6 @@ namespace TestResumeBuilder.DatabaseTests
 		}
 
 
-		private static string[] Paths => new[]
-		{
-			"newdir", "newdir/withsubdir", ".", "./", "./somelocation/with/a/heck-/loooooooong/path/withsub/dirs/",
-			".loooooooong/path/withsub/dirs/", "/i/wonder", "/leading slash", "/"
-		};
-
 		[Test]
 		public void Create_Database_ShouldPass()
 		{
@@ -93,7 +79,7 @@ namespace TestResumeBuilder.DatabaseTests
 
 
 		[Test]
-		[TestCaseSource(nameof(Paths))]
+		[TestCaseSource(typeof(TestData),nameof(TestData.Paths))]
 		[Category("oddPaths")]
 		public void Create_Database_WithCustomPath_ShouldPass(string path)
 		{
