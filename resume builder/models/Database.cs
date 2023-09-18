@@ -4,7 +4,7 @@ using Spectre.Console;
 
 namespace resume_builder;
 
-public class Database
+public class Database //perhaps implement IDisposable
 {
     private const string SqliteFileName = "resume.sqlite";
 
@@ -30,51 +30,34 @@ public class Database
             Mode = SqliteOpenMode.ReadWriteCreate
         };
 
-        Connection = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
+        MainConnection = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
         sqliteConnectionStringBuilder.DataSource = Path.Combine(path, $"backup_{SqliteFileName}");
         BackupConnection = new SqliteConnection(sqliteConnectionStringBuilder.ToString());
+
+        Open();
     }
 
-    private SqliteConnection Connection { get; }
+    private SqliteConnection MainConnection { get; }
     private SqliteConnection BackupConnection { get; }
 
     ~Database()
     {
-        Connection.Close();
+        MainConnection.Close();
         BackupConnection.Close();
     }
 
-    public bool IsInitialized()
-    {
-        var cmd = Connection.CreateCommand();
-        cmd.CommandText =
-            "SELECT DISTINCT name FROM sqlite_master WHERE type='table' AND name NOT IN ('sqlite_sequence');";
-        cmd.Prepare();
-        var result = cmd.ExecuteReader();
-        List<string> tables = new();
-        if(!result.HasRows)
-        {
-            result.Close();
-            return false;
-        }
-
-        //check if all required tables exist, perf?
-        while(result.Read())
-            tables.Add((string)result["name"]);
-        result.Close();
-        return tables.TrueForAll(name => RequiredTables.Contains(name));
-    }
+    public bool IsInitialized()=>HasRequiredTables(MainConnection);
 
     private void Open()
     {
-        Connection.Open();
+        MainConnection.Open();
         BackupConnection.Open();
     }
 
     public bool AddJob(Job job)
     {
         Open();
-        var cmd = Connection.CreateCommand();
+        var cmd = MainConnection.CreateCommand();
         cmd.CommandText =
             """INSERT INTO main.jobs(company, title, "start date", "end date", "job description", experience) VALUES ($Company,:Title,@start,@end,@descr,$exp);""";
         var properties = typeof(Job).GetProperties();
@@ -94,7 +77,7 @@ public class Database
 
     private void Close()
     {
-        Connection.Close();
+        MainConnection.Close();
         BackupConnection.Close();
     }
 
@@ -102,17 +85,34 @@ public class Database
     {
         if(IsInitialized())
             return;
-        var cmd = Connection.CreateCommand();
+        var cmd = MainConnection.CreateCommand();
         cmd.CommandText = File.ReadAllText("tables.sql");
         //cmd.Prepare();
         cmd.ExecuteNonQuery();
-        Connection.BackupDatabase(BackupConnection);
+        MainConnection.BackupDatabase(BackupConnection);
         AnsiConsole.WriteLine("Database initialized");
         //add prompt for basic information populaation
     }
 
-    public bool RestoreBackup()
+    public void RestoreBackup() => BackupConnection.BackupDatabase(MainConnection);
+
+    private bool HasRequiredTables(SqliteConnection connection)
     {
-        throw new NotImplementedException();
+        var cmd = connection.CreateCommand();
+        cmd.CommandText = "SELECT DISTINCT name FROM sqlite_master WHERE type='table' AND name NOT IN ('sqlite_sequence');";
+        cmd.Prepare();
+        var result = cmd.ExecuteReader();
+        List<string> tables = new();
+        if(!result.HasRows)
+        {
+            result.Close();
+            return false;
+        }
+        //check if all required tables exist, perf?
+        while(result.Read())
+            tables.Add((string)result["name"]);
+        result.Close();
+        return tables.TrueForAll(name => RequiredTables.Contains(name));
     }
+    public bool BackupExists()=>HasRequiredTables(BackupConnection);
 }

@@ -5,11 +5,11 @@ namespace resume_builder.cli.commands;
 
 internal class InitCommand : Command
 {
-    private readonly Database _database = new();
-
     public override int Execute(CommandContext context)
     {
-        if(_database.IsInitialized())
+        Database database = new();
+        //todo: add help and fails
+        if(database.IsInitialized())
         {
             AnsiConsole.WriteLine("Database already initialized");
             //todo: provide help to clear, reset, or edit
@@ -18,10 +18,16 @@ internal class InitCommand : Command
 
         //prompt to copy to main
         //indicate backup found
+        if(!database.BackupExists())
+        {
+            database.Initialize();
+            return ExitCode.Success.ToInt();
+        }
+
         var recover =
             AnsiConsole.Prompt(new ConfirmationPrompt("Backup database found\nwould you like to recover from backup?"));
         if(recover)
-            return _database.RestoreBackup() ? (ExitCode.Success).ToInt() : ExitCode.Fail.ToInt();
-        return ExitCode.Fail.ToInt();
+            database.RestoreBackup();
+        return (ExitCode.Success).ToInt();
     }
 }
