@@ -10,9 +10,9 @@ CREATE TABLE jobs
     id                integer NOT NULL
         CONSTRAINT id
             PRIMARY KEY AUTOINCREMENT,
-    company           integer
-        REFERENCES companies
-            ON DELETE CASCADE,
+    company           varchar(100)
+        CONSTRAINT jobs_companies_name_fk
+            REFERENCES companies,
     title             varchar(100),
     "start date"      date,
     "end date"        date,
