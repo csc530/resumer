@@ -1,45 +1,44 @@
 CREATE TABLE companies
 (
-    id   INTEGER,
-    name VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id AUTOINCREMENT)
+    name varchar(100) NOT NULL
+        CONSTRAINT companies_pk
+            PRIMARY KEY
 );
 
 CREATE TABLE jobs
 (
-    id                integer NOT NULL,
-    company           integer,
+    id                integer NOT NULL
+        CONSTRAINT id
+            PRIMARY KEY AUTOINCREMENT,
+    company           integer
+        REFERENCES companies
+            ON DELETE CASCADE,
     title             varchar(100),
     "start date"      date,
     "end date"        date,
     "job description" text,
-    experience        text,
-    CONSTRAINT id
-        PRIMARY KEY (id AUTOINCREMENT),
-    CONSTRAINT jobs_companies_id_fk
-        FOREIGN KEY (company) REFERENCES companies
+    experience        text
 );
 
 CREATE TABLE skills
 (
-    skill varchar(100) NOT NULL,
-    id    integer      NOT NULL,
-    CONSTRAINT skills_pk
-        PRIMARY KEY (id AUTOINCREMENT),
-    CONSTRAINT skills_pk2
-        UNIQUE (skill)
+    skill varchar(100) NOT NULL
+        CONSTRAINT skills_pk
+            PRIMARY KEY
 );
 
 CREATE TABLE job_skills
 (
-    jobID   integer NOT NULL,
-    skillID integer NOT NULL,
+    jobID   integer NOT NULL
+        CONSTRAINT job_skills_jobs_id_fk
+            REFERENCES jobs
+            ON DELETE CASCADE,
+    skillID integer NOT NULL
+        CONSTRAINT job_skills_skills_id_fk
+            REFERENCES skills
+            ON DELETE CASCADE,
     CONSTRAINT job_skills_pk
-        PRIMARY KEY (jobID, skillID),
-    CONSTRAINT job_skills_jobs_id_fk
-        FOREIGN KEY (jobID) REFERENCES jobs,
-    CONSTRAINT job_skills_skills_id_fk
-        FOREIGN KEY (skillID) REFERENCES skills
+        PRIMARY KEY (jobID, skillID)
 )
     WITHOUT ROWID;
 
@@ -48,6 +47,8 @@ CREATE UNIQUE INDEX job_skills_jobID_uindex
 
 CREATE TABLE user
 (
+    id             integer      NOT NULL
+        PRIMARY KEY AUTOINCREMENT,
     "first name"   varchar(100) NOT NULL,
     "middle name"  varchar(100),
     "last name"    integer TEXT,
