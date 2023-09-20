@@ -75,8 +75,6 @@ public partial class Database
 	public void Wipe()
 	{
 		var cmd = MainConnection.CreateCommand();
-		// cmd.CommandText = "pRAGMA foreign_keys = 0;";
-		// cmd.ExecuteNonQuery();
 		foreach(var table in RequiredTables)
 		{
 			cmd.CommandText = $"DELETE FROM \"{table}\";";

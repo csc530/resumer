@@ -10,7 +10,8 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private const string SqliteFileName = "resume.sqlite";
 
 	///todo: edit user table to entries and not columns
-	private static readonly List<string> RequiredTables = new() { "companies", "jobs", "skills", "job_skills", "user" };
+	private static readonly List<string>
+		RequiredTables = new() { "jobs", "skills", "job_skills", "user", "companies", };
 
 	public Database(string? path = ".")
 	{

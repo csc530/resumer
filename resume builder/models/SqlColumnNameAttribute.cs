@@ -7,13 +7,9 @@ namespace resume_builder.models;
 public class SqlColumnNameAttribute : Attribute
 {
 	//todo: ~~escape and~~ validate sql names
-	private readonly string _name = null!;
+	public string Name { get; init; }
 
-	public string Name
-	{
-		get => $"\"{_name}\"";
-		init => _name = value;
-	}
+	public string EscapedName => $"\"{Name}\"";
 
 	public SqlColumnNameAttribute(string name)
 	{
