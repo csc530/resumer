@@ -65,18 +65,20 @@ public class AddJobSettings : AddSetting
 
 internal sealed class AddJobCommand : Command<AddJobSettings>
 {
-    private static readonly Database Database = new();
 
     public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
     {
+    Database database = new();
         var (startDate, endDate, jobTitle, jobDescription, experience, company) = settings;
         if(string.IsNullOrWhiteSpace(jobTitle))
             return ExitCode.InvalidArgument.ToInt();
         if(startDate == null)
             return ExitCode.InvalidArgument.ToInt();
 
-        Database.AddJob(new Job(jobTitle, startDate, endDate, company, jobDescription, experience));
+        var job = new Job(jobTitle, startDate, endDate, company, jobDescription, experience);
+        database.AddJob(job);
         AnsiConsole.WriteLine($"{context}\ntitle: {jobTitle}\n start: {startDate}\n end: {endDate}");
+        //todo add nice output and what went in
         return (ExitCode.Success).ToInt();
     }
 }

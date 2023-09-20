@@ -14,8 +14,3 @@ public enum ExitCode
     Fail = 3,
     NotFound = 404,
 }
-
-public static class Convert
-{
-    public static int ToInt(this ExitCode exitCode) => (int)exitCode;
-}

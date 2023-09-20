@@ -22,6 +22,7 @@ internal class InitCommand : Command
         if(!database.BackupExists())
         {
             database.Initialize();
+            AnsiConsole.WriteLine("✅Database initialized");
             return ExitCode.Success.ToInt();
         }
 
