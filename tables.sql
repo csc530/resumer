@@ -7,17 +7,17 @@ CREATE TABLE companies
 
 CREATE TABLE jobs
 (
-    id                integer NOT NULL
+    id           integer NOT NULL
         CONSTRAINT id
             PRIMARY KEY AUTOINCREMENT,
-    company           varchar(100)
+    company      varchar(100)
         CONSTRAINT jobs_companies_name_fk
             REFERENCES companies,
-    title             varchar(100),
-    "start date"      date,
-    "end date"        date,
-    "job description" text,
-    experience        text
+    title        varchar(100),
+    "start date" date,
+    "end date"   date,
+    description  text,
+    experience   text
 );
 
 CREATE TABLE skills

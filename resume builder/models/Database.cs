@@ -7,9 +7,19 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 {
 	private const string SqliteFileName = "resume.sqlite";
 
-	///todo: edit user table to entries and not columns
-	private static readonly List<string>
-		RequiredTables = new() { "jobs", "skills", "job_skills", "user", "companies", };
+	private static readonly Dictionary<string, List<string>> TableTemplateStructure = new()
+	{
+		{
+			"jobs", new List<string> { "id", "company", "title", "start date", "end date", "description", "experience" }
+		},
+		{ "skills", new() { "skill" } },
+		{ "companies", new() { "name" } },
+		{ "job_skills", new() { "jobID", "skillID" } },
+		{
+			"user",
+			new() { "id", "first name", "middle name", "last name", "phone number", "email", "website", "summary" }
+		}
+	};
 
 	public Database(string? path = ".")
 	{
@@ -49,11 +59,13 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	public void Dispose()
 	{
 		Close();
-		MainConnection.Dispose();
 		BackupConnection.Dispose();
+		BackupConnection.Dispose();
+		SqliteConnection.ClearPool(MainConnection);
+		SqliteConnection.ClearPool(BackupConnection);
 	}
 
-	public bool IsInitialized() => HasRequiredTables(MainConnection);
+	public bool IsInitialized() => IsInitialized(MainConnection) && IsInitialized(BackupConnection);
 
 	private void Open()
 	{
@@ -62,14 +74,10 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	}
 
 
-	public void Close()
+	private void Close()
 	{
 		MainConnection.Close();
 		BackupConnection.Close();
-		BackupConnection.Dispose();
-		BackupConnection.Dispose();
-		SqliteConnection.ClearPool(MainConnection);
-		SqliteConnection.ClearPool(BackupConnection);
 	}
 
 	public void Initialize()
@@ -81,33 +89,57 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		//cmd.Prepare();
 		cmd.ExecuteNonQuery();
 		MainConnection.BackupDatabase(BackupConnection);
-		//add prompt for basic information populaation
 	}
 
 	public void RestoreBackup() => BackupConnection.BackupDatabase(MainConnection);
 
-	private bool HasRequiredTables(SqliteConnection connection)
+	/// <summary>
+	/// check if a database has the required tables to be used for resume builder app
+	/// </summary>
+	/// <param name="connection">database connection to check</param>
+	/// <returns>true if it has the required tables for the app</returns>
+	private static bool IsInitialized(SqliteConnection connection)
 	{
-		var cmd = connection.CreateCommand();
+		using var cmd = connection.CreateCommand();
+		//check if the db has any tables
 		cmd.CommandText =
 			"SELECT DISTINCT name FROM sqlite_master WHERE type='table' AND name NOT IN ('sqlite_sequence');";
 		cmd.Prepare();
-		var result = cmd.ExecuteReader();
-		List<string> tables = new();
+		using var result = cmd.ExecuteReader();
 		if(!result.HasRows)
-		{
-			result.Close();
 			return false;
-		}
 
-		//check if all required tables exist, perf?
+		//check if the db has tables with same names
+		List<string> tables = new();
 		while(result.Read())
 			tables.Add((string)result["name"]);
-		result.Close();
-		return tables.TrueForAll(name => RequiredTables.Contains(name));
+		if(!TableTemplateStructure.Keys.ToList().TrueForAll(name => tables.Contains(name)))
+			return false;
+
+		//check if each table has columns with the required names
+		cmd.CommandText = "PRAGMA TABLE_INFO(:table);";
+		foreach(var tableName in tables)
+		{
+			cmd.Parameters.AddWithValue(":table", tableName);
+			cmd.Prepare();
+			using var tableInfo = cmd.ExecuteReader();
+			if(!tableInfo.HasRows)
+				return false;
+			var columnNames = new List<string>();
+			while(tableInfo.Read())
+			{
+				var name = (string)tableInfo["name"];
+				columnNames.Add(name);
+			}
+
+			if(!TableTemplateStructure[tableName].TrueForAll(name => columnNames.Contains(name)))
+				return false;
+		}
+
+		return true;
 	}
 
-	public bool BackupExists() => HasRequiredTables(BackupConnection);
+	public bool BackupExists() => Database.IsInitialized(BackupConnection);
 
 	~Database() => Dispose();
 
@@ -141,6 +173,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 				         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
 				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name //value
 		         );
+
 	private Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(bool escapeSqlColumnNames = false) =>
 		typeof(T).GetProperties()
 		         .Where(property => property.GetCustomAttribute<SqlColumnNameAttribute>() != null)

@@ -94,7 +94,7 @@ public partial class Database
 	public void Wipe()
 	{
 		var cmd = MainConnection.CreateCommand();
-		foreach(var table in RequiredTables)
+		foreach(var table in TableTemplateStructure.Keys)
 		{
 			cmd.CommandText = $"DELETE FROM \"{table}\";";
 			cmd.ExecuteNonQuery();

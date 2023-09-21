@@ -37,7 +37,7 @@ public sealed class Job
 	[SqlColumnName("start date")] public DateOnly StartDate { get; private set; }
 	[SqlColumnName("end date")] public DateOnly? EndDate { get; private set; }
 
-	[SqlColumnName("job description")]
+	[SqlColumnName("description")]
 	public string? Description
 	{
 		get => _description;
