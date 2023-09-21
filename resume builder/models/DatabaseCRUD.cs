@@ -9,25 +9,24 @@ namespace resume_builder.models;
 
 public partial class Database
 {
-	public IEnumerable<Job> GetJobs()
+	public List<Job> GetJobs()
 	{
 		SqliteCommand sqliteCommand = new SqliteCommand($"SELECT * FROM jobs", MainConnection);
 		var dataReader = sqliteCommand.ExecuteReader();
-		return ParseJobsFromQuery(dataReader);
+		return ParseJobsFromQuery(dataReader).ToList();
 	}
 
-	private IEnumerable<Job> ParseJobsFromQuery(SqliteDataReader dataReader)
+	private List<Job> ParseJobsFromQuery(SqliteDataReader dataReader)
 	{
 		List<Job> jobs = new();
 		while(dataReader.Read())
 		{
 			var dic = GetPropertySqlColumnNamePairs<Job>();
 			Dictionary<string, dynamic> dbPropertyValuePairs = new();
-			foreach(var (property,sqlColumnName) in dic)
+			foreach(var (property, sqlColumnName) in dic)
 				if(!dataReader.IsDBNull(sqlColumnName))
 					dbPropertyValuePairs.Add(property, dataReader[sqlColumnName]);
 			jobs.Add(Job.FromDictionary(dbPropertyValuePairs));
-
 		}
 
 		return jobs;

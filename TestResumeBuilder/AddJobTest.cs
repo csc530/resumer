@@ -7,11 +7,19 @@ namespace TestResumeBuilder
 {
 	public class AddJobTest : AppTest
 	{
+		[SetUp]
+		public void Setup()
+		{
+			base.Setup();
+			TestApp.Run("init");
+		}
+
+		private readonly string[] BaseArgs = { "add", "job" };
+
 		[Test]
 		public void WithNoArguments_ShouldFail()
 		{
-			var res = TestApp.Run(Array.Empty<string>());
-			Assert.That(res.ExitCode, Is.Not.EqualTo(ExitCode.Success.ToInt()));
+			Assert.Catch(() => TestApp.Run(BaseArgs));
 		}
 
 		private static object[][] GetRequiredArgs()
@@ -22,7 +30,9 @@ namespace TestResumeBuilder
 			return arr;
 		}
 
-		private static string[] JobTitles { get; } = { "developer", "student", "lead executive office manager", "clothing cashier" };
+		private static string[] JobTitles { get; } =
+			{ "developer", "student", "lead executive office manager", "clothing cashier" };
+
 		[Test]
 		[TestCaseSource(nameof(JobTitles))]
 		public void WithoutStartDate_ShouldFail(string title)
@@ -30,17 +40,22 @@ namespace TestResumeBuilder
 			var args = new string[] { "add", "job", "--title", title };
 			Assert.Catch(() => TestApp.Run(args));
 		}
-		private static DateOnly[] Dates => new[] { DateOnly.MinValue, DateOnly.MaxValue, DateOnly.FromDateTime(DateTime.Now) };
+
+		private static DateOnly[] Dates => new[]
+			{ DateOnly.MinValue, DateOnly.MaxValue, DateOnly.FromDateTime(DateTime.Now) };
+
 		[TestCaseSource(nameof(Dates))]
 		public void WithoutJobTitle_ShouldFail(DateOnly startDate)
 		{
-			var args = new string[] { "add", "job", "--start", startDate.ToString() }; Assert.Catch(() => TestApp.Run(args));
+			var args = new string[] { "add", "job", "--start", startDate.ToString() };
+			Assert.Catch(() => TestApp.Run(args));
 		}
+
 		[TestCaseSource(nameof(GetRequiredArgs))]
 		public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
 		{
 			var args = new string[] { "add", "job", "--title", title, "--start", startDate.ToString() };
-			Assume.That(title.Length < 100 && title.Length > 0);
+			Assume.That(title.Length is < 100 and > 0);
 			var result = TestApp.Run(args);
 			Assert.Multiple(() =>
 			{
@@ -49,6 +64,4 @@ namespace TestResumeBuilder
 			});
 		}
 	}
-
-
 }

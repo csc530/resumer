@@ -14,8 +14,8 @@
 			// wierd
 
 			//**********************************************
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			//GC.Collect();
+			//GC.WaitForPendingFinalizers();
 			//**********************************************/
 			if(TestContext.CurrentContext.Test.Arguments.Length == 0 ||
 			   TestContext.CurrentContext.Test.Arguments[0] is null ||
@@ -29,7 +29,6 @@
 				var path = (string)TestContext.CurrentContext.Test.Arguments[0]!;
 				File.Delete(Path.Combine(path, ResumeSqliteFileName));
 				File.Delete(Path.Combine(path, BackupResumeSqliteFileName));
-
 				DeleteCreatedFolders(path);
 			}
 		}
@@ -42,6 +41,7 @@
 		/// todo: needs some serious reqork and readability and perf and all dat
 		private static void DeleteCreatedFolders(string path)
 		{
+			//todo: make nice
 			var fullCurrentDir = Directory.GetCurrentDirectory();
 
 			var createdDirPath = Path.GetFullPath(path)
@@ -79,7 +79,7 @@
 
 
 		[Test]
-		[TestCaseSource(typeof(TestData),nameof(TestData.Paths))]
+		[TestCaseSource(typeof(TestData), nameof(TestData.Paths))]
 		[Category("oddPaths")]
 		public void Create_Database_WithCustomPath_ShouldPass(string path)
 		{

@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using NUnit.Framework.Internal;
 using resume_builder;
 
 namespace TestResumeBuilder;
@@ -15,7 +16,7 @@ public static class TestData
 	public static DateOnly[] Dates = new[]
 	{
 		DateOnly.MaxValue, DateOnly.MinValue, Today, new(2023, 1, 18),
-		new(2002, 9, 0x011010), new(0xf1c10, 6, 23)
+		new(2002, 9, 0x010), new(0x1c10, 6, 23)
 	};
 
 	public static DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
@@ -48,5 +49,13 @@ public static class TestData
 		}
 
 		return list.ToArray();
+	}
+
+	public static class RandomData
+	{
+		private static Randomizer Randomizer = new(((int)DateTime.UtcNow.Ticks));
+
+		public static DateOnly RandomDate =>
+			new(Randomizer.Next(1, 1000), Randomizer.Next(1, 13), Randomizer.Next(1, 31));
 	}
 }
