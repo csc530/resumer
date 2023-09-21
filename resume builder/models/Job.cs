@@ -16,11 +16,11 @@ public sealed class Job
 	           string? description = null, string? experience = null)
 	{
 		Company = company;
-		_description = description;
-		_experience = experience;
-		Title = title;
-		StartDate = startDate ?? DateOnly.FromDateTime(DateTime.Now);
-		EndDate = endDate;
+		Description = description;
+		Experience = experience;
+		SetTitle(title);
+		SetStartDate(startDate ?? DateOnly.FromDateTime(DateTime.Now));
+		SetEndDate(endDate);
 	}
 
 	[SqlColumnName("title")] public string Title { get; private set; }
@@ -29,8 +29,10 @@ public sealed class Job
 	public string? Company
 	{
 		get => _company;
-		set => _company = value?.Trim();
+		set => _company = Trim(value);
 	}
+
+	private static string? Trim(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
 	[SqlColumnName("start date")] public DateOnly StartDate { get; private set; }
 	[SqlColumnName("end date")] public DateOnly? EndDate { get; private set; }
@@ -39,14 +41,14 @@ public sealed class Job
 	public string? Description
 	{
 		get => _description;
-		set => _description = value?.Trim();
+		set => _description = Trim(value);
 	}
 
 	[SqlColumnName("experience")]
 	public string? Experience
 	{
 		get => _experience;
-		set => _experience = value?.Trim();
+		set => _experience = Trim(value);
 	}
 
 	public void Deconstruct(out string? company, out string? description, out string? experience, out string title,
@@ -82,11 +84,43 @@ public sealed class Job
 
 	public void SetEndDate(DateOnly? date)
 	{
-		if(date == null)
-			throw new ArgumentNullException(nameof(date), "start date cannot be null");
 		if(EndDate < StartDate)
 			throw new ArgumentException(nameof(date),
 				$"end date ({EndDate}) must be after, or the same day as, the start date ({StartDate})");
 		EndDate = date;
+	}
+
+	public static Job FromDictionary(Dictionary<string, dynamic> propertyValuePairs)
+	{
+		string title = string.Empty;
+		string? description = null, company = null, experience = null;
+		DateOnly start = default;
+		DateOnly? end = null;
+		foreach(var (property, value) in propertyValuePairs)
+		{
+			switch(property)
+			{
+				case nameof(Title):
+					title = value;
+					break;
+				case nameof(Description):
+					description = value;
+					break;
+				case nameof(Company):
+					company = value;
+					break;
+				case nameof(Experience):
+					experience = value;
+					break;
+				case nameof(StartDate):
+					start = value is DateOnly ? value : DateOnly.Parse(value);
+					break;
+				case nameof(EndDate):
+					end = value.GetType() == typeof(DateOnly?) ? value : DateOnly.Parse(value);
+					break;
+			}
+		}
+
+		return new Job(title, start, end, company, description, experience);
 	}
 }

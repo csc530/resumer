@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Reflection;
 using Microsoft.Data.Sqlite;
 
@@ -42,6 +40,19 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private SqliteConnection MainConnection { get; }
 	private SqliteConnection BackupConnection { get; }
 
+	async ValueTask IAsyncDisposable.DisposeAsync()
+	{
+		await MainConnection.DisposeAsync();
+		await BackupConnection.DisposeAsync();
+	}
+
+	public void Dispose()
+	{
+		Close();
+		MainConnection.Dispose();
+		BackupConnection.Dispose();
+	}
+
 	public bool IsInitialized() => HasRequiredTables(MainConnection);
 
 	private void Open()
@@ -50,17 +61,6 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		BackupConnection.Open();
 	}
 
-	private static string[] GetSqlColumnNames(IEnumerable<PropertyInfo> properties) =>
-		properties // the display name is used to hold the related sql column name in this project*/
-			.Select(property => property.GetCustomAttribute<SqlColumnNameAttribute>()?.Name)
-			.Where(name => !string.IsNullOrWhiteSpace(name))
-			.ToArray()!;//don't know why it needs the suppressione🙄
-
-	private static List<PropertyInfo> GetArgumentValueProperties<T>(T argument) =>
-		typeof(T)
-			.GetProperties()
-			.Where(property => property.GetValue(argument) != null)
-			.ToList();
 
 	public void Close()
 	{
@@ -109,33 +109,71 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 
 	public bool BackupExists() => HasRequiredTables(BackupConnection);
 
-	public void Dispose()
-	{
-		Close();
-		MainConnection.Dispose();
-		BackupConnection.Dispose();
-	}
-
-	async ValueTask IAsyncDisposable.DisposeAsync()
-	{
-		await MainConnection.DisposeAsync();
-		await BackupConnection.DisposeAsync();
-	}
-
 	~Database() => Dispose();
 
-	public string? GetJob(Job job)
+	/// <summary>
+	/// get the <see cref="SqlColumnNameAttribute"/> of the given property on <see cref="T"/>'s class
+	/// </summary>
+	/// <param name="property">The property who has a related sql column name</param>
+	/// <typeparam name="T">class that has the given <see cref="property"/>, modeled by a sql table</typeparam>
+	/// <returns>the escaped (double quote surrounded) sql column name, or null if the property could not be found on the class or the property does not have a <see cref="SqlColumnNameAttribute"/></returns>
+	private string? GetSqlColumnName<T>(string property) =>
+		typeof(T).GetProperty(property)?.GetCustomAttribute<SqlColumnNameAttribute>()?.Name;
+
+	/// <summary>
+	/// gets the sql column names from a type and it's associated property name
+	///
+	/// </summary>
+	/// <param name="obj">the object to parse it's properties sql column names and check for null properties</param>
+	/// <param name="escapeSqlColumnNames">if the sql column name should be escaped - surrounded with quotes</param>
+	/// <param name="skipNullProperties">if true will only return the sql column names that have a value in the object</param>
+	/// <typeparam name="T">the class that is modeled by a sql table and has properties annotated by <see cref="SqlColumnNameAttribute"/></typeparam>
+	/// <returns>A dictionary of the property names (key) and sql column names (value)</returns>
+	private Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(T obj, bool escapeSqlColumnNames = false,
+	                                                                    bool skipNullProperties = true) =>
+		typeof(T).GetProperties()
+		         .Where(property => property.GetCustomAttribute<SqlColumnNameAttribute>() != null)
+		         //if were not skipping null prop values, then always true; else check for null
+		         .Where(property => !skipNullProperties || property.GetValue(obj) != null)
+		         .ToDictionary(
+			         property => property.Name, //key
+			         property => escapeSqlColumnNames
+				         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
+				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name //value
+		         );
+	private Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(bool escapeSqlColumnNames = false) =>
+		typeof(T).GetProperties()
+		         .Where(property => property.GetCustomAttribute<SqlColumnNameAttribute>() != null)
+		         //if were not skipping null prop values, then always true; else check for null
+		         .ToDictionary(
+			         property => property.Name, //key
+			         property => escapeSqlColumnNames
+				         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
+				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name //value
+		         );
+
+	private static void BindCommandParameters<T>(T obj, IReadOnlyList<string> jobPropertiesNames, SqliteCommand cmd,
+	                                             IReadOnlyList<string> placeholders)
 	{
-		throw new NotImplementedException();
+		for(var i = 0; i < jobPropertiesNames.Count; i++)
+		{
+			var value = obj?.GetType().GetProperty(jobPropertiesNames[i])?.GetValue(obj);
+			cmd.Parameters.AddWithValue(placeholders[i], value);
+			Console.WriteLine($"{placeholders[i]}: {value}");
+		}
 	}
 
-	private string? GetSqlColumnName(Type type, string propertyName)
+	private string CreateSqlWhereString<T>(T obj, SqliteCommand cmd)
 	{
-		return type.GetProperty(propertyName)?.GetCustomAttribute<SqlColumnNameAttribute>()?.Name;
-	}
+		var propertySqlColumnNamePairs = GetPropertySqlColumnNamePairs(obj, escapeSqlColumnNames: true);
+		List<string> text = new();
+		foreach(var (propertyName, sqlColumnName) in propertySqlColumnNamePairs)
+		{
+			var value = typeof(T).GetProperty(propertyName)?.GetValue(obj);
+			text.Add($"{sqlColumnName} = ${propertyName}"); // ex. id = $id
+			cmd.Parameters.AddWithValue($"${propertyName}", value);
+		}
 
-	private string? GetSqlColumnName<T>(string propertyName)
-	{
-		return GetSqlColumnName(typeof(T), propertyName);
+		return string.Join(" AND", text);
 	}
 }

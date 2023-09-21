@@ -1,6 +1,8 @@
 using System.Data;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Text;
 using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
@@ -9,17 +11,23 @@ public partial class Database
 {
 	public IEnumerable<Job> GetJobs()
 	{
-		var dataReader = new SqliteCommand($"SELECT * FROM jobs", MainConnection).ExecuteReader();
+		SqliteCommand sqliteCommand = new SqliteCommand($"SELECT * FROM jobs", MainConnection);
+		var dataReader = sqliteCommand.ExecuteReader();
+		return ParseJobsFromQuery(dataReader);
+	}
+
+	private IEnumerable<Job> ParseJobsFromQuery(SqliteDataReader dataReader)
+	{
 		List<Job> jobs = new();
 		while(dataReader.Read())
 		{
-			var jobTitle = dataReader.GetString(GetSqlColumnName<Job>(nameof(Job.Title)));
-			var company = dataReader.GetString(GetSqlColumnName<Job>(nameof(Job.Company)));
-			var description = dataReader.GetString(GetSqlColumnName<Job>(nameof(Job.Description)));
-			var experience = dataReader.GetString(GetSqlColumnName<Job>(nameof(Job.Experience)));
-			var startDate = dataReader.GetDateTime(GetSqlColumnName<Job>(nameof(Job.StartDate))).ToDateOnly();
-			var endDate = dataReader.GetDateTime(GetSqlColumnName<Job>(nameof(Job.EndDate))).ToDateOnly();
-			jobs.Add(new Job(jobTitle, startDate, endDate, company, description, experience));
+			var dic = GetPropertySqlColumnNamePairs<Job>();
+			Dictionary<string, dynamic> dbPropertyValuePairs = new();
+			foreach(var (property,sqlColumnName) in dic)
+				if(!dataReader.IsDBNull(sqlColumnName))
+					dbPropertyValuePairs.Add(property, dataReader[sqlColumnName]);
+			jobs.Add(Job.FromDictionary(dbPropertyValuePairs));
+
 		}
 
 		return jobs;
@@ -28,25 +36,36 @@ public partial class Database
 	public bool AddJob(Job job)
 	{
 		var cmd = MainConnection.CreateCommand();
-		List<PropertyInfo> properties = GetArgumentValueProperties(job);
-		string columnNames = string.Join(",", GetSqlColumnNames(properties));
-		IEnumerable<string> propertyNames = properties.Select(property => $":{property.Name}");
-		string prefixedPropertyNames = string.Join(",", propertyNames);
-		cmd.CommandText = $"INSERT INTO jobs({columnNames}) VALUES ({prefixedPropertyNames});";
-		foreach(var item in properties)
-		{
-			if(item.Name == nameof(Job.Company) && job.Company != null&& GetCompany(job.Company) is null)
-				AddCompany((string)item.GetValue(job)!); //not null from GetArgValueProperties method
-			cmd.Parameters.AddWithValue($":{item.Name}", item.GetValue(job));
-			Console.WriteLine(item.Name + ": " + (item.GetValue(job) ?? "<null>"));
-		}
 
+		//todo skip null value properties
+		var propColPairs = GetPropertySqlColumnNamePairs<Job>(job, escapeSqlColumnNames: true);
+		var columnNames = string.Join(",", propColPairs.Values);
+		const string prefix = "$";
+		var jobPropertiesNames = propColPairs.Keys.ToList();
+		var placeholders = jobPropertiesNames.Prefix(prefix);
+		cmd.CommandText = $"INSERT INTO jobs({columnNames}) VALUES ({string.Join(",", placeholders)});";
+
+		BindCommandParameters(job, jobPropertiesNames, cmd, placeholders);
+		if(!string.IsNullOrWhiteSpace(job.Company) && GetCompany(job.Company) == null)
+			AddCompany(job.Company);
 
 		Console.WriteLine(cmd.CommandText);
 		cmd.Prepare();
 		Console.WriteLine(cmd.ExecuteNonQuery());
 		return true;
 	}
+
+
+	public List<Job> GetJob(Job job)
+	{
+		var cmd = MainConnection.CreateCommand();
+		var filter = CreateSqlWhereString(job, cmd);
+		cmd.CommandText = $"SELECT * from jobs WHERE {filter};";
+		cmd.Prepare();
+		var data = cmd.ExecuteReader();
+		return ParseJobsFromQuery(data).ToList();
+	}
+
 
 	private string? GetCompany(string company)
 	{
@@ -59,6 +78,7 @@ public partial class Database
 
 	private SQLResult AddCompany(string company)
 	{
+		//todo: make sure company is not null or empty
 		if(string.IsNullOrWhiteSpace(company))
 			return SQLResult.invalid;
 		var cmd = MainConnection.CreateCommand();
