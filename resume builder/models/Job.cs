@@ -1,4 +1,7 @@
+using Microsoft.Data.Sqlite;
 using resume_builder.models;
+using System.Data.Common;
+using System.Reflection;
 
 namespace resume_builder;
 
@@ -90,37 +93,28 @@ public sealed class Job
 		EndDate = date;
 	}
 
-	public static Job FromDictionary(Dictionary<string, dynamic> propertyValuePairs)
+	/// <summary>
+	/// given a db reader parses the current row into a job
+	///
+	/// it does not call <see cref="DbDataReader.Read"/>
+	/// </summary>
+	/// <param name="reader">the db reader with the current row</param>
+	/// <returns>a new <see cref="Job"/> with the current row's data, null if there are no rows in the reader</returns>
+	/// <exception cref="ArgumentNullException">if <paramref name="reader"/> is null</exception>
+	public static Job? ParseJobsFromQuery(SqliteDataReader reader)
 	{
-		string title = string.Empty;
-		string? description = null, company = null, experience = null;
-		DateOnly start = default;
-		DateOnly? end = null;
-		foreach(var (property, value) in propertyValuePairs)
-		{
-			switch(property)
-			{
-				case nameof(Title):
-					title = value;
-					break;
-				case nameof(Description):
-					description = value;
-					break;
-				case nameof(Company):
-					company = value;
-					break;
-				case nameof(Experience):
-					experience = value;
-					break;
-				case nameof(StartDate):
-					start = value is DateOnly ? value : DateOnly.Parse(value);
-					break;
-				case nameof(EndDate):
-					end = value.GetType() == typeof(DateOnly?) ? value : DateOnly.Parse(value);
-					break;
-			}
-		}
+		if(reader == null)
+			throw new ArgumentNullException(nameof(reader));
+		if(!reader.HasRows)
+			return null;
 
-		return new Job(title, start, end, company, description, experience);
+		var title = reader.GetNullableValue<string>("title");
+		var company = reader.GetNullableValue<string>("company");
+		var description = reader.GetNullableValue<string>("description");
+		var experience = reader.GetNullableValue<string>("experience");
+		var startDate = reader.GetNullableValue<DateOnly>("start date");
+		var endDate = reader.GetNullableValue<DateOnly?>("end date");
+
+		return new Job(title, startDate, endDate, company, description, experience);
 	}
 }
