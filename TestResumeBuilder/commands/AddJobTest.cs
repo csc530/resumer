@@ -2,56 +2,37 @@ using resume_builder;
 using Spectre.Console.Testing;
 using System.ComponentModel;
 using resume_builder.cli.commands.add;
+using TestResumeBuilder.test_data;
 
 namespace TestResumeBuilder
 {
 	public class AddJobTest : AppTest
 	{
 		[SetUp]
-		public void Setup()
-		{
-			base.Setup();
-			TestApp.Run("init");
-		}
-
-		private readonly string[] BaseArgs = { "add", "job" };
+		public void Setup() => TestApp.Run("init");
 
 		[Test]
-		public void WithNoArguments_ShouldFail()
-		{
-			Assert.Catch(() => TestApp.Run(BaseArgs));
-		}
+		public void WithNoArguments_ShouldFail() => Assert.Catch(() => TestApp.Run("add", "job"));
 
-		private static object[][] GetRequiredArgs()
-		{
-			var arr = Array.Empty<object[]>();
-			for(int i = 0; i < JobTitles.Length; i++)
-				arr = arr.Append(new object[] { JobTitles[i], Dates[i % Dates.Length] }).ToArray();
-			return arr;
-		}
-
-		private static string[] JobTitles { get; } =
-			{ "developer", "student", "lead executive office manager", "clothing cashier" };
 
 		[Test]
-		[TestCaseSource(nameof(JobTitles))]
+		[TestCaseSource(typeof(TestData), nameof(TestData.Jobtitles))]
+		[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomStrings))]
 		public void WithoutStartDate_ShouldFail(string title)
 		{
 			var args = new string[] { "add", "job", "--title", title };
 			Assert.Catch(() => TestApp.Run(args));
 		}
 
-		private static DateOnly[] Dates => new[]
-			{ DateOnly.MinValue, DateOnly.MaxValue, DateOnly.FromDateTime(DateTime.Now) };
-
-		[TestCaseSource(nameof(Dates))]
+		[TestCaseSource(typeof(TestData), nameof(TestData.Dates))]
+		[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomDates))]
 		public void WithoutJobTitle_ShouldFail(DateOnly startDate)
 		{
 			var args = new string[] { "add", "job", "--start", startDate.ToString() };
 			Assert.Catch(() => TestApp.Run(args));
 		}
 
-		[TestCaseSource(nameof(GetRequiredArgs))]
+		[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.GetRequiredArgs))]
 		public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
 		{
 			var args = new string[] { "add", "job", "--title", title, "--start", startDate.ToString() };

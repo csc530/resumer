@@ -10,7 +10,7 @@ namespace TestResumeBuilder
 		internal Spectre.Console.Testing.CommandAppTester TestApp;
 
 		[SetUp]
-		public void Setup()
+		public void InitializeApp()
 		{
 			TestApp = new();
 			TestApp.Configure(Program.AppConfiguration);

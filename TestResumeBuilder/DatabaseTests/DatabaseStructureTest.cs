@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestResumeBuilder.test_data;
 using static TestResumeBuilder.TestData;
 
 namespace TestResumeBuilder.DatabaseTests
@@ -54,7 +55,7 @@ namespace TestResumeBuilder.DatabaseTests
 			Database.Initialize();
 			Assume.That(Database.IsInitialized());
 			var rnd = new Randomizer(((int)DateTime.UtcNow.Ticks));
-			var date = RandomData.RandomDate;
+			var date = RanadomTestData.RandomDate;
 			for(int i = 0; i < rnd.Next(100) + 1; i++)
 				Database.AddJob(new(rnd.GetString(), date,
 					rnd.NextBool() ? date.AddDays(rnd.Next(10)) : null,

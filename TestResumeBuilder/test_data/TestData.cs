@@ -6,11 +6,11 @@ namespace TestResumeBuilder;
 
 public static class TestData
 {
-	public static string[] Jobtitles = new[]
+	public static readonly string[] Jobtitles = new[]
 	{
 		"pretty princess", "villain", "super villain",
 		"deputy minister of the united conglomerate for foreign nations new international coast guard protection services",
-		"executive assistant", "doctor"
+		"executive assistant", "doctor", "developer", "student", "lead executive office manager", "clothing cashier"
 	};
 
 	public static DateOnly[] Dates = new[]
@@ -49,13 +49,5 @@ public static class TestData
 		}
 
 		return list.ToArray();
-	}
-
-	public static class RandomData
-	{
-		private static Randomizer Randomizer = new(((int)DateTime.UtcNow.Ticks));
-
-		public static DateOnly RandomDate =>
-			new(Randomizer.Next(1, 1000), Randomizer.Next(1, 13), Randomizer.Next(1, 31));
 	}
 }
