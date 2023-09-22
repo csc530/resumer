@@ -1,5 +1,3 @@
-using NUnit.Framework.Internal;
-using resume_builder;
 using resume_builder.models;
 
 namespace TestResumeBuilder;
@@ -18,7 +16,6 @@ public abstract class DatabaseTest
 			try
 			{
 				File.Delete(ResumeSqliteFileName);
-				// File.Delete(BackupResumeSqliteFileName);
 			}
 			catch(IOException e)
 			{
@@ -32,10 +29,5 @@ public abstract class DatabaseTest
 	public virtual void SetupDatabase() => Database = new Database();
 
 	[TearDown]
-	public void DisposeDatabase()
-	{
-		Database.Dispose();
-		// GC.Collect();
-		// GC.WaitForPendingFinalizers();
-	}
+	public void DisposeDatabase() => Database.Dispose();
 }

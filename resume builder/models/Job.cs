@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using resume_builder.models;
 
 namespace resume_builder;

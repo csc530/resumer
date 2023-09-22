@@ -3,7 +3,7 @@ using resume_builder;
 
 namespace TestResumeBuilder.test_data;
 
-public static class RanadomTestData
+public static class RandomTestData
 {
 	private static readonly Randomizer Randomizer = new((int)DateTime.UtcNow.Ticks);
 

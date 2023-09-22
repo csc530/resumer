@@ -1,7 +1,4 @@
 ﻿using resume_builder;
-using resume_builder.cli;
-using resume_builder.cli.commands;
-using Spectre.Console.Testing;
 
 namespace TestResumeBuilder
 {

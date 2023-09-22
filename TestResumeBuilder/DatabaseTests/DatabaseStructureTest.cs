@@ -1,13 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using NUnit.Framework.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using resume_builder;
-using TestResumeBuilder.test_data;
-using static TestResumeBuilder.test_data.TestData;
+﻿using TestResumeBuilder.test_data;
 
 namespace TestResumeBuilder.DatabaseTests
 {
@@ -19,7 +10,6 @@ namespace TestResumeBuilder.DatabaseTests
 			Database.Initialize();
 			Assert.Multiple(() =>
 			{
-				// Assert.That(File.Exists((BackupResumeSqliteFileName)));
 				Assert.That(File.Exists((ResumeSqliteFileName)));
 				Assert.That(Database.IsInitialized());
 			});
@@ -42,7 +32,7 @@ namespace TestResumeBuilder.DatabaseTests
 			Assume.That(Database.IsInitialized());
 
 			for(int i = 0; i < 100 + 1; i++)
-				Database.AddJob(RanadomTestData.GetRandomJob());
+				Database.AddJob(RandomTestData.GetRandomJob());
 			Database.Wipe();
 			Assert.That(Database.GetJobs(), Is.Empty);
 		}

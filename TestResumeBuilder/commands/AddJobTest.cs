@@ -15,12 +15,12 @@ public class AddJobTest : AppTest
 
 	[Test]
 	[TestCaseSource(typeof(TestData), nameof(TestData.JobTitles))]
-	[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomStrings))]
+	[TestCaseSource(typeof(RandomTestData), nameof(RandomTestData.RandomStrings))]
 	public void WithoutStartDate_ShouldFail(string title) =>
 		Assert.Catch(() => TestApp.Run("add", "job", "--title", title));
 
 	[TestCaseSource(typeof(TestData), nameof(TestData.Dates))]
-	[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomDates))]
+	[TestCaseSource(typeof(RandomTestData), nameof(RandomTestData.RandomDates))]
 	public void WithoutJobTitle_ShouldFail(DateOnly startDate) =>
 		Assert.Catch(() => TestApp.Run("add", "job", "--start", startDate.ToString()));
 
