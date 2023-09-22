@@ -12,7 +12,7 @@ public class DatabaseAddData : DatabaseCRUDTest
 	{
 		Assert.Multiple(() =>
 		{
-			Assert.That(Database.AddJob(job));
+			Assert.That(Database.AddJob(job), Is.EqualTo(1));
 			Assert.That(Database.GetJob(job), Is.Not.Empty);
 		});
 	}

@@ -1,7 +1,6 @@
 using System.Data;
-using System.Diagnostics;
+using System.Data.Common;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Data.Sqlite;
 
@@ -16,7 +15,7 @@ public partial class Database
 		return ParseJobsFromQuery(dataReader).ToList();
 	}
 
-	private List<Job> ParseJobsFromQuery(SqliteDataReader dataReader)
+	private List<Job> ParseJobsFromQuery(DbDataReader dataReader)
 	{
 		List<Job> jobs = new();
 		while(dataReader.Read())
@@ -32,37 +31,67 @@ public partial class Database
 		return jobs;
 	}
 
-	public bool AddJob(Job job)
+	public int AddJob(Job job)
 	{
-		var cmd = MainConnection.CreateCommand();
-
-		//todo skip null value properties
-		var propColPairs = GetPropertySqlColumnNamePairs<Job>(job, escapeSqlColumnNames: true);
-		var columnNames = string.Join(",", propColPairs.Values);
-		const string prefix = "$";
-		var jobPropertiesNames = propColPairs.Keys.ToList();
-		var placeholders = jobPropertiesNames.Prefix(prefix);
-		cmd.CommandText = $"INSERT INTO jobs({columnNames}) VALUES ({string.Join(",", placeholders)});";
-
-		BindCommandParameters(job, jobPropertiesNames, cmd, placeholders);
 		if(!string.IsNullOrWhiteSpace(job.Company) && GetCompany(job.Company) == null)
 			AddCompany(job.Company);
 
-		Console.WriteLine(cmd.CommandText);
+		return AddData(job, "jobs");
+	}
+
+	private int AddData(dynamic obj, string tableName)
+	{
+		var cmd = MainConnection.CreateCommand();
+
+		Dictionary<string, string> propertySqlColumnNamePairs =
+			GetPropertySqlColumnNamePairs(obj, escapeSqlColumnNames: true);
+		var columnNames = string.Join(",", propertySqlColumnNamePairs.Values);
+
+		var jobPropertyNames = propertySqlColumnNamePairs.Keys.ToList();
+		var placeholders = jobPropertyNames.Prefix("$");
+
+		cmd.CommandText = $"INSERT INTO {tableName}({columnNames}) VALUES ({string.Join(",", placeholders)});";
+
+		var propertyPlaceholderNamePairs = jobPropertyNames.Zip(placeholders);
+		BindCommandParameters(obj, cmd, propertyPlaceholderNamePairs);
 		cmd.Prepare();
-		Console.WriteLine(cmd.ExecuteNonQuery());
-		return true;
+		return cmd.ExecuteNonQuery();
 	}
 
 
-	public List<Job> GetJob(Job job)
+	public List<Job> GetJob(Job job) => ParseJobsFromQuery(GetData("jobs", job)).ToList();
+
+	/// <summary>
+	/// retrieve rows from the given table like the given object,
+	/// with columns matching the object's properties
+	/// if no object is given, retrieve all rows
+	/// </summary>
+	/// <param name="tableName">sqlite table name</param>
+	/// <param name="obj">reference object to filter rows based on similarity to its properties</param>
+	/// <returns>a <see cref="DbDataReader"/> with the rows from the table</returns>
+	private DbDataReader GetData(string tableName, dynamic? obj = null)
 	{
 		var cmd = MainConnection.CreateCommand();
-		var filter = CreateSqlWhereString(job, cmd);
-		cmd.CommandText = $"SELECT * from jobs WHERE {filter};";
+
+		if(obj == null)
+		{
+			cmd.CommandText = $"SELECT * from {tableName};";
+			return cmd.ExecuteReader();
+		}
+
+		var whereFilter = new List<string>();
+		Dictionary<string, string> propertySqlColumnNamePairs =
+			GetPropertySqlColumnNamePairs(obj, escapeSqlColumnNames: true);
+		foreach(var (propertyName, sqlColumnName) in propertySqlColumnNamePairs)
+		{
+			object? value = ((PropertyInfo?)obj.GetType().GetProperty(propertyName))?.GetValue(obj);
+			whereFilter.Add($"{sqlColumnName} = @{propertyName}");
+			cmd.Parameters.AddWithValue($"@{propertyName}", value);
+		}
+
+		cmd.CommandText = $"SELECT * from {tableName} WHERE {string.Join(" AND", whereFilter)};";
 		cmd.Prepare();
-		var data = cmd.ExecuteReader();
-		return ParseJobsFromQuery(data).ToList();
+		return cmd.ExecuteReader();
 	}
 
 
@@ -100,7 +129,7 @@ public partial class Database
 				cmd.CommandText = $"DELETE FROM \"{table}\";";
 				cmd.ExecuteNonQuery();
 			}
-			catch(System.Exception e)
+			catch(Exception)
 			{
 				if(IsInitialized())
 					throw;

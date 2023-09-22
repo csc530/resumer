@@ -3,7 +3,6 @@ using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
-//todo add backing up after commands
 public sealed partial class Database : IDisposable, IAsyncDisposable
 {
 	private const string SqliteFileName = "resume.sqlite";
@@ -47,21 +46,17 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	}
 
 	private SqliteConnection MainConnection { get; }
-	// private SqliteConnection BackupConnection { get; }
 
 	async ValueTask IAsyncDisposable.DisposeAsync()
 	{
 		await MainConnection.DisposeAsync();
-		// await BackupConnection.DisposeAsync();
 	}
 
 	public void Dispose()
 	{
 		Close();
-		// BackupConnection.Dispose();
 		MainConnection.Dispose();
 		SqliteConnection.ClearPool(MainConnection);
-		// SqliteConnection.ClearPool(BackupConnection);
 	}
 
 	public bool IsInitialized() => IsInitialized(MainConnection);
@@ -69,14 +64,12 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private void Open()
 	{
 		MainConnection.Open();
-		// BackupConnection.Open();
 	}
 
 
 	private void Close()
 	{
 		MainConnection.Close();
-		// BackupConnection.Close();
 	}
 
 	public void Initialize()
@@ -85,18 +78,8 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 			return;
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText = File.ReadAllText("tables.sql");
-		//cmd.Prepare();
 		cmd.ExecuteNonQuery();
-		// MainConnection.BackupDatabase(BackupConnection);
 	}
-
-	// public bool RestoreBackup()
-	// {
-	// 	if(!BackupExists())
-	// 		return false;
-	// 	BackupConnection.BackupDatabase(MainConnection);
-	// 	return true;
-	// }
 
 	/// <summary>
 	/// check if a database has the required tables to be used for resume builder app
@@ -106,14 +89,12 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private static bool IsInitialized(SqliteConnection connection)
 	{
 		using var tableNamesCmd = connection.CreateCommand();
-		//check if the db has any tables
 		tableNamesCmd.CommandText =
 			"SELECT DISTINCT name FROM sqlite_master WHERE type='table' AND name NOT IN ('sqlite_sequence');";
 		using var result = tableNamesCmd.ExecuteReader();
 		if(!result.HasRows)
 			return false;
 
-		//check if the db has tables with same names
 		List<string> tables = new();
 		while(result.Read())
 			tables.Add((string)result["name"]);
@@ -121,7 +102,6 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		                          .TrueForAll(name => tables.Contains(name, StringComparer.OrdinalIgnoreCase)))
 			return false;
 
-		//check if each table has columns with the required names
 		using var columnNamesCmd = connection.CreateCommand();
 		foreach(string tableName in tables)
 		{
@@ -145,8 +125,6 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		return true;
 	}
 
-	// public bool BackupExists() => Database.IsInitialized(BackupConnection);
-
 	~Database() => Dispose();
 
 	/// <summary>
@@ -167,52 +145,36 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	/// <param name="skipNullProperties">if true will only return the sql column names that have a value in the object</param>
 	/// <typeparam name="T">the class that is modeled by a sql table and has properties annotated by <see cref="SqlColumnNameAttribute"/></typeparam>
 	/// <returns>A dictionary of the property names (key) and sql column names (value)</returns>
-	private Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(T obj, bool escapeSqlColumnNames = false,
-	                                                                    bool skipNullProperties = true) =>
+	private static Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(T obj, bool escapeSqlColumnNames = false,
+	                                                                           bool skipNullProperties = true) =>
 		typeof(T).GetProperties()
 		         .Where(property => property.GetCustomAttribute<SqlColumnNameAttribute>() != null)
-		         //if were not skipping null prop values, then always true; else check for null
 		         .Where(property => !skipNullProperties || property.GetValue(obj) != null)
-		         .ToDictionary(
-			         property => property.Name, //key
-			         property => escapeSqlColumnNames
-				         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
-				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name //value
-		         );
+		         .ToDictionary(property => property.Name, property => escapeSqlColumnNames
+			         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
+			         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name);
 
 	private Dictionary<string, string> GetPropertySqlColumnNamePairs<T>(bool escapeSqlColumnNames = false) =>
 		typeof(T).GetProperties()
 		         .Where(property => property.GetCustomAttribute<SqlColumnNameAttribute>() != null)
-		         //if were not skipping null prop values, then always true; else check for null
 		         .ToDictionary(
-			         property => property.Name, //key
-			         property => escapeSqlColumnNames
+			         property => property.Name, property => escapeSqlColumnNames
 				         ? property.GetCustomAttribute<SqlColumnNameAttribute>()!.EscapedName
-				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name //value
-		         );
+				         : property.GetCustomAttribute<SqlColumnNameAttribute>()!.Name);
 
-	private static void BindCommandParameters<T>(T obj, IReadOnlyList<string> jobPropertiesNames, SqliteCommand cmd,
-	                                             IReadOnlyList<string> placeholders)
+	private static void BindCommandParameters<T>(T obj, SqliteCommand cmd,
+	                                             IReadOnlyDictionary<string, string> propertyPlaceholderNamePairs)
 	{
-		for(var i = 0; i < jobPropertiesNames.Count; i++)
+		foreach(var (propertyName, placeholder) in propertyPlaceholderNamePairs)
 		{
-			var value = obj?.GetType().GetProperty(jobPropertiesNames[i])?.GetValue(obj);
-			cmd.Parameters.AddWithValue(placeholders[i], value);
-			Console.WriteLine($"{placeholders[i]}: {value}");
+			var value = obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
+			cmd.Parameters.AddWithValue(placeholder, value);
 		}
 	}
 
-	private string CreateSqlWhereString<T>(T obj, SqliteCommand cmd)
-	{
-		var propertySqlColumnNamePairs = GetPropertySqlColumnNamePairs(obj, escapeSqlColumnNames: true);
-		List<string> text = new();
-		foreach(var (propertyName, sqlColumnName) in propertySqlColumnNamePairs)
-		{
-			var value = typeof(T).GetProperty(propertyName)?.GetValue(obj);
-			text.Add($"{sqlColumnName} = ${propertyName}"); // ex. id = $id
-			cmd.Parameters.AddWithValue($"${propertyName}", value);
-		}
-
-		return string.Join(" AND", text);
-	}
+	private static void BindCommandParameters<T>(T obj, SqliteCommand cmd,
+	                                             IEnumerable<(string First, string Second)>
+		                                             propertyPlaceholderNamePairs) =>
+		BindCommandParameters(obj, cmd,
+			propertyPlaceholderNamePairs.ToDictionary(tuple => tuple.First, tuple => tuple.Second));
 }
