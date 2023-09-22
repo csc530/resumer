@@ -14,7 +14,7 @@ public class AddJobTest : AppTest
 
 
 	[Test]
-	[TestCaseSource(typeof(TestData), nameof(TestData.JobTitles))]
+	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.JobTitles))]
 	[TestCaseSource(typeof(RandomTestData), nameof(RandomTestData.RandomStrings))]
 	public void WithoutStartDate_ShouldFail(string title) =>
 		Assert.Catch(() => TestApp.Run("add", "job", "--title", title));
@@ -24,10 +24,9 @@ public class AddJobTest : AppTest
 	public void WithoutJobTitle_ShouldFail(DateOnly startDate) =>
 		Assert.Catch(() => TestApp.Run("add", "job", "--start", startDate.ToString()));
 
-	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.GetRequiredArgs))]
+	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.JobTitleAndStartDates))]
 	public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
 	{
-		Assume.That(title.Length is < 100 and > 0);
 		var result = TestApp.Run("add", "job", "--title", title, "--start", startDate.ToString());
 		Assert.Multiple(() =>
 		{

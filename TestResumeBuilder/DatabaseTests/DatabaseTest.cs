@@ -12,6 +12,8 @@ public abstract class DatabaseTest
 	[TearDown]
 	public void DeleteDatabase()
 	{
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
 		if(File.Exists(ResumeSqliteFileName))
 			try
 			{

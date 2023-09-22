@@ -5,6 +5,7 @@ namespace resume_builder;
 /// <summary>
 ///     Modeled after and for the database jobs rows/columns
 /// </summary>
+[SqlTableName("jobs")]
 public sealed class Job
 {
 	private string? _company;
