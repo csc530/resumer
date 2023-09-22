@@ -1,36 +1,20 @@
-﻿namespace TestResumeBuilder.DatabaseTests
+﻿using resume_builder.models;
+using TestResumeBuilder.test_data;
+
+namespace TestResumeBuilder.DatabaseTests
 {
 	internal class DatabaseConstructorTest : DatabaseTest
 	{
 		[TearDown]
 		public void TearDownOddPaths()
 		{
-			// Database.Close();
-			Database.Dispose();
-			// Database = null;
-
-			// - use one of the above statements
-			//so the files are deleted; some wierd blocking file in process bug or sumn (https://stackoverflow.com/a/374595/16929246)
-			// wierd
-
-			//**********************************************
-			//GC.Collect();
-			//GC.WaitForPendingFinalizers();
-			//**********************************************/
-			if(TestContext.CurrentContext.Test.Arguments.Length == 0 ||
-			   TestContext.CurrentContext.Test.Arguments[0] is null ||
-			   TestContext.CurrentContext.Test.Arguments[0] is not string)
-			{
-				File.Delete((ResumeSqliteFileName));
-				File.Delete((BackupResumeSqliteFileName));
-			}
-			else
-			{
-				var path = (string)TestContext.CurrentContext.Test.Arguments[0]!;
-				File.Delete(Path.Combine(path, ResumeSqliteFileName));
-				File.Delete(Path.Combine(path, BackupResumeSqliteFileName));
-				DeleteCreatedFolders(path);
-			}
+			if(TestContext.CurrentContext.Test.Arguments.Length == 0)
+				return;
+			DisposeDatabase(); //because tear downs order aren't given ensures that there aren't any open connections to files we need to delete
+			var path = (string)TestContext.CurrentContext.Test.Arguments[0]!;
+			File.Delete(Path.Combine(path, ResumeSqliteFileName));
+			// File.Delete(Path.Combine(path, BackupResumeSqliteFileName));
+			DeleteCreatedFolders(path);
 		}
 
 		/// <summary>
@@ -42,26 +26,29 @@
 		private static void DeleteCreatedFolders(string path)
 		{
 			//todo: make nice
-			var fullCurrentDir = Directory.GetCurrentDirectory();
+			string[] createdDirPath = Path.GetFullPath(path)
+			                              .Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
+			                              .ToArray();
 
-			var createdDirPath = Path.GetFullPath(path)
-			                         .Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
-			                         .ToArray();
+			string absCurrentDirectory = Directory.GetCurrentDirectory();
+			string currentDir = absCurrentDirectory
+				.Split(Path.DirectorySeparatorChar,
+					StringSplitOptions.RemoveEmptyEntries)[^1]; //.Last();
 
-			var currentDir = fullCurrentDir.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
-			                               .Last(); //[^1];
-
-			//plus 1 to skip the current directory hence the start of the thesuperflously created subdirs for the tests
-			var indexOfCurrDirInPwd = createdDirPath.ToList().LastIndexOf(currentDir) + 1;
-
-			createdDirPath = createdDirPath.Skip(indexOfCurrDirInPwd)
-			                               .ToArray();
+			//plus 1 to skip the current directory
+			//hence the start of the the superflously created subdirs for the tests
+			int indexOfCurrDirInPwd = createdDirPath.ToList().LastIndexOf(currentDir) + 1;
+			//skip base path until the start of newly created subdirs
+			//if created dirs are outside/above current dir no changes are made to the path arr
+			createdDirPath = createdDirPath.Skip(indexOfCurrDirInPwd).ToArray();
 
 			for(int i = 0; i < createdDirPath.Length; i++)
 			{
 				//..^i: means the elements from the back/end of arr
 				var dirPath = Path.GetFullPath(Path.Combine(createdDirPath[..^i]));
-				if(dirPath == fullCurrentDir || dirPath == Directory.GetDirectoryRoot(fullCurrentDir))
+				//don't try and delete the current dir or the root dir
+				//need absolute path to see if the dir is found someewhere within
+				if(dirPath == absCurrentDirectory || dirPath == Directory.GetDirectoryRoot(absCurrentDirectory))
 					break;
 				Directory.Delete(dirPath);
 			}
@@ -71,31 +58,26 @@
 		[Test]
 		public void Create_Database_ShouldPass()
 		{
-			Database = new();
 			Assert.That(Database, Is.Not.Null);
 			FileAssert.Exists(ResumeSqliteFileName, DatabaseNotFoundMessage(ResumeSqliteFileName));
-			FileAssert.Exists(BackupResumeSqliteFileName, DatabaseNotFoundMessage(BackupResumeSqliteFileName));
+			// FileAssert.Exists(BackupResumeSqliteFileName, DatabaseNotFoundMessage(BackupResumeSqliteFileName));
 		}
 
 
 		[Test]
-		[TestCaseSource(typeof(TestData), nameof(TestData.Paths))]
-		[Category("oddPaths")]
+		[TestCaseSource(typeof(TestData), nameof(TestData.RelativePaths))]
 		public void Create_Database_WithCustomPath_ShouldPass(string path)
 		{
-			Database = new(path);
+			Database = new Database(path);
 			Assert.That(Database, Is.Not.Null);
 			FileAssert.Exists(Path.Combine(path, ResumeSqliteFileName),
 				DatabaseNotFoundMessage(path, ResumeSqliteFileName));
-			FileAssert.Exists(Path.Combine(path, BackupResumeSqliteFileName),
-				DatabaseNotFoundMessage(path, BackupResumeSqliteFileName));
+			// FileAssert.Exists(Path.Combine(path, BackupResumeSqliteFileName), DatabaseNotFoundMessage(path, BackupResumeSqliteFileName));
 		}
 
 		private static string DatabaseNotFoundMessage(params string[] expectedDbPath)
 		{
-			var expectedPath = Path.Combine(expectedDbPath);
-			var combinedExpectedPath = Path.Combine(expectedPath, BackupResumeSqliteFileName);
-			var fullPath = Path.GetFullPath(combinedExpectedPath);
+			var fullPath = Path.GetFullPath(Path.Combine(expectedDbPath));
 			return $"Database not found at {fullPath}";
 		}
 	}

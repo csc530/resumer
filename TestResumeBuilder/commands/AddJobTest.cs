@@ -1,48 +1,38 @@
 using resume_builder;
-using Spectre.Console.Testing;
-using System.ComponentModel;
 using resume_builder.cli.commands.add;
 using TestResumeBuilder.test_data;
 
-namespace TestResumeBuilder
+namespace TestResumeBuilder.commands;
+
+public class AddJobTest : AppTest
 {
-	public class AddJobTest : AppTest
+	[SetUp]
+	public void Setup() => TestApp.Run("init");
+
+	[Test]
+	public void WithNoArguments_ShouldFail() => Assert.Catch(() => TestApp.Run("add", "job"));
+
+
+	[Test]
+	[TestCaseSource(typeof(TestData), nameof(TestData.JobTitles))]
+	[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomStrings))]
+	public void WithoutStartDate_ShouldFail(string title) =>
+		Assert.Catch(() => TestApp.Run("add", "job", "--title", title));
+
+	[TestCaseSource(typeof(TestData), nameof(TestData.Dates))]
+	[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomDates))]
+	public void WithoutJobTitle_ShouldFail(DateOnly startDate) =>
+		Assert.Catch(() => TestApp.Run("add", "job", "--start", startDate.ToString()));
+
+	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.GetRequiredArgs))]
+	public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
 	{
-		[SetUp]
-		public void Setup() => TestApp.Run("init");
-
-		[Test]
-		public void WithNoArguments_ShouldFail() => Assert.Catch(() => TestApp.Run("add", "job"));
-
-
-		[Test]
-		[TestCaseSource(typeof(TestData), nameof(TestData.Jobtitles))]
-		[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomStrings))]
-		public void WithoutStartDate_ShouldFail(string title)
+		Assume.That(title.Length is < 100 and > 0);
+		var result = TestApp.Run("add", "job", "--title", title, "--start", startDate.ToString());
+		Assert.Multiple(() =>
 		{
-			var args = new string[] { "add", "job", "--title", title };
-			Assert.Catch(() => TestApp.Run(args));
-		}
-
-		[TestCaseSource(typeof(TestData), nameof(TestData.Dates))]
-		[TestCaseSource(typeof(RanadomTestData), nameof(RanadomTestData.RandomDates))]
-		public void WithoutJobTitle_ShouldFail(DateOnly startDate)
-		{
-			var args = new string[] { "add", "job", "--start", startDate.ToString() };
-			Assert.Catch(() => TestApp.Run(args));
-		}
-
-		[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.GetRequiredArgs))]
-		public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
-		{
-			var args = new string[] { "add", "job", "--title", title, "--start", startDate.ToString() };
-			Assume.That(title.Length is < 100 and > 0);
-			var result = TestApp.Run(args);
-			Assert.Multiple(() =>
-			{
-				Assert.That(result.ExitCode, Is.EqualTo(ExitCode.Success.ToInt()));
-				Assert.That(result.Settings, Is.InstanceOf<AddJobSettings>());
-			});
-		}
+			Assert.That(result.ExitCode, Is.EqualTo(ExitCode.Success.ToInt()));
+			Assert.That(result.Settings, Is.InstanceOf<AddJobSettings>());
+		});
 	}
 }

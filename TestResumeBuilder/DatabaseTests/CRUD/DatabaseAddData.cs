@@ -1,4 +1,5 @@
 using resume_builder;
+using TestResumeBuilder.test_data;
 
 namespace TestResumeBuilder.DatabaseTests.CRUD;
 
@@ -9,7 +10,10 @@ public class DatabaseAddData : DatabaseCRUDTest
 	[TestCaseSource(typeof(TestData), nameof(TestData.Jobs))]
 	public void Add_Job_ShouldPass(Job job)
 	{
-		Assert.That(Database.AddJob(job));
-		Assert.IsNotEmpty(Database.GetJob(job));
+		Assert.Multiple(() =>
+		{
+			Assert.That(Database.AddJob(job));
+			Assert.That(Database.GetJob(job), Is.Not.Empty);
+		});
 	}
 }

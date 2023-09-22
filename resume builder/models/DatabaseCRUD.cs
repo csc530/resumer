@@ -95,9 +95,15 @@ public partial class Database
 	{
 		var cmd = MainConnection.CreateCommand();
 		foreach(var table in TemplateTableStructure.Keys)
-		{
-			cmd.CommandText = $"DELETE FROM \"{table}\";";
-			cmd.ExecuteNonQuery();
-		}
+			try
+			{
+				cmd.CommandText = $"DELETE FROM \"{table}\";";
+				cmd.ExecuteNonQuery();
+			}
+			catch(System.Exception e)
+			{
+				if(IsInitialized())
+					throw;
+			}
 	}
 }

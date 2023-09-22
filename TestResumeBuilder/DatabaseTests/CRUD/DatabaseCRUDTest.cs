@@ -10,19 +10,10 @@ namespace TestResumeBuilder.DatabaseTests.CRUD
 	public abstract class DatabaseCRUDTest : DatabaseTest
 	{
 		[SetUp]
-		public void InitDatabase()
+		public override void SetupDatabase()
 		{
 			Database = new Database();
 			Database.Initialize();
-		}
-
-		[TearDown]
-		public void DisposeDatabase()
-		{
-			Database.Wipe();
-			Database.Dispose();
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
 		}
 	}
 }

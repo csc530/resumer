@@ -1,12 +1,10 @@
-using System.Runtime.InteropServices.JavaScript;
-using NUnit.Framework.Internal;
 using resume_builder;
 
-namespace TestResumeBuilder;
+namespace TestResumeBuilder.test_data;
 
 public static class TestData
 {
-	public static readonly string[] Jobtitles = new[]
+	public static readonly string[] JobTitles = new[]
 	{
 		"pretty princess", "villain", "super villain",
 		"deputy minister of the united conglomerate for foreign nations new international coast guard protection services",
@@ -21,7 +19,7 @@ public static class TestData
 
 	public static DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
 
-	public static string[] Companies = new[] { "walmart", "Asus", "The super bros. Inc.", "Yallreadyknow", };
+	public static string[] Companies = { "walmart", "Asus", "The super bros. Inc.", "Yallreadyknow", };
 
 	public static (DateOnly startDate, DateOnly endDate)[] StartAndEndDates => new[]
 	{
@@ -29,7 +27,7 @@ public static class TestData
 		(new DateOnly(2012, 12, 31), new DateOnly(2014, 4, 24)), (DateOnly.MinValue, DateOnly.MaxValue)
 	};
 
-	public static string[] Paths => new[]
+	public static string[] RelativePaths => new[]
 	{
 		"newdir", "newdir/withsubdir", ".", "./", "./somelocation/with/a/heck-/loooooooong/path/withsub/dirs/",
 		".loooooooong/path/withsub/dirs/", "/i/wonder", "/leading slash", "/"
@@ -38,16 +36,16 @@ public static class TestData
 	//could just implement with Random attribute ([Random()]) for args and then construct a job or whateves in the actual test class/method
 
 
-	public static Job[] Jobs()
+	public static List<Job> Jobs()
 	{
 		var list = new List<Job>();
-		for(int i = 0; i < Jobtitles.Length; i++)
+		for(int i = 0; i < JobTitles.Length; i++)
 		{
 			var (start, end) = StartAndEndDates[i % StartAndEndDates.Length];
-			var job = new Job(Jobtitles[i], (start, end).start, end, Companies[i % Companies.Length]);
+			var job = new Job(JobTitles[i], (start, end).start, end, Companies[i % Companies.Length]);
 			list.Add(job);
 		}
 
-		return list.ToArray();
+		return list;
 	}
 }
