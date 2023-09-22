@@ -35,7 +35,8 @@ public sealed class Job
 		set => _company = Trim(value);
 	}
 
-	private static string? Trim(string? value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+	private static string? Trim(string? value) =>
+		string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
 
 	[SqlColumnName("start date")] public DateOnly StartDate { get; private set; }
 	[SqlColumnName("end date")] public DateOnly? EndDate { get; private set; }
@@ -72,16 +73,14 @@ public sealed class Job
 			throw new ArgumentNullException(nameof(title), "title cannot be null");
 		if(string.IsNullOrWhiteSpace(title))
 			throw new ArgumentException("title must contain (non-whitespace) text", nameof(title));
-		Title = title.Trim();
+		Title = Trim(title)!;
 	}
 
 	public void SetStartDate(DateOnly date)
 	{
-		if(date == null)
-			throw new ArgumentNullException(nameof(date), "start date cannot be null");
 		if(EndDate != null && EndDate > StartDate)
-			throw new ArgumentException(nameof(date),
-				$"start date ({StartDate}) must be before, or the same day as, the end date ({EndDate})");
+			throw new ArgumentException(
+				$"start date ({StartDate}) must be before, or the same day as, the end date ({EndDate})", nameof(date));
 		StartDate = date;
 	}
 

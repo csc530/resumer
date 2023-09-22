@@ -35,4 +35,6 @@ public static class Convert
 	/// <inheritdoc cref="SqliteParameterCollection.AddWithValue(string,object)"/>
 	public static void AddWithNullableValue(this SqliteParameterCollection parameters, string name, object? value)
 		=> parameters.AddWithValue(name, value ?? DBNull.Value);
+
+	public static DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
 }
