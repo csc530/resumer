@@ -43,27 +43,25 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 
 		MainConnection = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
 		sqliteConnectionStringBuilder.DataSource = Path.Combine(path, $"backup_{SqliteFileName}");
-		BackupConnection = new SqliteConnection(sqliteConnectionStringBuilder.ToString());
-
 		Open();
 	}
 
 	private SqliteConnection MainConnection { get; }
-	private SqliteConnection BackupConnection { get; }
+	// private SqliteConnection BackupConnection { get; }
 
 	async ValueTask IAsyncDisposable.DisposeAsync()
 	{
 		await MainConnection.DisposeAsync();
-		await BackupConnection.DisposeAsync();
+		// await BackupConnection.DisposeAsync();
 	}
 
 	public void Dispose()
 	{
 		Close();
-		BackupConnection.Dispose();
-		BackupConnection.Dispose();
+		// BackupConnection.Dispose();
+		MainConnection.Dispose();
 		SqliteConnection.ClearPool(MainConnection);
-		SqliteConnection.ClearPool(BackupConnection);
+		// SqliteConnection.ClearPool(BackupConnection);
 	}
 
 	public bool IsInitialized() => IsInitialized(MainConnection);
@@ -71,14 +69,14 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private void Open()
 	{
 		MainConnection.Open();
-		BackupConnection.Open();
+		// BackupConnection.Open();
 	}
 
 
 	private void Close()
 	{
 		MainConnection.Close();
-		BackupConnection.Close();
+		// BackupConnection.Close();
 	}
 
 	public void Initialize()
@@ -89,16 +87,16 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		cmd.CommandText = File.ReadAllText("tables.sql");
 		//cmd.Prepare();
 		cmd.ExecuteNonQuery();
-		MainConnection.BackupDatabase(BackupConnection);
+		// MainConnection.BackupDatabase(BackupConnection);
 	}
 
-	public bool RestoreBackup()
-	{
-		if(!BackupExists())
-			return false;
-		BackupConnection.BackupDatabase(MainConnection);
-		return true;
-	}
+	// public bool RestoreBackup()
+	// {
+	// 	if(!BackupExists())
+	// 		return false;
+	// 	BackupConnection.BackupDatabase(MainConnection);
+	// 	return true;
+	// }
 
 	/// <summary>
 	/// check if a database has the required tables to be used for resume builder app
@@ -147,7 +145,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		return true;
 	}
 
-	public bool BackupExists() => Database.IsInitialized(BackupConnection);
+	// public bool BackupExists() => Database.IsInitialized(BackupConnection);
 
 	~Database() => Dispose();
 
