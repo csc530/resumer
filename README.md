@@ -17,3 +17,7 @@ plus it's just for now I'll try and make a server instance or sum l8r if I conti
 ## I want to help
 
 don't jk lol, sure
+
+
+---
+why I chose C# idk😔 ~ frameworking
