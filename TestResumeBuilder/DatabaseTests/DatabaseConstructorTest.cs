@@ -13,7 +13,6 @@ namespace TestResumeBuilder.DatabaseTests
 			DisposeDatabase(); //because tear downs order aren't given ensures that there aren't any open connections to files we need to delete
 			var path = (string)TestContext.CurrentContext.Test.Arguments[0]!;
 			File.Delete(Path.Combine(path, ResumeSqliteFileName));
-			// File.Delete(Path.Combine(path, BackupResumeSqliteFileName));
 			DeleteCreatedFolders(path);
 		}
 
@@ -22,18 +21,17 @@ namespace TestResumeBuilder.DatabaseTests
 		/// leaving everything as it were (not deleting parents, existing, etc.etc.)
 		/// </summary>
 		/// <param name="path">full or rel path to created sqlite file</param>
-		/// todo: needs some serious reqork and readability and perf and all dat
+		// todo: needs some serious rework and readability and perf and all dat: make nice
 		private static void DeleteCreatedFolders(string path)
 		{
-			//todo: make nice
 			string[] createdDirPath = Path.GetFullPath(path)
 			                              .Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
 			                              .ToArray();
 
 			string absCurrentDirectory = Directory.GetCurrentDirectory();
-			string currentDir = absCurrentDirectory
-				.Split(Path.DirectorySeparatorChar,
-					StringSplitOptions.RemoveEmptyEntries)[^1]; //.Last();
+			string currentDir =
+				absCurrentDirectory.Split(Path.DirectorySeparatorChar,
+					StringSplitOptions.RemoveEmptyEntries)[^1];
 
 			//plus 1 to skip the current directory
 			//hence the start of the the superflously created subdirs for the tests
@@ -60,7 +58,6 @@ namespace TestResumeBuilder.DatabaseTests
 		{
 			Assert.That(Database, Is.Not.Null);
 			FileAssert.Exists(ResumeSqliteFileName, DatabaseNotFoundMessage(ResumeSqliteFileName));
-			// FileAssert.Exists(BackupResumeSqliteFileName, DatabaseNotFoundMessage(BackupResumeSqliteFileName));
 		}
 
 
@@ -72,7 +69,6 @@ namespace TestResumeBuilder.DatabaseTests
 			Assert.That(Database, Is.Not.Null);
 			FileAssert.Exists(Path.Combine(path, ResumeSqliteFileName),
 				DatabaseNotFoundMessage(path, ResumeSqliteFileName));
-			// FileAssert.Exists(Path.Combine(path, BackupResumeSqliteFileName), DatabaseNotFoundMessage(path, BackupResumeSqliteFileName));
 		}
 
 		private static string DatabaseNotFoundMessage(params string[] expectedDbPath)

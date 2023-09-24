@@ -77,7 +77,6 @@ public partial class Database
 
 	private SQLResult AddCompany(string company)
 	{
-		//todo: make sure company is not null or empty
 		if(string.IsNullOrWhiteSpace(company))
 			return SQLResult.invalid;
 		var cmd = MainConnection.CreateCommand();

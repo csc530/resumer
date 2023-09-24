@@ -3,6 +3,7 @@ using Spectre.Console.Testing;
 
 namespace TestResumeBuilder
 {
+	//todo:  find way to pass text to test command app for prompts
 	public class AppTest
 	{
 		internal Spectre.Console.Testing.CommandAppTester TestApp;

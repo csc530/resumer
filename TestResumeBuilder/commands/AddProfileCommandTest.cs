@@ -10,7 +10,7 @@ namespace TestResumeBuilder.commands;
 [TestFixture]
 public class AddProfileCommandTest : AddTest
 {
-	protected string[] Args = { "add", "profile" };
+	protected readonly string[] Args = { "add", "profile" };
 
 	[Test]
 	public void AddProfile_WithNoArguments_ShouldFail() => Assert.Catch(() => TestApp.Run(Args));
@@ -23,18 +23,21 @@ public class AddProfileCommandTest : AddTest
 		Assert.Multiple(() =>
 		{
 			Assert.That(result.ExitCode, Is.EqualTo(ExitCode.Success.ToInt()));
-			Assert.That(result.Settings, Is.InstanceOf<AddProfileSettings>());
-			var profileSettings = (AddProfileSettings)(result.Settings);
+			Assert.That(new Database().GetProfiles().Count, Is.EqualTo(1));
+		});
+		Assert.That(result.Settings, Is.InstanceOf<AddProfileSettings>());
+		Assert.That(result.Settings, Is.Not.Null);
+
+		var profileSettings = (AddProfileSettings)(result.Settings!);
+		Assert.Multiple(() =>
+		{
 			Assert.That(profileSettings.FirstName, Is.EqualTo("John"));
 			Assert.That(profileSettings.LastName, Is.EqualTo("Doe"));
 			Assert.That(profileSettings.EmailAddress, Is.EqualTo("K9qzF@example.com"));
 			Assert.That(profileSettings.PhoneNumber, Is.EqualTo("555-555-5555"));
-
-			Assert.That(new Database().GetProfiles().Count, Is.EqualTo(1));
 		});
 	}
 
-//todo update fail with runand catch
 	[Test]
 	public void AddProfile_WithoutFirstName_ShouldFail() => Assert.Catch(() =>
 		Run(Args, "--last", "Doe", "--email", "K9qzF@example.com", "--phone", "555-555-5555"));

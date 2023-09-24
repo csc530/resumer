@@ -4,6 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
+//todo: add catch for sqliteexceptions on db queries and updates, etc.
 public sealed partial class Database : IDisposable, IAsyncDisposable
 {
 	private const string SqliteFileName = "resume.sqlite";
