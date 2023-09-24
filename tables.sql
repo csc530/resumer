@@ -1,26 +1,26 @@
-CREATE TABLE companies
+CREATE TABLE company
 (
     name varchar(100) NOT NULL
         CONSTRAINT companies_pk
             PRIMARY KEY
 );
 
-CREATE TABLE jobs
+CREATE TABLE job
 (
     id           integer NOT NULL
         CONSTRAINT id
             PRIMARY KEY AUTOINCREMENT,
     company      varchar(100)
         CONSTRAINT jobs_companies_name_fk
-            REFERENCES companies,
+            REFERENCES company,
     title        varchar(100),
-    "start date" date,
-    "end date"   date,
+    startDate date,
+    endDate   date,
     description  text,
     experience   text
 );
 
-CREATE TABLE skills
+CREATE TABLE skill
 (
     skill varchar(100) NOT NULL
         CONSTRAINT skills_pk
@@ -35,7 +35,7 @@ CREATE TABLE job_skills
             ON DELETE CASCADE,
     skillID integer NOT NULL
         CONSTRAINT job_skills_skills_id_fk
-            REFERENCES skills
+            REFERENCES skill
             ON DELETE CASCADE,
     CONSTRAINT job_skills_pk
         PRIMARY KEY (jobID, skillID)
@@ -45,14 +45,14 @@ CREATE TABLE job_skills
 CREATE UNIQUE INDEX job_skills_jobID_uindex
     ON job_skills (jobID);
 
-CREATE TABLE user
+CREATE TABLE profile
 (
     id             integer      NOT NULL
         PRIMARY KEY AUTOINCREMENT,
-    "first name"   varchar(100) NOT NULL,
-    "middle name"  varchar(100),
-    "last name"    integer TEXT,
-    "phone number" integer,
+    firstName   varchar(100) NOT NULL,
+    middleName  varchar(100),
+    lastName    integer TEXT,
+    phoneNumber integer,
     email          varchar(100),
     website        varchar(500),
     summary        text

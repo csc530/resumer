@@ -11,7 +11,7 @@ public partial class Database
 			AddCompany(job.Company);
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText =
-			"INSERT INTO jobs(title,company,\"start date\") VALUES($title,$company,$start);";
+			"INSERT INTO jobs(title,company,startDate) VALUES($title,$company,$start);";
 		cmd.Parameters.AddWithValue("$title", job.Title);
 		cmd.Parameters.AddWithNullableValue("$company", job.Company);
 		cmd.Parameters.AddWithNullableValue("$start", job.StartDate);
@@ -31,7 +31,7 @@ public partial class Database
 		else
 		{
 			cmd.CommandText =
-				"SELECT * FROM jobs WHERE title = $title AND company IS $company AND \"start date\" IS $start AND \"end date\" IS $end AND description IS $desc AND experience IS $exp";
+				"SELECT * FROM jobs WHERE title = $title AND company IS $company AND startDate IS $start AND endDate IS $end AND description IS $desc AND experience IS $exp";
 			cmd.Parameters.AddWithValue("$title", job.Title);
 			cmd.Parameters.AddWithValue("company", job.Company);
 			cmd.Parameters.AddWithValue("$start", job.StartDate);
@@ -52,7 +52,7 @@ public partial class Database
 	{
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText =
-			"SELECT * FROM jobs WHERE title = $title AND company IS $company AND \"start date\" IS $start AND \"end date\" IS $end AND description IS $desc AND experience IS $exp";
+			"SELECT * FROM jobs WHERE title = $title AND company IS $company AND startDate IS $start AND endDate IS $end AND description IS $desc AND experience IS $exp";
 		cmd.Parameters.AddWithNullableValue("$title", job.Title);
 		cmd.Parameters.AddWithNullableValue("company", job.Company);
 		cmd.Parameters.AddWithNullableValue("$start", job.StartDate);
@@ -69,7 +69,7 @@ public partial class Database
 	private string? GetCompany(string company)
 	{
 		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText = "SELECT name FROM companies WHERE name == @company";
+		cmd.CommandText = "SELECT name FROM company WHERE name == @company";
 		cmd.Parameters.AddWithValue("@company", company);
 		cmd.Prepare();
 		return (string?)cmd.ExecuteScalar();
@@ -81,7 +81,7 @@ public partial class Database
 		if(string.IsNullOrWhiteSpace(company))
 			return SQLResult.invalid;
 		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText = "INSERT INTO companies(name) VALUES ($Company)";
+		cmd.CommandText = "INSERT INTO company(name) VALUES ($Company)";
 		cmd.Parameters.AddWithValue("$Company", company);
 		cmd.Prepare();
 		cmd.ExecuteNonQuery();

@@ -31,7 +31,7 @@ internal class InitCommand : Command
 		// if(recover)
 		// 	throw new NotImplementedException();//database.RestoreBackup();
 		database.Initialize();
-		AnsiConsole.WriteLine("✅Database initialized");
+		AnsiConsole.WriteLine("✅ Database initialized");
 		return ExitCode.Success.ToInt();
 	}
 }

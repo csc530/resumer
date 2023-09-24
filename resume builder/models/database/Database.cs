@@ -11,14 +11,14 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private static readonly Dictionary<string, List<string>> TemplateTableStructure = new()
 	{
 		{
-			"jobs", new List<string> { "id", "company", "title", "start date", "end date", "description", "experience" }
+			"job", new List<string> { "id", "company", "title", "startDate", "endDate", "description", "experience" }
 		},
-		{ "skills", new() { "skill" } },
-		{ "companies", new() { "name" } },
+		{ "skill", new() { "skill" } },
+		{ "company", new() { "name" } },
 		{ "job_skills", new() { "jobID", "skillID" } },
 		{
-			"user",
-			new() { "id", "first name", "middle name", "last name", "phone number", "email", "website", "summary" }
+			"profile",
+			new() { "id", "firstName", "middleName", "lastName", "phoneNumber", "email", "website", "summary" }
 		}
 	};
 

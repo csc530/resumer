@@ -38,8 +38,8 @@ public sealed class Job
 	private static string? Trim(string? value) =>
 		string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
 
-	[SqlColumnName("start date")] public DateOnly StartDate { get; private set; }
-	[SqlColumnName("end date")] public DateOnly? EndDate { get; private set; }
+	[SqlColumnName("startDate")] public DateOnly StartDate { get; private set; }
+	[SqlColumnName("endDate")] public DateOnly? EndDate { get; private set; }
 
 	[SqlColumnName("description")]
 	public string? Description
@@ -111,8 +111,8 @@ public sealed class Job
 		var company = reader.GetNullableValue<string>("company");
 		var description = reader.GetNullableValue<string>("description");
 		var experience = reader.GetNullableValue<string>("experience");
-		var startDate = reader.GetNullableValue<DateOnly>("start date");
-		var endDate = reader.GetNullableValue<DateOnly?>("end date");
+		var startDate = reader.GetNullableValue<DateOnly>("startDate");
+		var endDate = reader.GetNullableValue<DateOnly?>("endDate");
 
 		return new Job(title, startDate, endDate, company, description, experience);
 	}
