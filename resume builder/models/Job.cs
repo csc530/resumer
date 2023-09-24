@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Data.Sqlite;
 using resume_builder.models;
 using System.Data.Common;
@@ -8,7 +9,7 @@ namespace resume_builder;
 /// <summary>
 ///     Modeled after and for the database jobs rows/columns
 /// </summary>
-[SqlTableName("jobs")]
+[Table("jobs")]
 public sealed class Job
 {
 	private string? _company;
@@ -26,9 +27,9 @@ public sealed class Job
 		SetEndDate(endDate);
 	}
 
-	[SqlColumnName("title")] public string Title { get; private set; }
+	[Column("title")] public string Title { get; private set; }
 
-	[SqlColumnName("company")]
+	[Column("company")]
 	public string? Company
 	{
 		get => _company;
@@ -38,17 +39,17 @@ public sealed class Job
 	private static string? Trim(string? value) =>
 		string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
 
-	[SqlColumnName("startDate")] public DateOnly StartDate { get; private set; }
-	[SqlColumnName("endDate")] public DateOnly? EndDate { get; private set; }
+	[Column("startDate")] public DateOnly StartDate { get; private set; }
+	[Column("endDate")] public DateOnly? EndDate { get; private set; }
 
-	[SqlColumnName("description")]
+	[Column("description")]
 	public string? Description
 	{
 		get => _description;
 		set => _description = Trim(value);
 	}
 
-	[SqlColumnName("experience")]
+	[Column("experience")]
 	public string? Experience
 	{
 		get => _experience;

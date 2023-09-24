@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
-[SqlTableName("profile")]
+[Table("profile")]
 public class Profile
 {
-	[SqlColumnName("firstName")] public string FirstName { get; set; }
-	[SqlColumnName("middleName")] public string? MiddleName { get; set; }
-	[SqlColumnName("lastName")] public string LastName { get; set; }
+	[Column("firstName")] public string FirstName { get; set; }
+	[Column("middleName")] public string? MiddleName { get; set; }
+	[Column("lastName")] public string LastName { get; set; }
 
 	public string WholeName
 	{
@@ -35,15 +36,12 @@ public class Profile
 
 	public string Initials => $"{FirstName[..1]}{LastName[..1]}";
 
-	[Phone(), SqlColumnName("phoneNumber")]
-	public string PhoneNumber { get; protected set; }
+	[Phone(), Column("phoneNumber")] public string PhoneNumber { get; protected set; }
 
-	[EmailAddress]
-	[SqlColumnName("email")]
-	public string EmailAddress { get; protected set; }
+	[EmailAddress] [Column("email")] public string EmailAddress { get; protected set; }
 
-	[SqlColumnName("website")] public string? Website { get; set; }
-	[SqlColumnName("summary")] public string? Summary { get; set; }
+	[Column("website")] public string? Website { get; set; }
+	[Column("summary")] public string? Summary { get; set; }
 
 	public Profile(string firstName, string lastName, string phoneNumber, string emailAddress)
 	{
