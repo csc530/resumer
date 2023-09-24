@@ -23,12 +23,15 @@ public static class Program
 		config.SetApplicationVersion("1.0.0");
 		config.CaseSensitivity(CaseSensitivity.None);
 
-		config.AddBranch<AddSetting>("add", add =>
+		config.AddBranch("add", add =>
 		{
 			add.SetDescription("add new information to job database/bank");
 			add.AddCommand<AddJobCommand>("job")
 			   .WithDescription("add a new job")
 			   .WithExample("add", "job", "-s", "2022-01-01", "-e", "2026-11-01", "-t", "foreman");
+			add.AddCommand<AddProfileCommand>("profile")
+			   .WithDescription("add a new profile")
+			   .WithAlias("user");
 		});
 		config.AddCommand<InitCommand>("init")
 		      .WithDescription("initializes resume database")

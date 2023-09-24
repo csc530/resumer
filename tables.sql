@@ -31,7 +31,7 @@ CREATE TABLE job_skills
 (
     jobID   integer NOT NULL
         CONSTRAINT job_skills_jobs_id_fk
-            REFERENCES jobs
+            REFERENCES job
             ON DELETE CASCADE,
     skillID integer NOT NULL
         CONSTRAINT job_skills_skills_id_fk

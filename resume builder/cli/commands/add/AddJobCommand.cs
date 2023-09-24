@@ -7,35 +7,31 @@ using static resume_builder.Convert;
 
 namespace resume_builder.cli.commands.add;
 
-public class AddSetting : CommandSettings
-{
-}
-
-public class AddJobSettings : AddSetting
+public class AddJobSettings : CommandSettings
 {
 	[Description("start date at the job")]
 	[CommandOption("-s|--start <StartDate>")]
-	public DateOnly? StartDate { get; init; } = Today;
+	public DateOnly? StartDate { get; set; } = Today;
 
 	[Description("last date at the job")]
 	[CommandOption("-e|--end")]
-	public DateOnly? EndDate { get; init; }
+	public DateOnly? EndDate { get; set; }
 
 	[Description("job title")]
 	[CommandOption("-t|--title")]
-	public string? JobTitle { get; init; }
+	public string? JobTitle { get; set; }
 
 	[Description("posted/official job description by the employer")]
 	[CommandOption("-d|--description")]
-	public string? JobDescription { get; init; }
+	public string? JobDescription { get; set; }
 
 	[Description("your (personal) experience at the job")]
 	[CommandOption("-x|--experience")]
-	public string? Experience { get; init; }
+	public string? Experience { get; set; }
 
 	[Description("The company or employer name")]
 	[CommandOption("-c|--company")]
-	public string? Company { get; }
+	public string? Company { get; set; }
 
 	public override ValidationResult Validate()
 	{

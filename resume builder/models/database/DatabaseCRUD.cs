@@ -106,4 +106,37 @@ public partial class Database
 					throw;
 			}
 	}
+
+	public int AddProfile(Profile profile)
+	{
+		var cmd = MainConnection.CreateCommand();
+		cmd.CommandText =
+			"Insert into profile(firstName, middleName, lastName, phoneNumber, email, website, summary) VALUES ($firstName, $middleName, $lastName, $phoneNumber, $email, $website, $summary)";
+		cmd.Parameters.AddWithNullableValue("$firstName", profile.FirstName);
+		cmd.Parameters.AddWithNullableValue("$middleName", profile.MiddleName);
+		cmd.Parameters.AddWithNullableValue("$lastName", profile.LastName);
+		cmd.Parameters.AddWithNullableValue("$phoneNumber", profile.PhoneNumber);
+		cmd.Parameters.AddWithNullableValue("$email", profile.EmailAddress);
+		cmd.Parameters.AddWithNullableValue("$website", profile.Website);
+		cmd.Parameters.AddWithNullableValue("$summary", profile.Summary);
+		cmd.Prepare();
+		return cmd.ExecuteNonQuery();
+	}
+
+	public List<Profile> GetProfiles()
+	{
+		var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "SELECT * FROM profile";
+		using var data = cmd.ExecuteReader();
+		var profiles = new List<Profile>();
+		while(data.Read())
+		{
+			var profile = Profile.ParseProfilesFromQuery(data);
+			if(profile == null)
+				continue;
+			profiles.Add(profile);
+		}
+
+		return profiles;
+	}
 }
