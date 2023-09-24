@@ -14,7 +14,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		{
 			"job", new List<string> { "id", "company", "title", "startDate", "endDate", "description", "experience" }
 		},
-		{ "skill", new() { "skill" } },
+		{ "skill", new() { "skill", "type" } },
 		{ "company", new() { "name" } },
 		{ "job_skills", new() { "jobID", "skillID" } },
 		{

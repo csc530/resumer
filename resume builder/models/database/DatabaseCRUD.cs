@@ -138,4 +138,14 @@ public partial class Database
 
 		return profiles;
 	}
+
+	public void AddSkill(Skill skill)
+	{
+		var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "INSERT INTO skill(skill, type) VALUES ($name, $type)";
+		cmd.Parameters.AddWithValue("$name", skill.Name);
+		cmd.Parameters.AddWithValue("$type", skill.Type?.ToString());
+		cmd.Prepare();
+		cmd.ExecuteNonQuery();
+	}
 }

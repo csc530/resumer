@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using resume_builder.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using static resume_builder.Convert;
+using static resume_builder.Globals;
 
 namespace resume_builder.cli.commands.add;
 

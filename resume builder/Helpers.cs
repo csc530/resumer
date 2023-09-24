@@ -3,7 +3,12 @@ using Microsoft.Data.Sqlite;
 
 namespace resume_builder;
 
-public static class Convert
+public static class Globals
+{
+	public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
+}
+
+public static class Extensions
 {
 	public static int ToInt(this ExitCode exitCode) => (int)exitCode;
 	public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
@@ -35,6 +40,4 @@ public static class Convert
 	/// <inheritdoc cref="SqliteParameterCollection.AddWithValue(string,object)"/>
 	public static void AddWithNullableValue(this SqliteParameterCollection parameters, string name, object? value)
 		=> parameters.AddWithValue(name, value ?? DBNull.Value);
-
-	public static DateOnly Today => DateOnly.FromDateTime(DateTime.Today);
 }

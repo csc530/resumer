@@ -23,6 +23,7 @@ public static class Program
 		config.SetApplicationVersion("1.0.0");
 		config.CaseSensitivity(CaseSensitivity.None);
 
+		//todo: add option if adding an existing entry to edit it
 		config.AddBranch("add", add =>
 		{
 			add.SetDescription("add new information to job database/bank");
@@ -32,6 +33,10 @@ public static class Program
 			add.AddCommand<AddProfileCommand>("profile")
 			   .WithDescription("add a new profile")
 			   .WithAlias("user");
+			add.AddCommand<AddSkillCommand>("skill")
+			   .WithDescription("add a new skill")
+			   .WithExample("add", "skill", "Teamwork", "--type", "soft")
+			   .WithExample("add", "skill", "Psychoanalytic therapy", "--type", "hard");
 		});
 		config.AddCommand<InitCommand>("init")
 		      .WithDescription("initializes resume database")

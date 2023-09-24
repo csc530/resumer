@@ -24,7 +24,8 @@ CREATE TABLE skill
 (
     skill varchar(100) NOT NULL
         CONSTRAINT skills_pk
-            PRIMARY KEY
+            PRIMARY KEY,
+    type  varchar(100)
 );
 
 CREATE TABLE job_skills
