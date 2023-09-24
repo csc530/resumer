@@ -75,10 +75,10 @@ public partial class Database
 		return (string?)cmd.ExecuteScalar();
 	}
 
-	private SQLResult AddCompany(string company)
+	private SQLResultCode AddCompany(string company)
 	{
 		if(string.IsNullOrWhiteSpace(company))
-			return SQLResult.invalid;
+			throw new ArgumentException("company is null or empty", nameof(company));
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText = "INSERT INTO company(name) VALUES ($Company)";
 		cmd.Parameters.AddWithValue("$Company", company);
@@ -87,7 +87,7 @@ public partial class Database
 		cmd.CommandText = "SELECT last_insert_rowid()";
 		cmd.Prepare();
 		cmd.ExecuteScalar();
-		return SQLResult.success;
+		return SQLResultCode.Success;
 	}
 
 	public void Wipe()
