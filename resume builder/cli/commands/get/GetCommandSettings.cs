@@ -9,4 +9,9 @@ public class GetCommandSettings : CommandSettings
 	[Description("output in plain text")]
 	[DefaultValue(false)]
 	public bool Plain { get; set; }
+
+	[CommandOption("-e|--expand")]
+	[Description("output in expanded format")]
+	[DefaultValue(false)]
+	public bool Expand { get; set; }
 }

@@ -33,10 +33,8 @@ public class GetJobCommand : Command<GetJobSettings>
 
 
 			foreach(var (id, job) in rows)
-			{
 				table.AddRow(id.ToString(), job.Title, job.Company ?? "", job.StartDate.ToString(),
 					job.EndDate.ToString() ?? "", job.Description ?? "", job.Experience ?? "");
-			}
 
 			AnsiConsole.Write(table);
 		}

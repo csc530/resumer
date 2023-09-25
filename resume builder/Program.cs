@@ -3,6 +3,7 @@
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
+using resume_builder.cli.commands.get.job;
 using resume_builder.models;
 using Spectre.Console.Cli;
 
@@ -43,9 +44,29 @@ public static class Program
 		config.AddBranch<GetCommandSettings>("get", get =>
 		{
 			get.SetDescription("get information from job database/bank");
-			get.AddCommand<GetJobCommand>("job")
-			   .WithAlias("jobs")
-			   .WithDescription("retrieve job(s) from database");
+			get.AddBranch("job", getJob =>
+			{
+				getJob.SetDefaultCommand<GetJobCommand>();
+				getJob.AddCommand<GetJobIdCommand>("id");
+				getJob.AddCommand<GetJobDescriptionCommand>("description")
+				      .WithAlias("desc")
+				      .WithAlias("details")
+				      .WithAlias("d");
+				getJob.AddCommand<GetJobExperienceCommand>("experience")
+				      .WithAlias("exp")
+				      .WithAlias("ex");
+				// getJob.AddCommand<GetJobSkillsCommand>("skills");
+				getJob.AddCommand<GetJobStartDateCommand>("start")
+				      .WithAlias("s")
+				      .WithAlias("start date");
+				getJob.AddCommand<GetJobEndDateCommand>("end");
+				getJob.AddCommand<GetJobTitleCommand>("title")
+				      .WithAlias("t");
+
+				getJob.AddCommand<GetJobCommand>("")
+				      .WithAlias("jobs")
+				      .WithDescription("retrieve job(s) from database");
+			});
 		});
 
 		config.AddCommand<InitCommand>("init")

@@ -10,8 +10,7 @@ public partial class Database
 		if(!string.IsNullOrWhiteSpace(job.Company) && GetCompany(job.Company) == null)
 			AddCompany(job.Company);
 		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText =
-			"INSERT INTO job(title,company,startDate) VALUES($title,$company,$start);";
+		cmd.CommandText = "INSERT INTO job(title,company,startDate) VALUES($title,$company,$start);";
 		cmd.Parameters.AddWithValue("$title", job.Title);
 		cmd.Parameters.AddWithNullableValue("$company", job.Company);
 		cmd.Parameters.AddWithNullableValue("$start", job.StartDate);
@@ -198,7 +197,6 @@ public partial class Database
 			}
 
 			tempCmd.ExecuteNonQuery();
-
 			cmd.CommandText += "UNION ALL " +
 			                   "SELECT j.* FROM job as j " +
 			                   "JOIN term t ON (j.title LIKE t.query) OR (j.company LIKE t.query) OR (j.description LIKE t.query) OR (j.experience LIKE t.query) ";
