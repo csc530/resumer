@@ -12,11 +12,15 @@ oh yeah, I also wanted to save how it was actually like not just the stuffy prof
 ## but cli?
 
 I love the terminal, bite me
-plus it's just for now I'll try and make a server instance or sum l8r if I continue to remember and care 🙃
 
 ## I want to help
 
-don't jk lol, sure
+please do
+
+## todo ✔️
+ - [ ] make a nice app for web or sumn
+ - [ ] add output to txt, pdf, or docx
+ - [ ] add hooks for theming output
 
 
 ---
