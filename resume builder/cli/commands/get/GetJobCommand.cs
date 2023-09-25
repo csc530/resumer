@@ -12,13 +12,35 @@ public class GetJobCommand : Command<GetJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobSettings settings)
 	{
 		Database database = new();
-		var jobs = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
+		var rows = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
 			terms: settings.Terms);
+		var jobs = rows.Values;
 		if(jobs.Count == 0)
 			AnsiConsole.MarkupLine("No jobs found");
 		else
-			foreach(var job in jobs)
-				AnsiConsole.MarkupLine(job.ToString());
+		{
+			var table = new Table()
+			            .AddColumn(new("ID"))
+			            .AddColumn(new("Job Title"))
+			            .AddColumn(new("Company"))
+			            .AddColumn(new("Start Date"))
+			            .AddColumn(new("End Date"))
+			            .AddColumn(new("Description"))
+			            .AddColumn(new("Experience"))
+			            .Centered()
+			            .Border(TableBorder.Rounded)
+			            .Expand();
+
+
+			foreach(var (id, job) in rows)
+			{
+				table.AddRow(id.ToString(), job.Title, job.Company ?? "", job.StartDate.ToString(),
+					job.EndDate.ToString() ?? "", job.Description ?? "", job.Experience ?? "");
+			}
+
+			AnsiConsole.Write(table);
+		}
+
 		return ExitCode.Success.ToInt();
 	}
 }

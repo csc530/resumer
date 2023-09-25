@@ -23,7 +23,7 @@ public partial class Database
 	}
 
 
-	public List<Job> GetJobs(Job? job = null)
+	public Dictionary<long, Job> GetJobs(Job? job = null)
 	{
 		using var cmd = MainConnection.CreateCommand();
 		if(job == null)
@@ -42,9 +42,9 @@ public partial class Database
 		}
 
 		using var data = cmd.ExecuteReader();
-		var jobs = new List<Job>();
+		var jobs = new Dictionary<long, Job>();
 		while(data.Read())
-			jobs.Add(Job.ParseJobsFromQuery(data));
+			jobs.Add((long)data["id"], Job.ParseJobsFromQuery(data)!);
 		return jobs;
 	}
 
@@ -149,9 +149,11 @@ public partial class Database
 		cmd.ExecuteNonQuery();
 	}
 
-	public List<Job> GetJobsLike(string? jobTitle = null, DateOnly? startDate = null, DateOnly? endDate = null,
-	                             string? company = null, string? description = null, string? experience = null,
-	                             params string[]? terms)
+	public Dictionary<long, Job> GetJobsLike(string? jobTitle = null, DateOnly? startDate = null,
+	                                         DateOnly? endDate = null,
+	                                         string? company = null, string? description = null,
+	                                         string? experience = null,
+	                                         params string[]? terms)
 	{
 		using var cmd = MainConnection.CreateCommand();
 
@@ -204,9 +206,9 @@ public partial class Database
 
 		cmd.Prepare();
 		var reader = cmd.ExecuteReader();
-		var jobs = new List<Job>();
+		var jobs = new Dictionary<long, Job>();
 		while(reader.Read())
-			jobs.Add(Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
+			jobs.Add((long)reader["id"], Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
 		return jobs;
 	}
 }

@@ -6,6 +6,7 @@ namespace resume_builder;
 public static class Globals
 {
 	public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
+	public const string NullString = "<null/>";
 }
 
 public static class Extensions
