@@ -13,8 +13,15 @@ public static class Extensions
 	public static int ToInt(this ExitCode exitCode) => (int)exitCode;
 	public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
 
+	public static string Prefix(this string s, string txt) => $"{txt}{s}";
+
 	public static List<string> Prefix(this IEnumerable<string> strings, string txt) =>
-		strings.Select(s => txt + s).ToList();
+		strings.Select(s => s.Prefix(txt)).ToList();
+
+	public static string Surround(this string s, string txt) => $"{txt}{s}{txt}";
+
+	public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
+		strings.Select(s => s.Surround(txt)).ToList();
 
 	public static object? GetNullableValue(this DbDataReader reader, string columnName)
 	{
@@ -31,8 +38,11 @@ public static class Extensions
 		return reader.GetNullableValue<T>(ordinal);
 	}
 
-	public static T? GetNullableValue<T>(this DbDataReader reader, int ordinal) =>
-		(T?)GetNullableValue(reader, ordinal);
+	public static T? GetNullableValue<T>(this DbDataReader reader, int ordinal)
+	{
+		var val = GetNullableValue(reader, ordinal);
+		return val == null ? (T?)val : reader.GetFieldValue<T?>(ordinal);
+	}
 
 	/// <summary>
 	/// because why won't it just auto convert it to a <see cref="DBNull.Value"/>

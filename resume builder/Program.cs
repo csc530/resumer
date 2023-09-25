@@ -2,6 +2,7 @@
 
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
+using resume_builder.cli.commands.get;
 using resume_builder.models;
 using Spectre.Console.Cli;
 
@@ -36,8 +37,17 @@ public static class Program
 			add.AddCommand<AddSkillCommand>("skill")
 			   .WithDescription("add a new skill")
 			   .WithExample("add", "skill", "Teamwork", "--type", "soft")
-			   .WithExample("add", "skill", "Psychoanalytic therapy", "--type", "hard");
+			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "--type", "hard");
 		});
+
+		config.AddBranch<GetCommandSettings>("get", get =>
+		{
+			get.SetDescription("get information from job database/bank");
+			get.AddCommand<GetJobCommand>("job")
+			   .WithAlias("jobs")
+			   .WithDescription("retrieve job(s) from database");
+		});
+
 		config.AddCommand<InitCommand>("init")
 		      .WithDescription("initializes resume database")
 		      .WithAlias("start");

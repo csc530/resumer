@@ -3,6 +3,7 @@ using Microsoft.Data.Sqlite;
 using resume_builder.models;
 using System.Data.Common;
 using System.Reflection;
+using System.Text;
 
 namespace resume_builder;
 
@@ -116,5 +117,19 @@ public sealed class Job
 		var endDate = reader.GetNullableValue<DateOnly?>("endDate");
 
 		return new Job(title, startDate, endDate, company, description, experience);
+	}
+
+	public override string ToString()
+	{
+		var stringBuilder = new StringBuilder();
+		stringBuilder.Append($"{Title} ({StartDate:yyyy-MM-dd} - ");
+		if(EndDate == null)
+			stringBuilder.Append("present");
+		else
+			stringBuilder.Append($"{EndDate:yyyy-MM-dd})");
+		stringBuilder.Append(')');
+		if(!string.IsNullOrWhiteSpace(Company))
+			stringBuilder.Append($"@ {Company}");
+		return stringBuilder.ToString();
 	}
 }
