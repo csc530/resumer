@@ -12,7 +12,7 @@ public class GetJobCommand : Command<GetJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobSettings settings)
 	{
 		Database database = new();
-		var jobs = database.SearchJobs(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
+		var jobs = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
 			terms: settings.Terms);
 		if(jobs.Count == 0)
 			AnsiConsole.MarkupLine("No jobs found");

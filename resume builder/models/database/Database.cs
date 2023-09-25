@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
 using System.Reflection;
 using Microsoft.Data.Sqlite;
@@ -125,6 +126,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 
 		return true;
 	}
+
 
 	~Database() => Dispose();
 }

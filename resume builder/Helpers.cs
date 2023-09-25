@@ -50,4 +50,17 @@ public static class Extensions
 	/// <inheritdoc cref="SqliteParameterCollection.AddWithValue(string,object)"/>
 	public static void AddWithNullableValue(this SqliteParameterCollection parameters, string name, object? value)
 		=> parameters.AddWithValue(name, value ?? DBNull.Value);
+
+	public static void BindParameters(this SqliteCommand cmd, Dictionary<string, object?> placeholderValuePairs)
+	{
+		foreach(var (placeholder, value) in placeholderValuePairs)
+			cmd.Parameters.AddWithNullableValue(placeholder, value);
+	}
+
+	private static void BindParameters(this SqliteCommand cmd,
+	                                   IEnumerable<KeyValuePair<string, object?>> placeholderValuePairs)
+	{
+		foreach(var (placeholder, value) in placeholderValuePairs)
+			cmd.Parameters.AddWithNullableValue(placeholder, value);
+	}
 }

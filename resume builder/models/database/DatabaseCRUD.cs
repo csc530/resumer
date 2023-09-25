@@ -149,147 +149,64 @@ public partial class Database
 		cmd.ExecuteNonQuery();
 	}
 
-	public List<Job> SearchJobs(string? jobTitle = null, DateOnly? startDate = null, DateOnly? endDate = null,
-	                            string? company = null, string? description = null, string? experience = null,
-	                            params string[]? terms)
+	public List<Job> GetJobsLike(string? jobTitle = null, DateOnly? startDate = null, DateOnly? endDate = null,
+	                             string? company = null, string? description = null, string? experience = null,
+	                             params string[]? terms)
 	{
-		if(terms == null || terms.Length == 0)
-			if(jobTitle != null && startDate != null)
-				return GetJobs(new Job(jobTitle, startDate, endDate, company, description, experience));
-			else if(jobTitle == null && startDate == null && endDate == null && company == null &&
-			        description == null && experience == null)
-				return GetJobs();
-			else
-			{
-				using var cmd = MainConnection.CreateCommand();
-				cmd.CommandText = "SELECT * FROM job WHERE ";
-				var filter = new List<string>();
+		using var cmd = MainConnection.CreateCommand();
 
-				if(jobTitle != null)
-				{
-					filter.Add("title LIKE $title");
-					cmd.Parameters.AddWithNullableValue("$title", jobTitle.Surround("%"));
-				}
+		if(jobTitle != null && startDate != null && (terms == null || terms.Length == 0))
+			return GetJobs(new Job(jobTitle, startDate, endDate, company, description, experience));
+		if(jobTitle == null && startDate == null && endDate == null && company == null &&
+		   description == null && experience == null && (terms == null || terms.Length == 0))
+			return GetJobs();
 
-				if(startDate != null)
-				{
-					filter.Add("startDate IS $start");
-					cmd.Parameters.AddWithNullableValue("$start", startDate);
-				}
+		cmd.CommandText =
+			"SELECT * FROM job WHERE company LIKE $company OR description OR $desc OR experience LIKE $exp OR title LIKE $title ";
+		var filter = new List<string>();
+		if(startDate != null)
+			filter.Add("startDate IS $start");
+		if(endDate != null)
+			filter.Add("endDate IS $end");
+		cmd.CommandText += string.Join(" OR ", filter);
 
-				if(endDate != null)
-				{
-					filter.Add("endDate IS $end");
-					cmd.Parameters.AddWithNullableValue("$end", endDate);
-				}
-
-				if(company != null)
-				{
-					filter.Add("company LIKE $company");
-					cmd.Parameters.AddWithNullableValue("$company", company.Surround("%"));
-				}
-
-				if(description != null)
-				{
-					filter.Add("description LIKE $desc");
-					cmd.Parameters.AddWithNullableValue("$desc", description.Surround("%"));
-				}
-
-				if(experience != null)
-				{
-					filter.Add("experience LIKE $exp");
-					cmd.Parameters.AddWithNullableValue("$exp", experience.Surround("%"));
-				}
-
-				cmd.CommandText += string.Join(" AND ", filter) + ";";
-				cmd.Prepare();
-				var reader = cmd.ExecuteReader();
-				var jobs = new List<Job>();
-				while(reader.Read())
-					jobs.Add(Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
-				return jobs;
-			}
-		else
+		var placeholderValuePairs = new Dictionary<string, dynamic?>
 		{
-			var cmd = MainConnection.CreateCommand();
+			{ "$company", (company ?? "").Surround("%") },
+			{ "$desc", (description ?? "").Surround("%") },
+			{ "$exp", (experience ?? "").Surround("%") },
+			{ "$title", (jobTitle ?? "").Surround("%") },
+			{ "$end", endDate },
+			{ "$start", startDate }
+		};
+		cmd.BindParameters(placeholderValuePairs);
 
-			cmd.CommandText = "CREATE TEMPORARY TABLE term(txt TEXT);";
-			cmd.ExecuteNonQuery();
-			cmd.CommandText = "INSERT INTO term VALUES ";
-			for(int i = 0; i < terms.Length; i++)
+		if(terms is { Length: > 0 })
+		{
+			using var tempCmd = MainConnection.CreateCommand();
+			tempCmd.CommandText = "CREATE TEMPORARY TABLE term(query TEXT);";
+			tempCmd.ExecuteNonQuery();
+			tempCmd.CommandText = "INSERT INTO term VALUES ";
+			for(var i = 0; i < terms.Length; i++)
 			{
-				cmd.CommandText += $"($term{i})";
-				cmd.Parameters.AddWithNullableValue($"$term{i}", terms[i]);
+				tempCmd.CommandText += $"($term{i})";
+				tempCmd.Parameters.AddWithNullableValue($"$term{i}", terms[i].Surround("%"));
 				if(i < terms.Length - 1)
-					cmd.CommandText += ", ";
+					tempCmd.CommandText += ", ";
 			}
 
-			cmd.CommandText += ";";
-			cmd.ExecuteNonQuery();
+			tempCmd.ExecuteNonQuery();
 
-			cmd.CommandText = "SELECT * FROM job as j " +
-			                  "JOIN term t ON (j.title LIKE t.txt) OR (j.company LIKE t.txt) OR (j.description LIKE t.txt) OR (j.experience LIKE t.txt)";
-
-			if(jobTitle == null && startDate == null && endDate == null && company == null && description == null &&
-			   experience == null)
-			{
-				cmd.Prepare();
-				var reader = cmd.ExecuteReader();
-				var jobs = new List<Job>();
-				while(reader.Read())
-					jobs.Add(Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
-				return jobs;
-			}
-			else
-			{
-				cmd.CommandText += " INNER JOIN job as terms ON j.id = t.id WHERE " +
-				                   "(";
-				cmd.CommandText += "SELECT * FROM job WHERE ";
-				var filter = new List<string>();
-
-				if(jobTitle != null)
-				{
-					filter.Add("title LIKE $title");
-					cmd.Parameters.AddWithNullableValue("$title", jobTitle.Surround("%"));
-				}
-
-				if(startDate != null)
-				{
-					filter.Add("startDate IS $start");
-					cmd.Parameters.AddWithNullableValue("$start", startDate);
-				}
-
-				if(endDate != null)
-				{
-					filter.Add("endDate IS $end");
-					cmd.Parameters.AddWithNullableValue("$end", endDate);
-				}
-
-				if(company != null)
-				{
-					filter.Add("company LIKE $company");
-					cmd.Parameters.AddWithNullableValue("$company", company.Surround("%"));
-				}
-
-				if(description != null)
-				{
-					filter.Add("description LIKE $desc");
-					cmd.Parameters.AddWithNullableValue("$desc", description.Surround("%"));
-				}
-
-				if(experience != null)
-				{
-					filter.Add("experience LIKE $exp");
-					cmd.Parameters.AddWithNullableValue("$exp", experience.Surround("%"));
-				}
-
-				cmd.CommandText += string.Join(" AND ", filter) + ");";
-				var reader = cmd.ExecuteReader();
-				var jobs = new List<Job>();
-				while(reader.Read())
-					jobs.Add(Job.ParseJobsFromQuery(reader)!);
-				return jobs;
-			}
+			cmd.CommandText += "UNION ALL " +
+			                   "SELECT j.* FROM job as j " +
+			                   "JOIN term t ON (j.title LIKE t.query) OR (j.company LIKE t.query) OR (j.description LIKE t.query) OR (j.experience LIKE t.query) ";
 		}
+
+		cmd.Prepare();
+		var reader = cmd.ExecuteReader();
+		var jobs = new List<Job>();
+		while(reader.Read())
+			jobs.Add(Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
+		return jobs;
 	}
 }
