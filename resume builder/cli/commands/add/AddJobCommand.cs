@@ -7,7 +7,7 @@ using static resume_builder.Globals;
 
 namespace resume_builder.cli.commands.add;
 
-public class AddJobSettings : CommandSettings
+public class AddJobSettings : AddCommandSettings
 {
 	[Description("start date at the job")]
 	[CommandOption("-s|--start <StartDate>")]
@@ -64,7 +64,6 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
 	{
 		Database database = new();
-		var (startDate, endDate, jobTitle, jobDescription, experience, company) = settings;
 		if(string.IsNullOrWhiteSpace(jobTitle))
 			return ExitCode.InvalidArgument.ToInt();
 		startDate ??= Today;

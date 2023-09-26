@@ -26,7 +26,7 @@ public static class Program
 		config.CaseSensitivity(CaseSensitivity.None);
 
 		//todo: add option if adding an existing entry to edit it
-		config.AddBranch("add", add =>
+		config.AddBranch<AddCommandSettings>("add", add =>
 		{
 			add.SetDescription("add new information to job database/bank");
 			add.AddCommand<AddJobCommand>("job")
@@ -44,7 +44,12 @@ public static class Program
 		config.AddBranch<GetCommandSettings>("get", get =>
 		{
 			get.SetDescription("get information from job database/bank");
-			get.AddBranch("job", getJob =>
+
+			get.AddBranch("job", (System.Action<IConfigurator<GetCommandSettings>>)GetJobBranchConfig);
+			get.AddBranch("jobs", GetJobBranchConfig);
+			return;
+
+			void GetJobBranchConfig(IConfigurator<GetCommandSettings> getJob)
 			{
 				getJob.SetDefaultCommand<GetJobCommand>();
 				getJob.AddCommand<GetJobIdCommand>("id");
@@ -66,7 +71,7 @@ public static class Program
 				getJob.AddCommand<GetJobCommand>("")
 				      .WithAlias("jobs")
 				      .WithDescription("retrieve job(s) from database");
-			});
+			}
 		});
 
 		config.AddCommand<InitCommand>("init")

@@ -20,7 +20,7 @@ public class AddSkillCommand : Command<AddSkillSettings>
 	}
 }
 
-public class AddSkillSettings : CommandSettings
+public class AddSkillSettings : AddCommandSettings
 {
 	[CommandArgument(0, "<skill>")] public string Skill { get; set; }
 

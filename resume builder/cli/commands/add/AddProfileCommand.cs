@@ -21,7 +21,7 @@ public sealed class AddProfileCommand : Command<AddProfileSettings>
 	}
 }
 
-public class AddProfileSettings : CommandSettings
+public class AddProfileSettings : AddCommandSettings
 {
 	[CommandOption("-f|--first <FirstName>")]
 	public string FirstName { get; set; }
