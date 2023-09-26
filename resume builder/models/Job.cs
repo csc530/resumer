@@ -126,10 +126,10 @@ public sealed class Job
 		if(EndDate == null)
 			stringBuilder.Append("present");
 		else
-			stringBuilder.Append($"{EndDate:yyyy-MM-dd})");
+			stringBuilder.Append($"{EndDate:yyyy-MM-dd}");
 		stringBuilder.Append(')');
 		if(!string.IsNullOrWhiteSpace(Company))
-			stringBuilder.Append($"@ {Company}");
+			stringBuilder.Append($" @ {Company}");
 		return stringBuilder.ToString();
 	}
 }

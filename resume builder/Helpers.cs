@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
+using Spectre.Console;
 
 namespace resume_builder;
 
@@ -58,10 +59,21 @@ public static class Extensions
 			cmd.Parameters.AddWithNullableValue(placeholder, value);
 	}
 
-	private static void BindParameters(this SqliteCommand cmd,
-	                                   IEnumerable<KeyValuePair<string, object?>> placeholderValuePairs)
+	public static void BindParameters(this SqliteCommand cmd,
+	                                  IEnumerable<KeyValuePair<string, object?>> placeholderValuePairs)
 	{
 		foreach(var (placeholder, value) in placeholderValuePairs)
 			cmd.Parameters.AddWithNullableValue(placeholder, value);
 	}
+
+	public static TextPrompt<T> Clone<T>(this TextPrompt<T> textPrompt, string prompt, T defaultValue = default) =>
+		new TextPrompt<T>(prompt)
+		{
+			ShowDefaultValue = textPrompt.ShowDefaultValue,
+			AllowEmpty = textPrompt.AllowEmpty,
+			Validator = textPrompt.Validator,
+			ValidationErrorMessage = textPrompt.ValidationErrorMessage,
+		}.DefaultValue(defaultValue);
+	//todo: inquire about default value being a property
+	// .DefaultValue(textPrompt);
 }
