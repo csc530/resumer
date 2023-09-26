@@ -10,11 +10,12 @@ public partial class Database
 		if(!string.IsNullOrWhiteSpace(job.Company) && GetCompany(job.Company) == null)
 			AddCompany(job.Company);
 		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText = "INSERT INTO job(title,company,startDate) VALUES($title,$company,$start);";
+		cmd.CommandText =
+			"INSERT INTO job(title,company,startDate,endDate,description,experience) VALUES($title,$company,$start,$end,$desc,$exp);";
 		cmd.Parameters.AddWithValue("$title", job.Title);
 		cmd.Parameters.AddWithNullableValue("$company", job.Company);
 		cmd.Parameters.AddWithNullableValue("$start", job.StartDate);
-		cmd.Parameters.AddWithNullableValue("end", job.EndDate);
+		cmd.Parameters.AddWithNullableValue("$end", job.EndDate);
 		cmd.Parameters.AddWithNullableValue("$desc", job.Description);
 		cmd.Parameters.AddWithNullableValue("$exp", job.Experience);
 		cmd.Prepare();
