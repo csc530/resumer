@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using resume_builder.models;
@@ -12,8 +13,7 @@ public class GetJobCommand : Command<GetJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobSettings settings)
 	{
 		Database database = new();
-		var rows = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
-			terms: settings.Terms);
+		var rows = database.GetJob(settings.Id ?? Array.Empty<long>());
 		var jobs = rows.Values;
 		if(jobs.Count == 0)
 			AnsiConsole.MarkupLine("No jobs found");
@@ -45,30 +45,15 @@ public class GetJobCommand : Command<GetJobSettings>
 
 public class GetJobSettings : GetCommandSettings
 {
-	[CommandArgument(0, "[job title]")] public string? JobTitle { get; set; }
-
-	[CommandOption("-s|--start")]
-	[Description("start date at the job")]
-	public DateOnly? StartDate { get; set; }
-
-	[CommandOption("-e|--end")]
-	[Description("last date at the job")]
-	public DateOnly? EndDate { get; set; }
-
-	[CommandOption("-c|--company")]
-	[Description("the company or employer name")]
-	public string? Company { get; set; }
-
-	[CommandArgument(1, "[terms]")] //[CommandOption("-t|--terms")]
-	[Description("search terms to search for in the job's description, experience, or skills")]
-	public string[] Terms { get; set; }
+	[CommandArgument(0, "[id]")]
+	[Description("id(s) of jobs to retrieve")]
+	public long[]? Id { get; set; }
+	//todo: add discriminators/options for each field indicating what to return
 
 	public override ValidationResult Validate()
 	{
-		if(JobTitle != null && string.IsNullOrWhiteSpace(JobTitle))
-			return ValidationResult.Error("Job title cannot be empty");
-		if(Company != null && string.IsNullOrWhiteSpace(Company))
-			return ValidationResult.Error("Company cannot be empty");
-		return ValidationResult.Success();
+		return Id != null && Id.Any(id => id == null || id < 0)
+			? ValidationResult.Error("id must be zero (0) or a positive number")
+			: ValidationResult.Success();
 	}
 }

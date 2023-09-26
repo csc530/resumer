@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace resume_builder.cli.commands.get;
+namespace resume_builder.cli.commands.search;
 
-public class GetCommandSettings : CommandSettings
+public class SearchCommandSettings : CommandSettings
 {
 	[CommandOption("-p|--plain")]
 	[Description("output in plain text")]

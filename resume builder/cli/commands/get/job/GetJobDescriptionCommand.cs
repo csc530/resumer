@@ -10,11 +10,10 @@ public class GetJobDescriptionCommand : Command<GetJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobSettings settings)
 	{
 		Database database = new();
-		var jobs = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
-			terms: settings.Terms);
+		var rows = database.GetJob(settings.Id!);
 		var table = new Table()
 			.AddColumn("Description");
-		foreach(var (id, job) in jobs)
+		foreach(var (id, job) in rows)
 			table.AddRow(job.Description ?? "");
 
 		AnsiConsole.Write(table);

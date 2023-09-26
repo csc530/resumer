@@ -10,8 +10,7 @@ public class GetJobEndDateCommand : Command<GetJobSettings>
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobSettings settings)
 	{
 		Database database = new();
-		var jobs = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
-			terms: settings.Terms).Values;
+		var jobs = database.GetJob(settings.Id!).Values;
 		var table = new Table()
 			.AddColumn("End Date");
 		foreach(var job in jobs)

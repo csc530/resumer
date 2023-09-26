@@ -9,8 +9,7 @@ public class GetJobTitleCommand : Command<GetJobSettings>
 	public override int Execute(CommandContext context, GetJobSettings settings)
 	{
 		Database database = new();
-		var jobs = database.GetJobsLike(settings.JobTitle, settings.StartDate, settings.EndDate, settings.Company,
-			terms: settings.Terms);
+		var jobs = database.GetJob(settings.Id!);
 		var table = new Table()
 			.AddColumn("Job Title");
 		foreach(var (_, job) in jobs)

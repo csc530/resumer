@@ -65,6 +65,37 @@ public partial class Database
 		return Job.ParseJobsFromQuery(data);
 	}
 
+	public Dictionary<long, Job> GetJob(long[] ids)
+	{
+		if(ids.Length == 0)
+			return GetJobs();
+		var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "CREATE TEMPORARY TABLE temp(id INTEGER);";
+		cmd.ExecuteNonQuery();
+		cmd.CommandText = "INSERT INTO temp(id) values ";
+		for(var i = 0; i < ids.Length; i++)
+		{
+			cmd.CommandText += $"($id{i})";
+			if(i < ids.Length - 1)
+				cmd.CommandText += ", ";
+			else if(i == ids.Length - 1)
+				cmd.CommandText += ";";
+			else
+				cmd.CommandText += " ";
+			cmd.Parameters.AddWithValue($"id{i}", ids[i]);
+		}
+
+		cmd.Prepare();
+		cmd.ExecuteNonQuery();
+
+		cmd.CommandText = "SELECT job.* FROM job WHERE id IN (SELECT * FROM temp);";
+		var data = cmd.ExecuteReader();
+		var jobs = new Dictionary<long, Job>();
+		while(data.Read())
+			jobs.Add((long)data["id"], Job.ParseJobsFromQuery(data) ?? throw new InvalidOperationException());
+		return jobs;
+	}
+
 
 	private string? GetCompany(string company)
 	{

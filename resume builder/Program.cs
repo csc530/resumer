@@ -4,6 +4,10 @@ using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
 using resume_builder.cli.commands.get.job;
+using resume_builder.cli.commands.search;
+using resume_builder.cli.commands.Search;
+using resume_builder.cli.commands.search.job;
+using resume_builder.cli.commands.Search.job;
 using resume_builder.models;
 using Spectre.Console.Cli;
 
@@ -40,37 +44,39 @@ public static class Program
 			   .WithExample("add", "skill", "Teamwork", "--type", "soft")
 			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "--type", "hard");
 		});
-
 		config.AddBranch<GetCommandSettings>("get", get =>
 		{
 			get.SetDescription("get information from job database/bank");
 
-			get.AddBranch("job", (System.Action<IConfigurator<GetCommandSettings>>)GetJobBranchConfig);
-			get.AddBranch("jobs", GetJobBranchConfig);
-			return;
+			get.AddCommand<GetJobCommand>("job");
+		});
+		config.AddBranch("search", search =>
+		{
+			search.AddBranch("job", SearchJobBranchConfig);
+			search.AddBranch("jobs", SearchJobBranchConfig);
 
-			void GetJobBranchConfig(IConfigurator<GetCommandSettings> getJob)
+			void SearchJobBranchConfig(IConfigurator<SearchCommandSettings> SearchJob)
 			{
-				getJob.SetDefaultCommand<GetJobCommand>();
-				getJob.AddCommand<GetJobIdCommand>("id");
-				getJob.AddCommand<GetJobDescriptionCommand>("description")
-				      .WithAlias("desc")
-				      .WithAlias("details")
-				      .WithAlias("d");
-				getJob.AddCommand<GetJobExperienceCommand>("experience")
-				      .WithAlias("exp")
-				      .WithAlias("ex");
-				// getJob.AddCommand<GetJobSkillsCommand>("skills");
-				getJob.AddCommand<GetJobStartDateCommand>("start")
-				      .WithAlias("s")
-				      .WithAlias("start date");
-				getJob.AddCommand<GetJobEndDateCommand>("end");
-				getJob.AddCommand<GetJobTitleCommand>("title")
-				      .WithAlias("t");
+				SearchJob.SetDefaultCommand<SearchJobCommand>();
+				SearchJob.AddCommand<SearchJobIdCommand>("id");
+				SearchJob.AddCommand<SearchJobDescriptionCommand>("description")
+				         .WithAlias("desc")
+				         .WithAlias("details")
+				         .WithAlias("d");
+				SearchJob.AddCommand<SearchJobExperienceCommand>("experience")
+				         .WithAlias("exp")
+				         .WithAlias("ex");
+				// SearchJob.AddCommand<SearchJobSkillsCommand>("skills");
+				SearchJob.AddCommand<SearchJobStartDateCommand>("start")
+				         .WithAlias("s")
+				         .WithAlias("start date");
+				SearchJob.AddCommand<SearchJobEndDateCommand>("end");
+				SearchJob.AddCommand<SearchJobTitleCommand>("title")
+				         .WithAlias("t");
 
-				getJob.AddCommand<GetJobCommand>("")
-				      .WithAlias("jobs")
-				      .WithDescription("retrieve job(s) from database");
+				SearchJob.AddCommand<SearchJobCommand>("")
+				         .WithAlias("jobs")
+				         .WithDescription("retrieve job(s) from database");
 			}
 		});
 
