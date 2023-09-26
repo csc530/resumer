@@ -87,9 +87,7 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
 			jobDescription = AnsiConsole.Prompt(descriptionPrompt);
 			experience = AnsiConsole.Prompt<string?>(experiencePrompt);
 			company = AnsiConsole.Prompt<string?>(companyPrompt);
-
 			startDate = AnsiConsole.Ask("[bold]*[/]Start date: ", Today);
-
 			endDate = AnsiConsole.Prompt(endDatePrompt);
 		}
 

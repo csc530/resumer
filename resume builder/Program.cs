@@ -3,7 +3,6 @@
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
-using resume_builder.cli.commands.get.job;
 using resume_builder.cli.commands.search;
 using resume_builder.cli.commands.Search;
 using resume_builder.cli.commands.search.job;
@@ -54,29 +53,30 @@ public static class Program
 		{
 			search.AddBranch("job", SearchJobBranchConfig);
 			search.AddBranch("jobs", SearchJobBranchConfig);
+			return;
 
-			void SearchJobBranchConfig(IConfigurator<SearchCommandSettings> SearchJob)
+			void SearchJobBranchConfig(IConfigurator<SearchCommandSettings> searchJobConfig)
 			{
-				SearchJob.SetDefaultCommand<SearchJobCommand>();
-				SearchJob.AddCommand<SearchJobIdCommand>("id");
-				SearchJob.AddCommand<SearchJobDescriptionCommand>("description")
-				         .WithAlias("desc")
-				         .WithAlias("details")
-				         .WithAlias("d");
-				SearchJob.AddCommand<SearchJobExperienceCommand>("experience")
-				         .WithAlias("exp")
-				         .WithAlias("ex");
+				searchJobConfig.SetDefaultCommand<SearchJobCommand>();
+				searchJobConfig.AddCommand<SearchJobIdCommand>("id");
+				searchJobConfig.AddCommand<SearchJobDescriptionCommand>("description")
+				               .WithAlias("desc")
+				               .WithAlias("details")
+				               .WithAlias("d");
+				searchJobConfig.AddCommand<SearchJobExperienceCommand>("experience")
+				               .WithAlias("exp")
+				               .WithAlias("ex");
 				// SearchJob.AddCommand<SearchJobSkillsCommand>("skills");
-				SearchJob.AddCommand<SearchJobStartDateCommand>("start")
-				         .WithAlias("s")
-				         .WithAlias("start date");
-				SearchJob.AddCommand<SearchJobEndDateCommand>("end");
-				SearchJob.AddCommand<SearchJobTitleCommand>("title")
-				         .WithAlias("t");
+				searchJobConfig.AddCommand<SearchJobStartDateCommand>("start")
+				               .WithAlias("s")
+				               .WithAlias("start date");
+				searchJobConfig.AddCommand<SearchJobEndDateCommand>("end");
+				searchJobConfig.AddCommand<SearchJobTitleCommand>("title")
+				               .WithAlias("t");
 
-				SearchJob.AddCommand<SearchJobCommand>("")
-				         .WithAlias("jobs")
-				         .WithDescription("retrieve job(s) from database");
+				searchJobConfig.AddCommand<SearchJobCommand>("")
+				               .WithAlias("jobs")
+				               .WithDescription("retrieve job(s) from database");
 			}
 		});
 

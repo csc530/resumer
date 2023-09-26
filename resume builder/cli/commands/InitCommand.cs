@@ -12,7 +12,6 @@ internal class InitCommand : Command
 		if(database.IsInitialized())
 		{
 			AnsiConsole.WriteLine("Database already initialized");
-			//todo: provide help to clear, reset, or edit
 			return ExitCode.Success.ToInt();
 		}
 
