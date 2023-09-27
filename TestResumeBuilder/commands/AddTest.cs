@@ -4,6 +4,8 @@ namespace TestResumeBuilder.commands;
 
 public abstract class AddTest : AppTest
 {
+	protected internal const string ResumeSqliteFileName = "resume.sqlite";
+
 	[OneTimeSetUp]
 	public override void InitializeApp()
 	{
@@ -12,5 +14,18 @@ public abstract class AddTest : AppTest
 	}
 
 	[TearDown]
-	public void DeleteData() => new Database().Wipe();
+	public void DeleteData()
+	{
+		if(File.Exists(ResumeSqliteFileName))
+			try
+			{
+				File.Delete(ResumeSqliteFileName);
+			}
+			catch(IOException e)
+			{
+				Assert.Warn(e.Message);
+			}
+		else
+			Assert.Warn("Database file not found/deleted");
+	}
 }

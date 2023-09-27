@@ -24,7 +24,7 @@ public abstract class DatabaseTest
 				Assert.Warn(e.Message);
 			}
 		else
-			Assert.Warn("Database file not found");
+			Assert.Warn("Database file not found/deleted");
 	}
 
 	[SetUp]

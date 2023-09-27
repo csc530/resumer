@@ -35,7 +35,14 @@ public class AddJobSettings : AddCommandSettings
 
 	public override ValidationResult Validate()
 	{
-		if(string.IsNullOrWhiteSpace(JobTitle) && JobTitle != null)
+		if(string.IsNullOrWhiteSpace(JobTitle) && JobTitle != null || (string.IsNullOrWhiteSpace(JobTitle) &&
+		                                                               !Interactive
+		                                                               && (StartDate != null ||
+		                                                                   EndDate != null || Company != null ||
+		                                                                   Experience != null ||
+		                                                                   JobDescription != null ||
+		                                                                   Experience != null || Company != null)
+		   ))
 			return ValidationResult.Error("Job title is invalid: cannot be empty");
 
 		if(StartDate != null && EndDate < StartDate)

@@ -1,103 +1,157 @@
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using resume_builder.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using static resume_builder.Globals;
 
-namespace resume_builder.cli.commands.get;
+namespace resume_builder.cli.commands.get.job;
 
 public class GetJobCommand : Command<GetJobCommandSettings>
 {
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobCommandSettings settings)
 	{
 		Database database = new();
-		var (plain, expand, id, title, startDate, endDate, company, description, experience, ids) = settings;
+		var plain = settings.Plain;
+		var ids = settings.Ids;
 		var rows = database.GetJob(ids ?? Array.Empty<long>());
 		var jobs = rows.Values;
 		if(jobs.Count == 0)
-			AnsiConsole.MarkupLine("No jobs found");
-		else
 		{
-			var table = new Table().Centered().Border(TableBorder.Rounded).Expand();
-			if(!id && !title && !company && !startDate && !endDate && !description && !experience)
-			{
-				table.Centered().Border(TableBorder.Rounded).Expand().AddColumn(new TableColumn("ID"))
-				     .AddColumn(new TableColumn("Job Title"))
-				     .AddColumn(new TableColumn("Company"))
-				     .AddColumn(new("Start Date"))
-				     .AddColumn(new("End Date"))
-				     .AddColumn(new("Description"))
-				     .AddColumn(new("Experience"));
-				foreach(var (tblId, job) in rows)
-					table.AddRow(tblId.ToString(), job.Title, job.Company ?? "", job.StartDate.ToString(),
-						job.EndDate.ToString() ?? "", job.Description ?? "", job.Experience ?? "");
-			}
-			else
-			{
-				if(id)
-					table.AddColumn(new TableColumn("ID"));
-				if(title)
-					table.AddColumn(new TableColumn("Job Title"));
-				if(company)
-					table.AddColumn(new TableColumn("Company"));
-				if(startDate)
-					table.AddColumn(new("Start Date"));
-				if(endDate)
-					table.AddColumn(new("End Date"));
-				if(description)
-					table.AddColumn(new("Description"));
-				if(experience)
-					table.AddColumn(new("Experience"));
-
-
-				foreach(var (tblId, job) in rows)
-				{
-					var row = new List<string>();
-					if(id)
-						row.Add(tblId.ToString());
-					if(title)
-						row.Add(job.Title);
-					if(company)
-						row.Add(job.Company ?? "");
-					if(startDate)
-						row.Add(job.StartDate.ToString());
-					if(endDate)
-						row.Add(job.EndDate.ToString() ?? "");
-					if(description)
-						row.Add(job.Description ?? "");
-					if(experience)
-						row.Add(job.Experience ?? "");
-					table.AddRow(row.ToArray());
-				}
-			}
-
-			AnsiConsole.Write(table);
+			AnsiConsole.MarkupLine("No jobs found");
+			return ExitCode.Success.ToInt();
 		}
 
+		var table = settings.GetTable();
+		Console.Error.WriteLine("plain: " + plain);
+		if(plain || table == null)
+			PlainOutput(settings, rows);
+		else
+			TableOutput(table, settings, rows);
+
+
 		return ExitCode.Success.ToInt();
+	}
+
+	private void PlainOutput(GetJobCommandSettings settings, Dictionary<long, Job> rows)
+	{
+		var id = settings.Id;
+		var experience = settings.Experience;
+		var title = settings.Title;
+		var description = settings.Description;
+		var company = settings.Company;
+		var startDate = settings.StartDate;
+		var endDate = settings.EndDate;
+		bool allNull = !id && !title && !company && !startDate && !endDate && !description && !experience;
+		foreach(var (tblId, job) in rows)
+		{
+			var row = new List<Text>();
+			if(id)
+				row.Add(new(tblId.ToString()));
+			if(title)
+				row.Add(new(job.Title));
+			if(company)
+				row.Add(new(job.Company ?? ""));
+			if(startDate)
+				row.Add(new(job.StartDate.ToString()));
+			if(endDate)
+				row.Add(new(job.EndDate.ToString() ?? ""));
+			if(description)
+				row.Add(new(job.Description ?? ""));
+			if(experience)
+				row.Add(new(job.Experience ?? ""));
+			if(allNull)
+			{
+				row.Add(new Text(tblId.ToString()));
+				row.Add(new Text(job.Title));
+				row.Add(new Text(job.Company ?? ""));
+				row.Add(new Text(job.StartDate.ToString()));
+				row.Add(new Text(job.EndDate.ToString() ?? ""));
+				row.Add(new Text(job.Description ?? ""));
+				row.Add(new Text(job.Experience ?? ""));
+			}
+
+			AnsiConsole.Write(new Columns(row).Expand());
+		}
+	}
+
+	private void TableOutput(Table table, GetJobCommandSettings settings, Dictionary<long, Job> rows)
+	{
+		var id = settings.Id;
+		var title = settings.Title;
+		var company = settings.Company;
+		var startDate = settings.StartDate;
+		var endDate = settings.EndDate;
+		var description = settings.Description;
+		var experience = settings.Experience;
+
+		bool allNull = !id && !title && !company && !startDate && !endDate && !description && !experience;
+		if(allNull)
+		{
+			table.AddColumn(new TableColumn("ID"))
+			     .AddColumn(new TableColumn("Job Title"))
+			     .AddColumn(new TableColumn("Company"))
+			     .AddColumn(new("Start Date"))
+			     .AddColumn(new("End Date"))
+			     .AddColumn(new("Description"))
+			     .AddColumn(new("Experience"));
+		}
+		else
+		{
+			if(id)
+				table.AddColumn(new TableColumn("ID"));
+			if(title)
+				table.AddColumn(new TableColumn("Job Title"));
+			if(company)
+				table.AddColumn(new TableColumn("Company"));
+			if(startDate)
+				table.AddColumn(new("Start Date"));
+			if(endDate)
+				table.AddColumn(new("End Date"));
+			if(description)
+				table.AddColumn(new("Description"));
+			if(experience)
+				table.AddColumn(new("Experience"));
+		}
+
+		foreach(var (tblId, job) in rows)
+		{
+			var row = new List<string>();
+			if(allNull)
+			{
+				row.Add(tblId.ToString());
+				row.Add(job.Title);
+				row.Add(job.Company ?? "");
+				row.Add(job.StartDate.ToString());
+				row.Add(job.EndDate.ToString() ?? "");
+				row.Add(job.Description ?? "");
+				row.Add(job.Experience ?? "");
+				table.AddRow(row.ToArray());
+				continue;
+			}
+
+			if(id)
+				row.Add(tblId.ToString());
+			if(title)
+				row.Add(job.Title);
+			if(company)
+				row.Add(job.Company ?? "");
+			if(startDate)
+				row.Add(job.StartDate.ToString());
+			if(endDate)
+				row.Add(job.EndDate.ToString() ?? "");
+			if(description)
+				row.Add(job.Description ?? "");
+			if(experience)
+				row.Add(job.Experience ?? "");
+			table.AddRow(row.ToArray());
+		}
+
+		AnsiConsole.Write(table);
 	}
 }
 
 public class GetJobCommandSettings : GetCommandSettings
 {
-	public void Deconstruct(out bool plain, out bool expand, out bool id, out bool title, out bool startDate,
-	                        out bool endDate, out bool company, out bool description, out bool experience,
-	                        out long[]? ids)
-	{
-		plain = Plain;
-		expand = Expand;
-		id = Id;
-		title = Title;
-		startDate = StartDate;
-		endDate = EndDate;
-		company = Company;
-		description = Description;
-		experience = Experience;
-		ids = Ids;
-	}
-
 	[CommandOption("-i|--id")]
 	[Description("output job id")]
 	public bool Id { get; set; }
@@ -122,7 +176,7 @@ public class GetJobCommandSettings : GetCommandSettings
 	[Description("output job description")]
 	public bool Description { get; set; }
 
-	[CommandOption("-p|--experience")]
+	[CommandOption("-x|--experience")]
 	[Description("output job experience")]
 	public bool Experience { get; set; }
 

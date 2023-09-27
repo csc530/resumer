@@ -4,16 +4,17 @@ using Spectre.Console.Testing;
 namespace TestResumeBuilder
 {
 	//todo:  find way to pass text to test command app for prompts
-	public class AppTest
+	public abstract class AppTest
 	{
-		internal Spectre.Console.Testing.CommandAppTester TestApp;
+		internal CommandAppTester TestApp;
 
-		[OneTimeSetUp]
+		[SetUp]
 		public virtual void InitializeApp()
 		{
 			TestApp = new CommandAppTester();
 			TestApp.Configure(Program.AppConfiguration);
 		}
+
 
 		protected CommandAppResult Run(IEnumerable<string> cmdArgs, params string[] args) =>
 			TestApp.Run(cmdArgs.Concat(args).ToArray());

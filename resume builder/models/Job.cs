@@ -57,17 +57,6 @@ public sealed class Job
 		set => _experience = Trim(value);
 	}
 
-	public void Deconstruct(out string? company, out string? description, out string? experience, out string title,
-	                        out DateOnly startDate, out DateOnly? endDate)
-	{
-		company = _company;
-		description = _description;
-		experience = _experience;
-		title = Title;
-		startDate = StartDate;
-		endDate = EndDate;
-	}
-
 
 	public void SetTitle(string title)
 	{

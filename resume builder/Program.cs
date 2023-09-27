@@ -3,6 +3,7 @@
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
+using resume_builder.cli.commands.get.job;
 using resume_builder.cli.commands.search;
 using resume_builder.cli.commands.Search;
 using resume_builder.cli.commands.search.job;
@@ -14,6 +15,7 @@ namespace resume_builder;
 
 public static class Program
 {
+	//todo: don't like that parent options and arguments are positional; spectre problem
 	public static void AppConfiguration(IConfigurator config)
 	{
 		if(config is null)
@@ -47,7 +49,8 @@ public static class Program
 		{
 			get.SetDescription("get information from job database/bank");
 
-			get.AddCommand<GetJobCommand>("job");
+			get.AddCommand<GetJobCommand>("job")
+			   .WithAlias("jobs");
 		});
 		config.AddBranch("search", search =>
 		{
