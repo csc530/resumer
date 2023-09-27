@@ -24,4 +24,4 @@ please do
 
 
 ---
-why I chose C# idk😔 ~ frameworking
+why I chose C# idk😔 ~ frameworker
