@@ -8,8 +8,19 @@ public class GetCommandSettings : CommandSettings
 {
 	public virtual Table? GetTable(string? title = null)
 	{
-		if(Plain)
+		if(Plain && !Table)
 			return null;
+		else if(Plain && Table)
+			return new Table()
+			{
+				Expand = (Expand && !Minimize) || (!Minimize && !Expand),
+				ShowFooters = false,
+				ShowHeaders = false,
+				Border = TableBorder.None,
+				Caption = null,
+				Title = null,
+				UseSafeBorder = true,
+			};
 
 		return new Table
 		{
@@ -42,4 +53,8 @@ public class GetCommandSettings : CommandSettings
 	[CommandOption("-f|--footer")]
 	[Description("show table footer")]
 	public bool Footer { get; set; }
+
+	[CommandOption("-t|--table")]
+	[Description("output in a table format")]
+	public bool Table { get; set; }
 }

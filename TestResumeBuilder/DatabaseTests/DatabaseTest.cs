@@ -12,8 +12,7 @@ public abstract class DatabaseTest
 	[TearDown]
 	public void DeleteDatabase()
 	{
-		GC.Collect();
-		GC.WaitForPendingFinalizers();
+		Cleanup();
 		if(File.Exists(ResumeSqliteFileName))
 			try
 			{
@@ -31,5 +30,15 @@ public abstract class DatabaseTest
 	public virtual void SetupDatabase() => Database = new Database();
 
 	[TearDown]
-	public void DisposeDatabase() => Database.Dispose();
+	public void DisposeDatabase()
+	{
+		Database.Dispose();
+		Cleanup();
+	}
+
+	private static void Cleanup()
+	{
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+	}
 }

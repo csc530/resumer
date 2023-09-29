@@ -7,7 +7,7 @@ namespace TestResumeBuilder.DatabaseTests.CRUD;
 public class DatabaseAddJobTest : DatabaseCRUDTest
 {
 	[Test]
-	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.JobTitleAndStartDates))]
+	[TestCaseSource(typeof(JobTestData), nameof(JobTestData.JobTitleAndStartDates))]
 	public void Add_Job_WithTitleAndStartDate_ShouldPass(string title, DateOnly startDate)
 	{
 		var job = new Job(title, startDate);

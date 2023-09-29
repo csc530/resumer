@@ -23,7 +23,7 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 
 		var table = settings.GetTable();
 		Console.Error.WriteLine("plain: " + plain);
-		if(plain || table == null)
+		if((plain && !settings.Table)|| table==null)
 			PlainOutput(settings, rows);
 		else
 			TableOutput(table, settings, rows);
@@ -31,6 +31,8 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 
 		return ExitCode.Success.ToInt();
 	}
+	private string GetStringValue(string? value) => string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
+	private string GetStringValue(object? value) => value == null || string.IsNullOrWhiteSpace(value.ToString()) ? Globals.NullString : value.ToString()!;
 
 	private void PlainOutput(GetJobCommandSettings settings, Dictionary<long, Job> rows)
 	{
@@ -44,34 +46,38 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 		bool allNull = !id && !title && !company && !startDate && !endDate && !description && !experience;
 		foreach(var (tblId, job) in rows)
 		{
-			var row = new List<Text>();
-			if(id)
-				row.Add(new(tblId.ToString()));
-			if(title)
-				row.Add(new(job.Title));
-			if(company)
-				row.Add(new(job.Company ?? ""));
-			if(startDate)
-				row.Add(new(job.StartDate.ToString()));
-			if(endDate)
-				row.Add(new(job.EndDate.ToString() ?? ""));
-			if(description)
-				row.Add(new(job.Description ?? ""));
-			if(experience)
-				row.Add(new(job.Experience ?? ""));
+		var row = new List<string>();
 			if(allNull)
 			{
-				row.Add(new Text(tblId.ToString()));
-				row.Add(new Text(job.Title));
-				row.Add(new Text(job.Company ?? ""));
-				row.Add(new Text(job.StartDate.ToString()));
-				row.Add(new Text(job.EndDate.ToString() ?? ""));
-				row.Add(new Text(job.Description ?? ""));
-				row.Add(new Text(job.Experience ?? ""));
+				row.Add(tblId.ToString());
+				row.Add(job.Title);
+				row.Add(GetStringValue(job.Company));
+				row.Add(job.StartDate.ToString());
+				row.Add(GetStringValue(job.EndDate.ToString()));
+				row.Add(GetStringValue(job.Description));
+				row.Add(GetStringValue(job.Experience));
 			}
+			else
+			{
+				if(id)
+					row.Add((tblId.ToString()));
+				if(title)
+					row.Add((job.Title));
+				if(company)
+					row.Add((GetStringValue(job.Company)));
+				if(startDate)
+					row.Add((job.StartDate.ToString()));
+				if(endDate)
+					row.Add((GetStringValue(job.EndDate)));
+				if(description)
+					row.Add((GetStringValue(job.Description)));
+				if(experience)
+					row.Add(GetStringValue(job.Experience));
 
-			AnsiConsole.Write(new Columns(row).Expand());
+			}
+		AnsiConsole.Write(new Columns(row) { Expand = false });
 		}
+		//AnsiConsole.WriteLine(tblId);
 	}
 
 	private void TableOutput(Table table, GetJobCommandSettings settings, Dictionary<long, Job> rows)
@@ -88,12 +94,12 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 		if(allNull)
 		{
 			table.AddColumn(new TableColumn("ID"))
-			     .AddColumn(new TableColumn("Job Title"))
-			     .AddColumn(new TableColumn("Company"))
-			     .AddColumn(new("Start Date"))
-			     .AddColumn(new("End Date"))
-			     .AddColumn(new("Description"))
-			     .AddColumn(new("Experience"));
+				 .AddColumn(new TableColumn("Job Title"))
+				 .AddColumn(new TableColumn("Company"))
+				 .AddColumn(new("Start Date"))
+				 .AddColumn(new("End Date"))
+				 .AddColumn(new("Description"))
+				 .AddColumn(new("Experience"));
 		}
 		else
 		{

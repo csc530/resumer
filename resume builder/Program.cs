@@ -10,6 +10,7 @@ using resume_builder.cli.commands.search.job;
 using resume_builder.cli.commands.Search.job;
 using resume_builder.models;
 using Spectre.Console.Cli;
+using Spectre.Console;
 
 namespace resume_builder;
 
@@ -93,5 +94,6 @@ public static class Program
 		var app = new CommandApp();
 		app.Configure(AppConfiguration);
 		app.Run(args);
+		//AnsiConsole.Write(new Columns(new string[] {  "some tings", "cna you even handle", "non single","items","how","abour","newlines","aka,","linebreaks","AKA","enters","let's\nsee" }));
 	}
 }

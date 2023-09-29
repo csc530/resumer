@@ -10,8 +10,11 @@ public class AddJobTest : AppTest
 	[SetUp]
 	public void Setup() => TestApp.Run("init");
 
+	[TearDown]
+	public void DeleteEntries() => new Database().Wipe();
+
 	[Test]
-	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.JobTitles))]
+	[TestCaseSource(typeof(JobTestData), nameof(JobTestData.JobTitles))]
 	[TestCaseSource(typeof(RandomTestData), nameof(RandomTestData.RandomStrings))]
 	public void WithoutStartDate_ShouldPass(string title)
 	{
@@ -22,10 +25,13 @@ public class AddJobTest : AppTest
 			Assert.That(results.Settings, Is.InstanceOf<AddJobSettings>());
 		});
 		var jobs = new Database().GetJobs();
-		Assert.That(jobs.Count, Is.EqualTo(1));
-		var job = jobs[0];
-		Assert.That(job.Title, Is.EqualTo(title));
-		Assert.That(job.StartDate, Is.EqualTo(Globals.Today));
+		Assert.That(jobs, Has.Count.EqualTo(1));
+		var job = jobs.Values.First();
+		Assert.Multiple(() =>
+		{
+			Assert.That(job.Title, Is.EqualTo(title));
+			Assert.That(job.StartDate, Is.EqualTo(Globals.Today));
+		});
 	}
 
 	[TestCaseSource(typeof(TestData), nameof(TestData.Dates))]
@@ -33,7 +39,7 @@ public class AddJobTest : AppTest
 	public void WithoutJobTitle_ShouldFail(DateOnly startDate) =>
 		Assert.Catch(() => TestApp.Run("add", "job", "--start", startDate.ToString()));
 
-	[TestCaseSource(typeof(AddJobTestData), nameof(AddJobTestData.JobTitleAndStartDates))]
+	[TestCaseSource(typeof(JobTestData), nameof(JobTestData.JobTitleAndStartDates))]
 	public void WithMinimumArgs_ShouldPass(string title, DateOnly startDate)
 	{
 		var result = TestApp.Run("add", "job", "--title", title, "--start", startDate.ToString());

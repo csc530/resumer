@@ -31,8 +31,8 @@ namespace TestResumeBuilder.DatabaseTests
 			Database.Initialize();
 			Assume.That(Database.IsInitialized());
 
-			for(int i = 0; i < 100 + 1; i++)
-				Database.AddJob(RandomTestData.GetRandomJob());
+			for(int i = 0; i < JobTestData.Jobs.Length; i++)
+				Database.AddJob(JobTestData.Jobs[i]);
 			Database.Wipe();
 			Assert.That(Database.GetJobs(), Is.Empty);
 		}
