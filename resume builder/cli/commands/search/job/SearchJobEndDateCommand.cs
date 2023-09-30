@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 

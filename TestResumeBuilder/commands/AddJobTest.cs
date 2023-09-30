@@ -1,6 +1,7 @@
 using resume_builder;
 using resume_builder.cli.commands.add;
 using resume_builder.models;
+using resume_builder.models.database;
 using TestResumeBuilder.test_data;
 
 namespace TestResumeBuilder.commands;
@@ -11,7 +12,12 @@ public class AddJobTest : AppTest
 	public void Setup() => TestApp.Run("init");
 
 	[TearDown]
-	public void DeleteEntries() => new Database().Wipe();
+	public void DeleteEntries()
+	{
+		new Database().Wipe();
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+	}
 
 	[Test]
 	[TestCaseSource(typeof(JobTestData), nameof(JobTestData.JobTitles))]

@@ -1,4 +1,5 @@
 ﻿using resume_builder;
+using resume_builder.models;
 
 namespace TestResumeBuilder.commands;
 

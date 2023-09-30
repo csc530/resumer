@@ -1,5 +1,6 @@
 using NUnit.Framework.Internal;
 using resume_builder;
+using resume_builder.models;
 
 namespace TestResumeBuilder.test_data;
 

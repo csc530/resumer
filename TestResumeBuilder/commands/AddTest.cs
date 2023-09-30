@@ -16,6 +16,7 @@ public abstract class AddTest : AppTest
 	[TearDown]
 	public void DeleteData()
 	{
+		GC.WaitForPendingFinalizers();
 		if(File.Exists(ResumeSqliteFileName))
 			try
 			{

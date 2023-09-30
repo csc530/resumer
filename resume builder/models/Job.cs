@@ -1,11 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Data.Sqlite;
-using resume_builder.models;
 using System.Data.Common;
-using System.Reflection;
 using System.Text;
+using Microsoft.Data.Sqlite;
 
-namespace resume_builder;
+namespace resume_builder.models;
 
 /// <summary>
 ///     Modeled after and for the database jobs rows/columns

@@ -1,9 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Common;
-using System.Reflection;
 using Microsoft.Data.Sqlite;
 
-namespace resume_builder.models;
+namespace resume_builder.models.database;
 
 //todo: add catch for sqliteexceptions on db queries and updates, etc.
 public sealed partial class Database : IDisposable, IAsyncDisposable

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using Profile = resume_builder.models.Profile;

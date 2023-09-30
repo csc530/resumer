@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using resume_builder.cli.commands.get;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 

@@ -1,4 +1,4 @@
-namespace resume_builder;
+namespace resume_builder.models;
 
 public enum ExitCode
 {

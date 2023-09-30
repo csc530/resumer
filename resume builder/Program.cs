@@ -5,9 +5,7 @@ using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
 using resume_builder.cli.commands.get.job;
 using resume_builder.cli.commands.search;
-using resume_builder.cli.commands.Search;
 using resume_builder.cli.commands.search.job;
-using resume_builder.cli.commands.Search.job;
 using resume_builder.models;
 using Spectre.Console.Cli;
 using Spectre.Console;
@@ -16,6 +14,13 @@ namespace resume_builder;
 
 public static class Program
 {
+	private static void Main(string[] args)
+	{
+		var app = new CommandApp();
+		app.Configure(AppConfiguration);
+		app.Run(args);
+	}
+
 	//todo: don't like that parent options and arguments are positional; spectre problem
 	public static void AppConfiguration(IConfigurator config)
 	{
@@ -87,13 +92,5 @@ public static class Program
 		config.AddCommand<InitCommand>("init")
 		      .WithDescription("initializes resume database")
 		      .WithAlias("start");
-	}
-
-	private static void Main(string[] args)
-	{
-		var app = new CommandApp();
-		app.Configure(AppConfiguration);
-		app.Run(args);
-		//AnsiConsole.Write(new Columns(new string[] {  "some tings", "cna you even handle", "non single","items","how","abour","newlines","aka,","linebreaks","AKA","enters","let's\nsee" }));
 	}
 }

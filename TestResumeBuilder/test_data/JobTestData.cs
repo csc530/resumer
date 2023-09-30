@@ -1,4 +1,5 @@
 using resume_builder;
+using resume_builder.models;
 
 namespace TestResumeBuilder.test_data;
 
@@ -26,5 +27,15 @@ public static class JobTestData
 		(new DateOnly(2012, 12, 31), new DateOnly(2014, 4, 24)), (DateOnly.MinValue, DateOnly.MaxValue)
 	};
 
-	public static Job[] Jobs = { new("developer", Globals.Today, company: "Plexxis", description: "writing code and improving features", experience: "never hired and always rejected before an interview🥲"), new("janitor", new(2012, 01, 13), new(2015, 06, 30), "Cineplex", "maintain a healthy and clean facilities\nensure the proper working order of concession stands and machines", "mop puke and clean popcorn from theatres"), new("executive coordinator of consumer relations", new(2018, 09, 1), new(2019, 02, 04), "Twitter", "manage communications and development teams\ncoordinate PR campaigns and promotions", "send tweets and troll") };
+	public static Job[] Jobs =
+	{
+		new("developer", Globals.Today, company: "Plexxis", description: "writing code and improving features",
+			experience: "never hired and always rejected before an interview🥲"),
+		new("janitor", new(2012, 01, 13), new(2015, 06, 30), "Cineplex",
+			"maintain a healthy and clean facilities\nensure the proper working order of concession stands and machines",
+			"mop puke and clean popcorn from theatres"),
+		new("executive coordinator of consumer relations", new(2018, 09, 1), new(2019, 02, 04), "Twitter",
+			"manage communications and development teams\ncoordinate PR campaigns and promotions",
+			"send tweets and troll")
+	};
 }

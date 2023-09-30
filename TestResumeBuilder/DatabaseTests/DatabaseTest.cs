@@ -1,6 +1,6 @@
-using resume_builder.models;
+using resume_builder.models.database;
 
-namespace TestResumeBuilder;
+namespace TestResumeBuilder.DatabaseTests;
 
 [TestFixture]
 public abstract class DatabaseTest

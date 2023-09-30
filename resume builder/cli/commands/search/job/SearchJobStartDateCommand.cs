@@ -1,10 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
-using resume_builder.cli.commands.search.job;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace resume_builder.cli.commands.Search;
+namespace resume_builder.cli.commands.search.job;
 
 public class SearchJobStartDateCommand : Command<SearchJobSettings>
 {

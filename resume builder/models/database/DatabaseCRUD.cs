@@ -1,7 +1,4 @@
-using Microsoft.Data.Sqlite;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace resume_builder.models;
+namespace resume_builder.models.database;
 
 public partial class Database
 {

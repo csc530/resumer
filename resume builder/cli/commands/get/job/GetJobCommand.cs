@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -23,7 +24,7 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 
 		var table = settings.GetTable();
 		Console.Error.WriteLine("plain: " + plain);
-		if((plain && !settings.Table)|| table==null)
+		if((plain && !settings.Table) || table == null)
 			PlainOutput(settings, rows);
 		else
 			TableOutput(table, settings, rows);
@@ -31,8 +32,12 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 
 		return ExitCode.Success.ToInt();
 	}
+
 	private string GetStringValue(string? value) => string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
-	private string GetStringValue(object? value) => value == null || string.IsNullOrWhiteSpace(value.ToString()) ? Globals.NullString : value.ToString()!;
+
+	private string GetStringValue(object? value) => value == null || string.IsNullOrWhiteSpace(value.ToString())
+		? Globals.NullString
+		: value.ToString()!;
 
 	private void PlainOutput(GetJobCommandSettings settings, Dictionary<long, Job> rows)
 	{
@@ -46,7 +51,7 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 		bool allNull = !id && !title && !company && !startDate && !endDate && !description && !experience;
 		foreach(var (tblId, job) in rows)
 		{
-		var row = new List<string>();
+			var row = new List<string>();
 			if(allNull)
 			{
 				row.Add(tblId.ToString());
@@ -73,9 +78,9 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 					row.Add((GetStringValue(job.Description)));
 				if(experience)
 					row.Add(GetStringValue(job.Experience));
-
 			}
-		AnsiConsole.Write(new Columns(row) { Expand = false });
+
+			AnsiConsole.Write(new Columns(row) { Expand = false });
 		}
 		//AnsiConsole.WriteLine(tblId);
 	}
@@ -94,12 +99,12 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 		if(allNull)
 		{
 			table.AddColumn(new TableColumn("ID"))
-				 .AddColumn(new TableColumn("Job Title"))
-				 .AddColumn(new TableColumn("Company"))
-				 .AddColumn(new("Start Date"))
-				 .AddColumn(new("End Date"))
-				 .AddColumn(new("Description"))
-				 .AddColumn(new("Experience"));
+			     .AddColumn(new TableColumn("Job Title"))
+			     .AddColumn(new TableColumn("Company"))
+			     .AddColumn(new("Start Date"))
+			     .AddColumn(new("End Date"))
+			     .AddColumn(new("Description"))
+			     .AddColumn(new("Experience"));
 		}
 		else
 		{

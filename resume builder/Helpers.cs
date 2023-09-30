@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
+using resume_builder.models;
 using Spectre.Console;
 
 namespace resume_builder;

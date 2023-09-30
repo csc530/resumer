@@ -40,7 +40,7 @@ public class GetCommandSettings : CommandSettings
 	[Description("output in plain text")]
 	public bool Plain { get; set; }
 
-	[CommandOption("-g|--expand")]
+	[CommandOption("-e|--expand")]
 	[Description("output in expanded format: maximum width of each column (default)")]
 	[DefaultValue(false)]
 	public bool Expand { get; set; }

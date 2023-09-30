@@ -3,6 +3,7 @@ using NUnit.Framework.Internal;
 using resume_builder;
 using resume_builder.cli.commands.add;
 using resume_builder.models;
+using resume_builder.models.database;
 using Spectre.Console.Testing;
 
 namespace TestResumeBuilder.commands;
