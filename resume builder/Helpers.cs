@@ -8,8 +8,16 @@ namespace resume_builder;
 
 public static class Globals
 {
-	public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
 	public const string NullString = "<null/>";
+	public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
+
+	public static int PrintError(ExitCode exitCode, string message)
+	{
+		AnsiConsole.Foreground = Color.Red;
+		AnsiConsole.WriteLine($"Error {exitCode.ToInt()}: {exitCode}");
+		AnsiConsole.WriteLine(message);
+		return exitCode.ToInt();
+	}
 
 	public static int PrintError(CLISettings settings, Exception exception)
 	{
@@ -43,16 +51,6 @@ public static class Extensions
 {
 	public static int ToInt(this ExitCode exitCode) => (int)exitCode;
 	public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
-
-	public static string Prefix(this string s, string txt) => $"{txt}{s}";
-
-	public static List<string> Prefix(this IEnumerable<string> strings, string txt) =>
-		strings.Select(s => s.Prefix(txt)).ToList();
-
-	public static string Surround(this string s, string txt) => $"{txt}{s}{txt}";
-
-	public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
-		strings.Select(s => s.Surround(txt)).ToList();
 
 	public static object? GetNullableValue(this DbDataReader reader, string columnName)
 	{
@@ -95,14 +93,6 @@ public static class Extensions
 			cmd.Parameters.AddWithNullableValue(placeholder, value);
 	}
 
-	public static TextPrompt<T> Clone<T>(this TextPrompt<T> textPrompt, string prompt, T defaultValue = default) =>
-		new TextPrompt<T>(prompt)
-		{
-			ShowDefaultValue = textPrompt.ShowDefaultValue,
-			AllowEmpty = textPrompt.AllowEmpty,
-			Validator = textPrompt.Validator,
-			ValidationErrorMessage = textPrompt.ValidationErrorMessage,
-		}.DefaultValue(defaultValue);
 	//todo: inquire about default value being a property - spectre console pr/iss
 	// .DefaultValue(textPrompt);
 
@@ -127,6 +117,24 @@ public static class Extensions
 
 	public static string GetPrintValue(this object? value, bool allowBlank = false) =>
 		GetPrintValue(value?.ToString(), allowBlank);
+
+	#region strings
+
+	public static string Prefix(this string s, string txt) => $"{txt}{s}";
+
+	public static List<string> Prefix(this IEnumerable<string> strings, string txt) =>
+		strings.Select(s => s.Prefix(txt)).ToList();
+
+	public static string Surround(this string s, string txt) => $"{txt}{s}{txt}";
+
+	public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
+		strings.Select(s => s.Surround(txt)).ToList();
+
+	public static bool IsNullOrEmpty(this string s) => string.IsNullOrEmpty(s);
+	public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
+	public static bool IsBlank(this string? s) => s == null || string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s);
+
+	#endregion
 
 	#region Table
 
@@ -160,18 +168,6 @@ public static class Extensions
 
 public static class RenderableFactory
 {
-	public static TextPrompt<T?> CreateText<T>(string prompt, T? defaultValue = default,
-	                                           Func<T?, ValidationResult>? validator = null, bool allowEmpty = false,
-	                                           string? errorMessage = null) => new TextPrompt<T?>(prompt)
-		{
-			ShowDefaultValue = defaultValue != null,
-			AllowEmpty = defaultValue != null,
-			ValidationErrorMessage =
-				errorMessage ?? (defaultValue == null ? $"Invalid {prompt}" : $"{prompt} cannot be empty"),
-			Validator = validator,
-		}
-		.DefaultValue(defaultValue);
-
 	public static TableColumn CreateTableColumn(string name, bool nowrap = false) => new TableColumn(name)
 	{
 		Footer = new Text(name),
