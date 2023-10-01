@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using resume_builder.cli.settings;
 using Spectre.Console.Cli;
 
 namespace resume_builder.cli.commands.add;

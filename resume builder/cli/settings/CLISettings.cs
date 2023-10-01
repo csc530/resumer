@@ -1,7 +1,6 @@
-using System.Runtime.InteropServices;
 using Spectre.Console.Cli;
 
-namespace resume_builder.cli;
+namespace resume_builder.cli.settings;
 
 public class CLISettings : CommandSettings
 {

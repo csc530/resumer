@@ -1,15 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using resume_builder.cli;
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
-using resume_builder.cli.commands.get;
 using resume_builder.cli.commands.get.job;
-using resume_builder.cli.commands.search;
 using resume_builder.cli.commands.search.job;
-using resume_builder.models;
+using resume_builder.cli.settings;
 using Spectre.Console.Cli;
-using Spectre.Console;
 
 namespace resume_builder;
 
@@ -44,51 +40,31 @@ public static class Program
 			add.SetDescription("add new information to job database/bank");
 			add.AddCommand<AddJobCommand>("job")
 			   .WithDescription("add a new job")
-			   .WithExample("add", "job", "-s", "2022-01-01", "-e", "2026-11-01", "-t", "foreman");
+			   .WithExample("add", "job", "-s", "2022-01-01", "-e", "2026-11-01", "-t", "foreman")
+			   .WithAlias("j");
 			add.AddCommand<AddProfileCommand>("profile")
 			   .WithDescription("add a new profile")
-			   .WithAlias("user");
+			   .WithAlias("user")
+			   .WithAlias("u");
 			add.AddCommand<AddSkillCommand>("skill")
 			   .WithDescription("add a new skill")
 			   .WithExample("add", "skill", "Teamwork", "--type", "soft")
-			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "--type", "hard");
+			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "--type", "hard")
+			   .WithAlias("s");
 		});
-		config.AddBranch<GetCommandSettings>("get", get =>
+		config.AddBranch<OutputCommandSettings>("get", get =>
 		{
-			get.SetDescription("get information from job database/bank");
-
+			get.SetDescription("get job information from database/bank");
 			get.AddCommand<GetJobCommand>("job")
-			   .WithAlias("jobs");
+			   .WithAlias("jobs")
+			   .WithAlias("j");
 		});
-		config.AddBranch("search", search =>
+		config.AddBranch<OutputCommandSettings>("search", search =>
 		{
-			search.AddBranch("job", SearchJobBranchConfig);
-			search.AddBranch("jobs", SearchJobBranchConfig);
-			return;
-
-			void SearchJobBranchConfig(IConfigurator<SearchCommandSettings> searchJobConfig)
-			{
-				searchJobConfig.SetDefaultCommand<SearchJobCommand>();
-				searchJobConfig.AddCommand<SearchJobIdCommand>("id");
-				searchJobConfig.AddCommand<SearchJobDescriptionCommand>("description")
-				               .WithAlias("desc")
-				               .WithAlias("details")
-				               .WithAlias("d");
-				searchJobConfig.AddCommand<SearchJobExperienceCommand>("experience")
-				               .WithAlias("exp")
-				               .WithAlias("ex");
-				// SearchJob.AddCommand<SearchJobSkillsCommand>("skills");
-				searchJobConfig.AddCommand<SearchJobStartDateCommand>("start")
-				               .WithAlias("s")
-				               .WithAlias("start date");
-				searchJobConfig.AddCommand<SearchJobEndDateCommand>("end");
-				searchJobConfig.AddCommand<SearchJobTitleCommand>("title")
-				               .WithAlias("t");
-
-				searchJobConfig.AddCommand<SearchJobCommand>("")
-				               .WithAlias("jobs")
-				               .WithDescription("retrieve job(s) from database");
-			}
+			search.SetDescription("search for jobs matching search terms");
+			search.AddCommand<SearchJobCommand>("job")
+			      .WithAlias("jobs")
+			      .WithAlias("j");
 		});
 
 		config.AddCommand<InitCommand>("init")

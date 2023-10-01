@@ -1,7 +1,6 @@
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
-using resume_builder.cli;
-using resume_builder.cli.commands.add;
+using resume_builder.cli.settings;
 using resume_builder.models;
 using Spectre.Console;
 
@@ -117,5 +116,66 @@ public static class Extensions
 		SQLResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
 		SQLResultCode.Constraint => "constraint violation",
 		_ => "Unknown error"
+	};
+
+	public static string GetPrintValue(this string? value, bool allowBlank = false)
+	{
+		if(allowBlank)
+			return value ?? "";
+		return string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
+	}
+
+	public static string GetPrintValue(this object? value, bool allowBlank = false) =>
+		GetPrintValue(value?.ToString(), allowBlank);
+
+	#region Table
+
+	/// <summary>
+	/// add column values to the table based on conditions
+	/// </summary>
+	/// <param name="table">the table to append column values</param>
+	/// <param name="columns">a key-value pair of column condition and column values; if the column condition is true, the column value will be added to the table.
+	/// if the column condition is false, the column (value) will be skipped</param>
+	public static Table AddTableRow(this Table table, params KeyValuePair<bool, object?>[] columns)
+	{
+		var row = columns.Where(col => col.Key)
+		                 .Select(col => col.Value.GetPrintValue(allowBlank: true))
+		                 .ToArray();
+		table.AddRow(row);
+		return table;
+	}
+
+	public static Table? AddTableColumn(this Table table, string name, bool nowrap = false) =>
+		table.AddColumn(RenderableFactory.CreateTableColumn(name, nowrap));
+
+	public static Table? AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
+	{
+		foreach(var column in columns)
+			table.AddTableColumn(column, nowrap);
+		return table;
+	}
+
+	#endregion
+}
+
+public static class RenderableFactory
+{
+	public static TextPrompt<T?> CreateText<T>(string prompt, T? defaultValue = default,
+	                                           Func<T?, ValidationResult>? validator = null, bool allowEmpty = false,
+	                                           string? errorMessage = null) => new TextPrompt<T?>(prompt)
+		{
+			ShowDefaultValue = defaultValue != null,
+			AllowEmpty = defaultValue != null,
+			ValidationErrorMessage =
+				errorMessage ?? (defaultValue == null ? $"Invalid {prompt}" : $"{prompt} cannot be empty"),
+			Validator = validator,
+		}
+		.DefaultValue(defaultValue);
+
+	public static TableColumn CreateTableColumn(string name, bool nowrap = false) => new TableColumn(name)
+	{
+		Footer = new Text(name),
+		Header = new Text(name),
+		NoWrap = nowrap
 	};
 }
