@@ -1,3 +1,5 @@
+using Microsoft.Data.Sqlite;
+
 namespace resume_builder.models.database;
 
 public partial class Database
@@ -103,19 +105,15 @@ public partial class Database
 		return (string?)cmd.ExecuteScalar();
 	}
 
-	private SQLResultCode AddCompany(string company)
+	private void AddCompany(string company)
 	{
 		if(string.IsNullOrWhiteSpace(company))
 			throw new ArgumentException("company is null or empty", nameof(company));
-		var cmd = MainConnection.CreateCommand();
+		using var cmd = MainConnection.CreateCommand();
 		cmd.CommandText = "INSERT INTO company(name) VALUES ($Company)";
 		cmd.Parameters.AddWithValue("$Company", company);
 		cmd.Prepare();
 		cmd.ExecuteNonQuery();
-		cmd.CommandText = "SELECT last_insert_rowid()";
-		cmd.Prepare();
-		cmd.ExecuteScalar();
-		return SQLResultCode.Success;
 	}
 
 	public void Wipe()

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Data.Sqlite;
 using resume_builder.models;
 using resume_builder.models.database;
 using Spectre.Console;
@@ -14,7 +15,16 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 		Database database = new();
 		var plain = settings.Plain;
 		var ids = settings.Ids;
-		var rows = database.GetJob(ids ?? Array.Empty<long>());
+		Dictionary<long, Job> rows;
+		try
+		{
+			rows = database.GetJob(ids ?? Array.Empty<long>());
+		}
+		catch(Exception e)
+		{
+			return Globals.PrintError(settings, e);
+		}
+
 		var jobs = rows.Values;
 		if(jobs.Count == 0)
 		{
@@ -28,16 +38,14 @@ public class GetJobCommand : Command<GetJobCommandSettings>
 			PlainOutput(settings, rows);
 		else
 			TableOutput(table, settings, rows);
-
-
 		return ExitCode.Success.ToInt();
 	}
 
-	private string GetStringValue(string? value) => string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
+	private static string GetStringValue(string? value) =>
+		string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
 
-	private string GetStringValue(object? value) => value == null || string.IsNullOrWhiteSpace(value.ToString())
-		? Globals.NullString
-		: value.ToString()!;
+	private static string GetStringValue(object? value) =>
+		value == null ? Globals.NullString : GetStringValue(value.ToString());
 
 	private void PlainOutput(GetJobCommandSettings settings, Dictionary<long, Job> rows)
 	{
@@ -194,11 +202,10 @@ public class GetJobCommandSettings : GetCommandSettings
 	[CommandArgument(0, "[id]")]
 	[Description("id(s) of jobs to retrieve")]
 	public long[]? Ids { get; set; }
-	//todo: add discriminators/options for each field indicating what to return
 
 	public override ValidationResult Validate()
 	{
-		return Ids != null && Ids.Any(id => id == null || id < 0)
+		return Ids != null && Array.Exists(Ids, id => id == null || id < 0)
 			? ValidationResult.Error("id must be zero (0) or a positive number")
 			: ValidationResult.Success();
 	}

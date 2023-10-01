@@ -13,4 +13,5 @@ public enum ExitCode
 	TooManyArguments = 7,
 	Fail = 3,
 	NotFound = 404,
+	DbError
 }

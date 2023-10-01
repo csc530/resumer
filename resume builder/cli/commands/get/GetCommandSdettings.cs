@@ -4,14 +4,13 @@ using Spectre.Console.Cli;
 
 namespace resume_builder.cli.commands.get;
 
-public class GetCommandSettings : CommandSettings
+public class GetCommandSettings : CLISettings
 {
-	public virtual Table? GetTable(string? title = null)
-	{
-		if(Plain && !Table)
-			return null;
-		else if(Plain && Table)
-			return new Table()
+	public virtual Table? GetTable(string? title = null) =>
+		Plain switch
+		{
+			true when !Table => null,
+			true when Table => new Table()
 			{
 				Expand = (Expand && !Minimize) || (!Minimize && !Expand),
 				ShowFooters = false,
@@ -20,17 +19,16 @@ public class GetCommandSettings : CommandSettings
 				Caption = null,
 				Title = null,
 				UseSafeBorder = true,
-			};
-
-		return new Table
-		{
-			Expand = (Expand && !Minimize) || (!Minimize && !Expand),
-			Border = Border,
-			ShowFooters = Footer,
-			ShowHeaders = true,
-			Title = string.IsNullOrWhiteSpace(title) ? null : new($"[BOLD]{title}[/]")
+			},
+			_ => new Table
+			{
+				Expand = (Expand && !Minimize) || (!Minimize && !Expand),
+				Border = Border,
+				ShowFooters = Footer,
+				ShowHeaders = true,
+				Title = string.IsNullOrWhiteSpace(title) ? null : new TableTitle($"[BOLD]{title}[/]")
+			}
 		};
-	}
 
 	[CommandOption("-b|--border")]
 	[Description("table border style")]

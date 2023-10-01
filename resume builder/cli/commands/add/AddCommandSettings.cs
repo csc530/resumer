@@ -3,7 +3,7 @@ using Spectre.Console.Cli;
 
 namespace resume_builder.cli.commands.add;
 
-public class AddCommandSettings : CommandSettings
+public class AddCommandSettings : CLISettings
 {
 	[CommandOption("-i|--interactive")]
 	[Description("interactive mode")]

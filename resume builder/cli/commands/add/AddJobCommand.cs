@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Data.Sqlite;
 using resume_builder.models;
 using resume_builder.models.database;
 using Spectre.Console;
@@ -105,7 +106,15 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
 		startDate ??= Today;
 
 		var job = new Job(jobTitle, startDate, endDate, company, jobDescription, experience);
-		database.AddJob(job);
+		try
+		{
+			database.AddJob(job);
+		}
+		catch(Exception e)
+		{
+			return PrintError(settings, e);
+		}
+
 		AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
 		return ExitCode.Success.ToInt();
 	}

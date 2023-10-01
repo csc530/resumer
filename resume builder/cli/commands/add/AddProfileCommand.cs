@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Data.Sqlite;
 using resume_builder.models;
 using resume_builder.models.database;
 using Spectre.Console;
@@ -15,7 +16,15 @@ public sealed class AddProfileCommand : Command<AddProfileSettings>
 		profile.Summary = settings.Summary;
 		profile.Website = settings.Website;
 		Database database = new();
-		database.AddProfile(profile);
+		try
+		{
+			database.AddProfile(profile);
+		}
+		catch(Exception e)
+		{
+			return Globals.PrintError(settings, e);
+		}
+
 		AnsiConsole.MarkupLine($"✅ profile: [BOLD]{profile.FullName}[/] added");
 		return ExitCode.Success.ToInt();
 	}

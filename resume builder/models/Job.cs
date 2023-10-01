@@ -35,9 +35,6 @@ public sealed class Job
 		set => _company = Trim(value);
 	}
 
-	private static string? Trim(string? value) =>
-		string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
-
 	[Column("startDate")] public DateOnly StartDate { get; private set; }
 	[Column("endDate")] public DateOnly? EndDate { get; private set; }
 
@@ -54,6 +51,9 @@ public sealed class Job
 		get => _experience;
 		set => _experience = Trim(value);
 	}
+
+	private static string? Trim(string? value) =>
+		string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
 
 
 	public void SetTitle(string title)
@@ -76,8 +76,8 @@ public sealed class Job
 	public void SetEndDate(DateOnly? date)
 	{
 		if(EndDate < StartDate)
-			throw new ArgumentException(nameof(date),
-				$"end date ({EndDate}) must be after, or the same day as, the start date ({StartDate})");
+			throw new ArgumentException(
+				$"end date ({EndDate}) must be after, or the same day as, the start date ({StartDate})", nameof(date));
 		EndDate = date;
 	}
 

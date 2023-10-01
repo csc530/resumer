@@ -41,7 +41,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		};
 		MainConnection = new SqliteConnection(sqliteConnectionStringBuilder.ConnectionString);
 		sqliteConnectionStringBuilder.DataSource = Path.Combine(path, $"backup_{SqliteFileName}");
-		Open();
+		MainConnection.Open();
 	}
 
 	private SqliteConnection MainConnection { get; }
@@ -49,27 +49,18 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	async ValueTask IAsyncDisposable.DisposeAsync()
 	{
 		await MainConnection.DisposeAsync();
+		SqliteConnection.ClearPool(MainConnection);
+		GC.SuppressFinalize(this);
 	}
 
 	public void Dispose()
 	{
-		Close();
 		MainConnection.Dispose();
 		SqliteConnection.ClearPool(MainConnection);
+		GC.SuppressFinalize(this);
 	}
 
 	public bool IsInitialized() => IsInitialized(MainConnection);
-
-	private void Open()
-	{
-		MainConnection.Open();
-	}
-
-
-	private void Close()
-	{
-		MainConnection.Close();
-	}
 
 	public void Initialize()
 	{
@@ -90,29 +81,29 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		using var tableNamesCmd = connection.CreateCommand();
 		tableNamesCmd.CommandText =
 			"SELECT DISTINCT name FROM sqlite_master WHERE type='table' AND name NOT IN ('sqlite_sequence');";
-		using var result = tableNamesCmd.ExecuteReader();
-		if(!result.HasRows)
+		using var tableNamesReader = tableNamesCmd.ExecuteReader();
+		if(!tableNamesReader.HasRows)
 			return false;
 
-		List<string> tables = new();
-		while(result.Read())
-			tables.Add((string)result["name"]);
+		List<string> dbTables = new();
+		while(tableNamesReader.Read())
+			dbTables.Add((string)tableNamesReader["name"]);
 		if(!TemplateTableStructure.Keys.ToList()
-		                          .TrueForAll(name => tables.Contains(name, StringComparer.OrdinalIgnoreCase)))
+		                          .TrueForAll(name => dbTables.Contains(name, StringComparer.OrdinalIgnoreCase)))
 			return false;
 
 		using var columnNamesCmd = connection.CreateCommand();
-		foreach(string tableName in tables)
+		foreach(var tableName in dbTables)
 		{
 			columnNamesCmd.CommandText = $"PRAGMA TABLE_INFO(\"{tableName}\");";
 			columnNamesCmd.Prepare();
-			using var tableInfo = columnNamesCmd.ExecuteReader();
-			if(!tableInfo.HasRows)
+			using var tableInfoReader = columnNamesCmd.ExecuteReader();
+			if(!tableInfoReader.HasRows)
 				return false;
 			var columnNames = new List<string>();
-			while(tableInfo.Read())
+			while(tableInfoReader.Read())
 			{
-				var columnName = (string)tableInfo["name"];
+				var columnName = (string)tableInfoReader["name"];
 				columnNames.Add(columnName);
 			}
 

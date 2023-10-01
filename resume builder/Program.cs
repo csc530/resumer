@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using resume_builder.cli;
 using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
 using resume_builder.cli.commands.get;
@@ -14,11 +15,11 @@ namespace resume_builder;
 
 public static class Program
 {
-	private static void Main(string[] args)
+	private static int Main(string[] args)
 	{
 		var app = new CommandApp();
 		app.Configure(AppConfiguration);
-		app.Run(args);
+		return app.Run(args);
 	}
 
 	//todo: don't like that parent options and arguments are positional; spectre problem
@@ -35,6 +36,7 @@ public static class Program
 		config.SetApplicationName("resume builder");
 		config.SetApplicationVersion("1.0.0");
 		config.CaseSensitivity(CaseSensitivity.None);
+
 
 		//todo: add option if adding an existing entry to edit it
 		config.AddBranch<AddCommandSettings>("add", add =>

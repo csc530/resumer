@@ -1,5 +1,7 @@
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
+using resume_builder.cli;
+using resume_builder.cli.commands.add;
 using resume_builder.models;
 using Spectre.Console;
 
@@ -9,6 +11,33 @@ public static class Globals
 {
 	public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
 	public const string NullString = "<null/>";
+
+	public static int PrintError(CLISettings settings, Exception exception)
+	{
+		AnsiConsole.Foreground = Color.Red;
+		if(exception.GetType() == typeof(SqliteException))
+		{
+			var e = (SqliteException)exception;
+			var err = $"Database Error {e.SqliteErrorCode}";
+			if(settings.Verbose)
+				err += $"-{e.SqliteExtendedErrorCode}";
+			err += $": {((SQLResultCode)e.SqliteErrorCode).GetMessage()}";
+			AnsiConsole.WriteLine($"{err}");
+			if(settings.Verbose)
+				AnsiConsole.WriteLine($"{e.Message}");
+			return ExitCode.DbError.ToInt();
+		}
+		else if(exception is InvalidOperationException)
+		{
+			AnsiConsole.WriteLine("Invalid operation");
+			return ExitCode.Fail.ToInt();
+		}
+		else
+		{
+			AnsiConsole.WriteLine(exception.Message);
+			return ExitCode.Error.ToInt();
+		}
+	}
 }
 
 public static class Extensions
@@ -75,6 +104,18 @@ public static class Extensions
 			Validator = textPrompt.Validator,
 			ValidationErrorMessage = textPrompt.ValidationErrorMessage,
 		}.DefaultValue(defaultValue);
-	//todo: inquire about default value being a property
+	//todo: inquire about default value being a property - spectre console pr/iss
 	// .DefaultValue(textPrompt);
+
+	public static string GetMessage(this SQLResultCode code) => code switch
+	{
+		SQLResultCode.Success => "Success",
+		SQLResultCode.Error => "Error",
+		SQLResultCode.Readonly => "Database is readonly",
+		SQLResultCode.IOErr => "disk I/O error occurred",
+		SQLResultCode.NotNull => "not null constraint violated",
+		SQLResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
+		SQLResultCode.Constraint => "constraint violation",
+		_ => "Unknown error"
+	};
 }
