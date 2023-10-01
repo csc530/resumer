@@ -48,8 +48,8 @@ public static class Program
 			   .WithAlias("u");
 			add.AddCommand<AddSkillCommand>("skill")
 			   .WithDescription("add a new skill")
-			   .WithExample("add", "skill", "Teamwork", "--type", "soft")
-			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "--type", "hard")
+			   .WithExample("add", "skill", "Teamwork", "soft")
+			   .WithExample("add", "skill", "'Psychoanalytic therapy'", "hard")
 			   .WithAlias("s");
 		});
 		config.AddBranch<OutputCommandSettings>("get", get =>
