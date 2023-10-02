@@ -16,6 +16,7 @@ internal class InitCommand : Command
 			return ExitCode.Success.ToInt();
 		}
 
+		//todo: check for existing file with the same of db and ask to overwrite or recover
 		database.Initialize();
 		AnsiConsole.WriteLine("✅ Database initialized");
 		return ExitCode.Success.ToInt();

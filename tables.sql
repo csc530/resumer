@@ -22,29 +22,27 @@ CREATE TABLE job
 
 CREATE TABLE skill
 (
-    skill varchar(100) NOT NULL
+    name varchar(100) NOT NULL
         CONSTRAINT skills_pk
             PRIMARY KEY,
     type  varchar(100)
 );
-
-CREATE TABLE job_skills
-(
-    jobID   integer NOT NULL
-        CONSTRAINT job_skills_jobs_id_fk
-            REFERENCES job
-            ON DELETE CASCADE,
-    skillID integer NOT NULL
-        CONSTRAINT job_skills_skills_id_fk
-            REFERENCES skill
-            ON DELETE CASCADE,
-    CONSTRAINT job_skills_pk
-        PRIMARY KEY (jobID, skillID)
-)
-    WITHOUT ROWID;
-
-CREATE UNIQUE INDEX job_skills_jobID_uindex
-    ON job_skills (jobID);
+-- todo: figure if i want to relate skills to jobs
+-- CREATE TABLE job_skills
+-- (
+--     jobID   integer NOT NULL
+--         CONSTRAINT job_skills_jobs_id_fk
+--             REFERENCES job,
+--     skillID varchar(100) NOT NULL
+--         CONSTRAINT job_skills_skills_id_fk
+--             REFERENCES skill,
+--     CONSTRAINT job_skills_pk
+--         PRIMARY KEY (jobID, skillID)
+-- )
+--     WITHOUT ROWID;
+--
+-- CREATE UNIQUE INDEX job_skills_jobID_uindex
+--     ON job_skills (jobID);
 
 CREATE TABLE profile
 (

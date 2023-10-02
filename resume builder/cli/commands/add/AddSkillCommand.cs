@@ -15,7 +15,7 @@ public class AddSkillCommand : Command<AddSkillSettings>
 	{
 		var skillName = settings.Skill;
 		var skillType = settings.SkillType;
-		if(settings.Interactive || skillName.IsBlank())
+		if(settings.Interactive || skillName.IsBlank() || skillType == null)
 		{
 			skillName = AnsiConsole.Ask<string>("Skill: ");
 			skillType = new SelectionPrompt<SkillType>()
@@ -28,13 +28,10 @@ public class AddSkillCommand : Command<AddSkillSettings>
 
 		try
 		{
-			var skill = new Skill(skillName, skillType);
+			var skill = new Skill(skillName, skillType.Value);
 			Database database = new();
 			database.AddSkill(skill);
-			if(skill.Type == null)
-				AnsiConsole.MarkupLine($"""✅ Skill "[bold]{skill.Name}[/]" added""");
-			else
-				AnsiConsole.MarkupLine($"""✅ [bold]{skill.Type}[/] Skill "[bold]{skill.Name}[/]" added""");
+			AnsiConsole.MarkupLine($"""✅ [bold]{skill.Type}[/] Skill "[bold]{skill.Name}[/]" added""");
 			return ExitCode.Success.ToInt();
 		}
 		catch(Exception e)

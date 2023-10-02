@@ -153,13 +153,20 @@ public static class Extensions
 		return table;
 	}
 
-	public static Table? AddTableColumn(this Table table, string name, bool nowrap = false) =>
+	public static Table AddTableColumn(this Table table, string name, bool nowrap = false) =>
 		table.AddColumn(RenderableFactory.CreateTableColumn(name, nowrap));
 
-	public static Table? AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
+	public static Table AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
 	{
 		foreach(var column in columns)
 			table.AddTableColumn(column, nowrap);
+		return table;
+	}
+
+	public static Table AddTableColumn(this Table table, params string[] columns)
+	{
+		foreach(var column in columns)
+			table.AddTableColumn(column);
 		return table;
 	}
 

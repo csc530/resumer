@@ -1,9 +1,8 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using resume_builder.cli.commands;
+﻿using resume_builder.cli.commands;
 using resume_builder.cli.commands.add;
+using resume_builder.cli.commands.get;
 using resume_builder.cli.commands.get.job;
-using resume_builder.cli.commands.search.job;
+using resume_builder.cli.commands.search;
 using resume_builder.cli.settings;
 using Spectre.Console.Cli;
 
@@ -55,6 +54,12 @@ public static class Program
 		config.AddBranch<OutputCommandSettings>("get", get =>
 		{
 			get.SetDescription("get job information from database/bank");
+			get.AddCommand<GetSkillCommand>("skill")
+			   .WithAlias("s")
+			   .WithAlias("skills");
+			get.AddCommand<GetCompanyCommand>("company")
+			   .WithAlias("c")
+			   .WithDescription("get company information you've worked for");
 			get.AddCommand<GetJobCommand>("job")
 			   .WithAlias("jobs")
 			   .WithAlias("j");
@@ -62,6 +67,12 @@ public static class Program
 		config.AddBranch<OutputCommandSettings>("search", search =>
 		{
 			search.SetDescription("search for jobs matching search terms");
+			search.AddCommand<SearchCompanyCommand>("company")
+			      .WithAlias("c")
+			      .WithAlias("companies");
+			search.AddCommand<SearchSkillCommand>("skill")
+			      .WithAlias("s")
+			      .WithAlias("skills");
 			search.AddCommand<SearchJobCommand>("job")
 			      .WithAlias("jobs")
 			      .WithAlias("j");

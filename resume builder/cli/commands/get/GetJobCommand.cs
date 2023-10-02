@@ -12,12 +12,12 @@ public class GetJobCommand : JobOutputCommand<GetJobCommandSettings>
 {
 	public override int Execute([NotNull] CommandContext context, [NotNull] GetJobCommandSettings settings)
 	{
-		Database database = new();
 		var ids = settings.Ids ?? Array.Empty<long>();
 		Dictionary<long, Job> rows;
 		try
 		{
-			rows = database.GetJob(ids);
+			Database database = new();
+			rows = database.GetJobs(ids);
 		}
 		catch(Exception e)
 		{
@@ -26,16 +26,16 @@ public class GetJobCommand : JobOutputCommand<GetJobCommandSettings>
 
 		var jobs = rows.Values;
 		if(jobs.Count == 0)
-		{
 			AnsiConsole.MarkupLine("No jobs found");
-			return ExitCode.Success.ToInt();
+		else
+		{
+			var table = settings.GetTable();
+			if(table == null)
+				PrintJobsPlain(settings, rows);
+			else
+				PrintJobsTable(settings, table, rows);
 		}
 
-		var table = settings.GetTable();
-		if(table == null)
-			PrintJobsPlain(settings, rows);
-		else
-			PrintJobsTable(settings, table, rows);
 		return ExitCode.Success.ToInt();
 	}
 }

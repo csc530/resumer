@@ -12,7 +12,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		{
 			"job", new List<string> { "id", "company", "title", "startDate", "endDate", "description", "experience" }
 		},
-		{ "skill", new() { "skill", "type" } },
+		{ "name", new() { "name", "type" } },
 		{ "company", new() { "name" } },
 		{ "job_skills", new() { "jobID", "skillID" } },
 		{
@@ -67,6 +67,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 		if(IsInitialized())
 			return;
 		var cmd = MainConnection.CreateCommand();
+		//todo: if there exists a previous db file that it must overwrite, do it, etc.
 		cmd.CommandText = File.ReadAllText("tables.sql");
 		cmd.ExecuteNonQuery();
 	}

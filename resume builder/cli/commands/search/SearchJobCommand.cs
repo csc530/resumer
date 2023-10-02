@@ -6,7 +6,7 @@ using resume_builder.models.database;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace resume_builder.cli.commands.search.job;
+namespace resume_builder.cli.commands.search;
 
 public class SearchJobCommand : JobOutputCommand<SearchJobSettings>
 {

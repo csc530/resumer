@@ -1,5 +1,3 @@
-using Microsoft.Data.Sqlite;
-
 namespace resume_builder.models.database;
 
 public partial class Database
@@ -64,7 +62,7 @@ public partial class Database
 		return Job.ParseJobsFromQuery(data);
 	}
 
-	public Dictionary<long, Job> GetJob(long[] ids)
+	public Dictionary<long, Job> GetJobs(long[] ids)
 	{
 		if(ids.Length == 0)
 			return GetJobs();
@@ -96,7 +94,7 @@ public partial class Database
 	}
 
 
-	private string? GetCompany(string company)
+	public string? GetCompany(string company)
 	{
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText = "SELECT name FROM company WHERE name == @company";
@@ -168,9 +166,9 @@ public partial class Database
 	public void AddSkill(Skill skill)
 	{
 		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText = "INSERT INTO skill(skill, type) VALUES ($name, $type)";
+		cmd.CommandText = "INSERT INTO skill(name, type) VALUES ($name, $type)";
 		cmd.Parameters.AddWithValue("$name", skill.Name);
-		cmd.Parameters.AddWithValue("$type", skill.Type?.ToString());
+		cmd.Parameters.AddWithValue("$type", skill.Type.ToString());
 		cmd.Prepare();
 		cmd.ExecuteNonQuery();
 	}
@@ -235,5 +233,72 @@ public partial class Database
 		while(reader.Read())
 			jobs.Add((long)reader["id"], Job.ParseJobsFromQuery(reader) ?? throw new InvalidOperationException());
 		return jobs;
+	}
+
+	public List<string> GetCompaniesLike(string name)
+	{
+		using var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "SELECT name FROM company WHERE name LIKE $name";
+		cmd.Parameters.AddWithNullableValue("$name", name.Surround("%"));
+		cmd.Prepare();
+		using var reader = cmd.ExecuteReader();
+		var companies = new List<string>();
+		while(reader.Read())
+			companies.Add(reader.GetString(0));
+		return companies;
+	}
+
+	public List<string> GetCompanies()
+	{
+		using var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "SELECT name FROM company";
+
+		using var reader = cmd.ExecuteReader();
+		var companies = new List<string>();
+		while(reader.Read())
+			companies.Add(reader.GetString(0));
+		return companies;
+	}
+
+	public List<Skill> GetSkills()
+	{
+		using var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "SELECT * FROM skill";
+
+		using var reader = cmd.ExecuteReader();
+		var skills = new List<Skill>();
+		while(reader.Read())
+			skills.Add(Skill.ParseSkillsFromQuery(reader));
+		return skills;
+	}
+
+	public List<Skill> GetSkillsLike(string? name, SkillType? type)
+	{
+		if(name == null && type == null)
+			return GetSkills();
+		using var cmd = MainConnection.CreateCommand();
+		if(name != null && type != null)
+		{
+			cmd.CommandText = "SELECT * FROM skill WHERE name LIKE $name AND type IS $type";
+			cmd.Parameters.AddWithNullableValue("$name", name.Surround("%"));
+			cmd.Parameters.AddWithNullableValue("$type", type.ToString());
+		}
+		else if(name != null)
+		{
+			cmd.CommandText = "SELECT * FROM skill WHERE name LIKE $name";
+			cmd.Parameters.AddWithNullableValue("$name", name.Surround("%"));
+		}
+		else
+		{
+			cmd.CommandText = "SELECT * FROM skill WHERE type IS $type";
+			cmd.Parameters.AddWithNullableValue("$type", type.ToString());
+		}
+
+		cmd.Prepare();
+		using var reader = cmd.ExecuteReader();
+		var skills = new List<Skill>();
+		while(reader.Read())
+			skills.Add(Skill.ParseSkillsFromQuery(reader));
+		return skills;
 	}
 }
