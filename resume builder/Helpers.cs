@@ -125,7 +125,7 @@ public static class Extensions
 	public static List<string> Prefix(this IEnumerable<string> strings, string txt) =>
 		strings.Select(s => s.Prefix(txt)).ToList();
 
-	public static string Surround(this string s, string txt) => $"{txt}{s}{txt}";
+	public static string Surround(this string? s, string txt) => $"{txt}{s}{txt}";
 
 	public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
 		strings.Select(s => s.Surround(txt)).ToList();

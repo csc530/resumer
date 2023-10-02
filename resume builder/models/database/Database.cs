@@ -118,4 +118,50 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 
 
 	~Database() => Dispose();
+
+	private SqliteCommand GetJobsLikeQuery(string? jobTitle, DateOnly? startDate, DateOnly? endDate, string? company,
+	                                       string? description, string? experience)
+	{
+		var cmd = MainConnection.CreateCommand();
+		cmd.CommandText = "SELECT * FROM job WHERE ";
+		var conditions = new List<string>();
+		if(company != null)
+		{
+			conditions.Add("company LIKE $company");
+			cmd.Parameters.AddWithValue("$company", company.Surround("%"));
+		}
+
+		if(jobTitle != null)
+		{
+			conditions.Add("title LIKE $title");
+			cmd.Parameters.AddWithValue("$title", jobTitle.Surround("%"));
+		}
+
+		if(description != null)
+		{
+			conditions.Add("description LIKE $desc");
+			cmd.Parameters.AddWithValue("$desc", description.Surround("%"));
+		}
+
+		if(experience != null)
+		{
+			conditions.Add("experience LIKE $exp");
+			cmd.Parameters.AddWithValue("$exp", experience.Surround("%"));
+		}
+
+		if(startDate != null)
+		{
+			conditions.Add("startDate IS $start ");
+			cmd.Parameters.AddWithValue("$start", startDate);
+		}
+
+		if(endDate != null)
+		{
+			conditions.Add("endDate IS $end");
+			cmd.Parameters.AddWithValue("$end", endDate);
+		}
+
+		cmd.CommandText += string.Join(" OR ", conditions);
+		return cmd;
+	}
 }

@@ -12,10 +12,18 @@ public class SearchJobCommand : JobOutputCommand<SearchJobSettings>
 {
 	public override int Execute([NotNull] CommandContext context, [NotNull] SearchJobSettings settings)
 	{
-		Database database = new();
-		var rows = database.GetJobsLike(terms: settings.Terms);
-		var jobs = rows.Values;
+		Dictionary<long, Job> rows;
+		try
+		{
+			Database database = new();
+			rows = database.GetJobsLike(settings.Terms);
+		}
+		catch(Exception e)
+		{
+			return Globals.PrintError(settings, e);
+		}
 
+		var jobs = rows.Values;
 		if(jobs.Count == 0)
 			AnsiConsole.MarkupLine("No jobs found");
 		else

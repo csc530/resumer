@@ -19,4 +19,9 @@
     <Content Include="tables.sql" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="cli\commands\delete\"/>
+    <Folder Include="cli\commands\edit\"/>
+  </ItemGroup>
+
 </Project>
