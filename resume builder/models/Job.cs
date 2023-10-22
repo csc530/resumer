@@ -8,7 +8,7 @@ namespace resume_builder.models;
 /// <summary>
 ///     Modeled after and for the database jobs rows/columns
 /// </summary>
-[Table("jobs")]
+[Table("job")]
 public sealed class Job
 {
 	private string? _company;

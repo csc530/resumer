@@ -4,7 +4,7 @@ using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
-[Table("name")]
+[Table("skill")]
 public class Skill
 {
 	public Skill(string name, SkillType type)
