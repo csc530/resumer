@@ -12,6 +12,19 @@ public sealed class AddProfileCommand : Command<AddProfileSettings>
 {
 	public override int Execute([NotNull] CommandContext context, [NotNull] AddProfileSettings settings)
 	{
+		var firstName = settings.FirstName;
+		var lastName = settings.LastName;
+		var middleName = settings.MiddleName;
+		var phoneNumber = settings.PhoneNumber;
+		var emailAddress = settings.EmailAddress;
+		var website = settings.Website;
+		var summary = settings.Summary;
+
+		if(settings.PromptUser)
+		{
+			var firstNamePrompt = new TextPrompt<string>("First name: ");
+		}
+
 		var profile = new Profile(settings.FirstName, settings.LastName, settings.PhoneNumber, settings.EmailAddress);
 		profile.Summary = settings.Summary;
 		profile.Website = settings.Website;
@@ -32,6 +45,15 @@ public sealed class AddProfileCommand : Command<AddProfileSettings>
 
 public class AddProfileSettings : AddCommandSettings
 {
+	public bool PromptUser =>
+		(FirstName.IsBlank() && LastName.IsBlank() && MiddleName.IsBlank() && PhoneNumber.IsBlank() &&
+		 EmailAddress.IsBlank() && Website.IsBlank() && Summary.IsBlank())
+		||
+		(!FirstName.IsBlank() && !LastName.IsBlank() && !MiddleName.IsBlank() && !PhoneNumber.IsBlank() &&
+		 !EmailAddress.IsBlank() && !Website.IsBlank() && !Summary.IsBlank())
+		||
+		Interactive;
+
 	[CommandOption("-f|--first <FirstName>")]
 	public string FirstName { get; set; }
 

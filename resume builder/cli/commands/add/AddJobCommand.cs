@@ -8,15 +8,74 @@ using static resume_builder.Globals;
 
 namespace resume_builder.cli.commands.add;
 
+internal sealed class AddJobCommand : Command<AddJobSettings>
+{
+	public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
+	{
+		//? prompt user for required fields
+		var jobTitle = settings.JobTitle;
+		var jobDescription = settings.JobDescription;
+		var experience = settings.Experience;
+		var startDate = settings.StartDate;
+		var company = settings.Company;
+		var endDate = settings.EndDate;
+
+		if(settings.PromptUser)
+		{
+			// todo: show entered fields as default
+			var jobTitlePrompt = new TextPrompt<string>("Job title: ")
+			{
+				ShowDefaultValue = false,
+				AllowEmpty = false,
+				Validator = value => string.IsNullOrWhiteSpace(value)
+					? ValidationResult.Error("Job title is invalid: cannot be empty")
+					: ValidationResult.Success(),
+			};
+			var descriptionPrompt = new TextPrompt<string?>("Description: ").ShowDefaultValue(false).AllowEmpty();
+			var experiencePrompt = new TextPrompt<string?>("Experience: ").ShowDefaultValue(false).AllowEmpty();
+			var companyPrompt = new TextPrompt<string?>("Company: ").ShowDefaultValue(false).AllowEmpty();
+			var endDatePrompt = new TextPrompt<DateOnly?>("End date: ")
+			                    .AllowEmpty()
+			                    .DefaultValue(null)
+			                    .ShowDefaultValue(false)
+			                    .Validate(date => date > startDate
+				                    ? ValidationResult.Success()
+				                    : ValidationResult.Error("[red]End date must be after start date[/]"));
+
+			jobTitle = AnsiConsole.Prompt(jobTitlePrompt);
+			jobDescription = AnsiConsole.Prompt(descriptionPrompt);
+			experience = AnsiConsole.Prompt(experiencePrompt);
+			company = AnsiConsole.Prompt(companyPrompt);
+			startDate = AnsiConsole.Ask("Start date: ", Today);
+			endDate = AnsiConsole.Prompt(endDatePrompt);
+		}
+
+		if(string.IsNullOrWhiteSpace(jobTitle))
+			return PrintError(ExitCode.InvalidArgument, "Job title is invalid, it cannot be empty");
+
+		try
+		{
+			var job = new Job(jobTitle, startDate, endDate, company, jobDescription, experience);
+			new Database().AddJob(job);
+			AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
+			return ExitCode.Success.ToInt();
+		}
+		catch(Exception e)
+		{
+			return PrintError(settings, e);
+		}
+	}
+}
 public class AddJobSettings : AddCommandSettings
 {
-	public bool PromptUser => (JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null &&
-	                           JobDescription.IsBlank() && Experience.IsBlank())
-	                          ||
-	                          (!JobTitle.IsBlank() && !Company.IsBlank() && StartDate != null && EndDate != null &&
-	                           !JobDescription.IsBlank() && !Experience.IsBlank())
-	                          ||
-	                          Interactive;
+	public bool PromptUser =>
+		(JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null &&
+		 JobDescription.IsBlank() && Experience.IsBlank())
+		||
+		(!JobTitle.IsBlank() && !Company.IsBlank() && StartDate != null && EndDate != null &&
+		 !JobDescription.IsBlank() && !Experience.IsBlank())
+		||
+		Interactive;
 
 	[Description("start date at the job")]
 	[CommandOption("-s|--start <StartDate>")]
@@ -52,65 +111,5 @@ public class AddJobSettings : AddCommandSettings
 			? //(StartDate != null && EndDate < StartDate)
 			ValidationResult.Error($"end date must be after start date: {EndDate} < {StartDate}")
 			: ValidationResult.Success();
-	}
-}
-
-internal sealed class AddJobCommand : Command<AddJobSettings>
-{
-	public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
-	{
-		//? prompt user for required fields
-		var jobTitle = settings.JobTitle;
-		var jobDescription = settings.JobDescription;
-		var experience = settings.Experience;
-		var startDate = settings.StartDate;
-		var company = settings.Company;
-		var endDate = settings.EndDate;
-
-		if(settings.PromptUser)
-		{
-			//todo: show entered fields as default
-			var jobTitlePrompt = new TextPrompt<string>("Job title: ")
-			{
-				ShowDefaultValue = false,
-				AllowEmpty = false,
-				Validator = value => string.IsNullOrWhiteSpace(value)
-					? ValidationResult.Error("Job title is invalid: cannot be empty")
-					: ValidationResult.Success(),
-			};
-			var descriptionPrompt = new TextPrompt<string?>("Description: ").ShowDefaultValue(false).AllowEmpty();
-			var experiencePrompt = new TextPrompt<string?>("Experience: ").ShowDefaultValue(false).AllowEmpty();
-			var companyPrompt = new TextPrompt<string?>("Company: ").ShowDefaultValue(false).AllowEmpty();
-			var endDatePrompt = new TextPrompt<DateOnly?>("End date: ")
-			                    .AllowEmpty()
-			                    .DefaultValue(null)
-			                    .ShowDefaultValue(false)
-			                    .Validate(date => date > startDate
-				                    ? ValidationResult.Success()
-				                    : ValidationResult.Error("[red]End date must be after start date[/]"));
-
-			jobTitle = AnsiConsole.Prompt(jobTitlePrompt);
-			jobDescription = AnsiConsole.Prompt(descriptionPrompt);
-			experience = AnsiConsole.Prompt(experiencePrompt);
-			company = AnsiConsole.Prompt(companyPrompt);
-			startDate = AnsiConsole.Ask("Start date: ", Today);
-			endDate = AnsiConsole.Prompt(endDatePrompt);
-		}
-
-		Database database = new();
-		if(string.IsNullOrWhiteSpace(jobTitle))
-			return PrintError(ExitCode.InvalidArgument, "Job title is invalid, it cannot be empty");
-
-		try
-		{
-			var job = new Job(jobTitle, startDate, endDate, company, jobDescription, experience);
-			database.AddJob(job);
-			AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
-			return ExitCode.Success.ToInt();
-		}
-		catch(Exception e)
-		{
-			return PrintError(settings, e);
-		}
 	}
 }

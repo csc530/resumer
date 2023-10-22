@@ -58,3 +58,12 @@ CREATE TABLE profile
 );
 
 
+CREATE TABLE project
+(
+    id   integer NOT NULL
+        PRIMARY KEY AUTOINCREMENT,
+    name varchar(100) NOT NULL,
+    description TEXT,
+    link TEXT,
+    file BLOB
+);

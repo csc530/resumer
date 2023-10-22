@@ -1,4 +1,7 @@
-﻿namespace resume_builder.models.database;
+﻿using Microsoft.Data.Sqlite;
+using resume_builder.models.database.query;
+
+namespace resume_builder.models.database;
 
 public partial class Database
 {
@@ -157,6 +160,7 @@ public partial class Database
 		if(ids.Length == 0)
 			return GetJobs();
 		using var cmd = MainConnection.CreateCommand();
+		//make a select command with multiple dict items that or copares each
 		cmd.CommandText = "SELECT job.* FROM job WHERE id IN ";
 
 		var values = string.Join(",", ids.Select((_, i) => $"($id{i})"));
@@ -174,8 +178,7 @@ public partial class Database
 
 	public Dictionary<long, Job> GetJobs()
 	{
-		using var cmd = MainConnection.CreateCommand();
-		cmd.CommandText = "SELECT * FROM job";
+		using var cmd = MainConnection.CreateSelectAllCommand<Job>();
 		using var data = cmd.ExecuteReader();
 		var jobs = new Dictionary<long, Job>();
 		while(data.Read())
@@ -185,17 +188,7 @@ public partial class Database
 
 	public Job? GetJob(Job job)
 	{
-		var cmd = MainConnection.CreateCommand();
-		cmd.CommandText =
-			"SELECT * FROM job WHERE title = $title AND company IS $company AND startDate IS $start AND endDate IS $end AND description IS $desc AND experience IS $exp";
-		cmd.Parameters.AddWithNullableValue("$title", job.Title);
-		cmd.Parameters.AddWithNullableValue("company", job.Company);
-		cmd.Parameters.AddWithNullableValue("$start", job.StartDate);
-		cmd.Parameters.AddWithNullableValue("end", job.EndDate);
-		cmd.Parameters.AddWithNullableValue("$desc", job.Description);
-		cmd.Parameters.AddWithNullableValue("$exp", job.Experience);
-		cmd.Prepare();
-		var data = cmd.ExecuteReader();
+		var data = MainConnection.CreateSelectCommand(job).ExecuteReader();
 		data.Read();
 		return Job.ParseJobsFromQuery(data);
 	}
