@@ -1,6 +1,6 @@
 namespace resume_builder.models;
 
-public enum SQLResultCode
+public enum SqlResultCode
 {
 	Unknown = -1,
 
@@ -165,4 +165,20 @@ public enum SQLResultCode
 	/// sqlite3_step() has finished executing
 	///</summary>
 	Done = 101,
+}
+
+public  static partial class Extensions
+{
+
+	public static string GetMessage(this SqlResultCode code) => code switch
+	{
+		SqlResultCode.Success => "Success",
+		SqlResultCode.Error => "Error",
+		SqlResultCode.Readonly => "Database is readonly",
+		SqlResultCode.IOErr => "disk I/O error occurred",
+		SqlResultCode.NotNull => "not null constraint violated",
+		SqlResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
+		SqlResultCode.Constraint => "constraint violation",
+		_ => "Unknown error"
+	};
 }

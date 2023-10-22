@@ -1,4 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Common;
+using System.Reflection;
 using Microsoft.Data.Sqlite;
 using resume_builder.cli.settings;
 using resume_builder.models;
@@ -28,7 +30,7 @@ public static class Globals
 			var err = $"Database Error {e.SqliteErrorCode}";
 			if(settings.Verbose)
 				err += $"-{e.SqliteExtendedErrorCode}";
-			err += $": {((SQLResultCode)e.SqliteErrorCode).GetMessage()}";
+			err += $": {((SqlResultCode)e.SqliteErrorCode).GetMessage()}";
 			AnsiConsole.WriteLine($"{err}");
 			if(settings.Verbose)
 				AnsiConsole.WriteLine($"{e.Message}");
@@ -47,10 +49,31 @@ public static class Globals
 	}
 }
 
-public static class Extensions
+public  static partial class Extensions
 {
+	#region conversions
+
 	public static int ToInt(this ExitCode exitCode) => (int)exitCode;
 	public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
+
+	#endregion
+
+
+	// todo: inquire about default value being a property - spectre console pr/iss
+	// .DefaultValue(textPrompt);
+
+
+	public static string GetPrintValue(this string? value, bool allowBlank = false)
+	{
+		if(allowBlank)
+			return value ?? "";
+		return string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
+	}
+
+	public static string GetPrintValue(this object? value, bool allowBlank = false) =>
+		GetPrintValue(value?.ToString(), allowBlank);
+
+	#region sql values
 
 	public static object? GetNullableValue(this DbDataReader reader, string columnName)
 	{
@@ -80,43 +103,7 @@ public static class Extensions
 	public static void AddWithNullableValue(this SqliteParameterCollection parameters, string name, object? value)
 		=> parameters.AddWithValue(name, value ?? DBNull.Value);
 
-	public static void BindParameters(this SqliteCommand cmd, Dictionary<string, object?> placeholderValuePairs)
-	{
-		foreach(var (placeholder, value) in placeholderValuePairs)
-			cmd.Parameters.AddWithNullableValue(placeholder, value);
-	}
-
-	public static void BindParameters(this SqliteCommand cmd,
-	                                  IEnumerable<KeyValuePair<string, object?>> placeholderValuePairs)
-	{
-		foreach(var (placeholder, value) in placeholderValuePairs)
-			cmd.Parameters.AddWithNullableValue(placeholder, value);
-	}
-
-	//todo: inquire about default value being a property - spectre console pr/iss
-	// .DefaultValue(textPrompt);
-
-	public static string GetMessage(this SQLResultCode code) => code switch
-	{
-		SQLResultCode.Success => "Success",
-		SQLResultCode.Error => "Error",
-		SQLResultCode.Readonly => "Database is readonly",
-		SQLResultCode.IOErr => "disk I/O error occurred",
-		SQLResultCode.NotNull => "not null constraint violated",
-		SQLResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
-		SQLResultCode.Constraint => "constraint violation",
-		_ => "Unknown error"
-	};
-
-	public static string GetPrintValue(this string? value, bool allowBlank = false)
-	{
-		if(allowBlank)
-			return value ?? "";
-		return string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
-	}
-
-	public static string GetPrintValue(this object? value, bool allowBlank = false) =>
-		GetPrintValue(value?.ToString(), allowBlank);
+	#endregion
 
 	#region strings
 
