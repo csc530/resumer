@@ -155,16 +155,17 @@ public partial class Database
 		: GetJobsLike(job.Title, job.StartDate, job.EndDate, job.Company, job.Description, job.Experience);
 
 
-	public Dictionary<long, Job> GetJobs(long[] ids)
+	public Dictionary<long, Job> GetJobs(params long[] ids)
 	{
 		if(ids.Length == 0)
 			return GetJobs();
+
 		using var cmd = MainConnection.CreateCommand();
 		//make a select command with multiple dict items that or copares each
 		cmd.CommandText = "SELECT job.* FROM job WHERE id IN ";
-
-		var values = string.Join(",", ids.Select((_, i) => $"($id{i})"));
-		cmd.CommandText += $"({values})";
+		// ? add parameterized ids to the command, within a subquery for the *IN* clause
+		var idValues = string.Join(",", ids.Select((_, i) => $"($id{i})"));
+		cmd.CommandText += $"({idValues})";
 		for(var i = 0; i < ids.Length; i++)
 			cmd.Parameters.AddWithValue($"$id{i}", ids[i]);
 
@@ -172,7 +173,7 @@ public partial class Database
 		using var data = cmd.ExecuteReader();
 		var jobs = new Dictionary<long, Job>();
 		while(data.Read())
-			jobs.Add((long)data["id"], Job.ParseJobsFromQuery(data) ?? throw new InvalidOperationException());
+			jobs.Add((long)data["id"], Job.ParseJobsFromQuery(data));
 		return jobs;
 	}
 

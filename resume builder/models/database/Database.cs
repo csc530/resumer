@@ -122,6 +122,7 @@ public sealed partial class Database : IDisposable, IAsyncDisposable
 	private SqliteCommand GetJobsLikeQuery(string? jobTitle, DateOnly? startDate, DateOnly? endDate, string? company,
 	                                       string? description, string? experience)
 	{
+		//use new createselectcommand
 		var cmd = MainConnection.CreateCommand();
 		cmd.CommandText = "SELECT * FROM job WHERE ";
 		var conditions = new List<string>();

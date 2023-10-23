@@ -114,8 +114,15 @@ public  static partial class Extensions
 
 	public static string Surround(this string? s, string txt) => $"{txt}{s}{txt}";
 
-	public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
-		strings.Select(s => s.Surround(txt)).ToList();
+
+	/// <summary> surrounds each string within a list with another string.</summary>
+ ///
+ /// <param name="strings"> the list strings to be surrounded.
+ /// </param>
+ /// <param name="txt"> The text to surround the strings with.</param>
+ ///
+ /// <returns> A list of strings with the parameter txt surrounding each string in the original list.</returns>
+ public static List<string> Surround(this IEnumerable<string> strings, string txt) => strings.Select(s => s.Surround(txt)).ToList();
 
 	public static bool IsNullOrEmpty(this string s) => string.IsNullOrEmpty(s);
 	public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
