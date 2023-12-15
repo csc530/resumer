@@ -1,101 +1,100 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 
 namespace resume_builder.models;
 
-[Table("profile")]
+[PrimaryKey(nameof(FirstName), nameof(MiddleName), nameof(LastName))]
 public class Profile
 {
-	[Column("firstName")] public string FirstName { get; set; }
-	[Column("middleName")] public string? MiddleName { get; set; }
-	[Column("lastName")] public string LastName { get; set; }
+    private string _emailAddress;
+    private string _phoneNumber;
+    private string _firstName;
+    private string _lastName;
 
-	public string WholeName
-	{
-		get => $"{FirstName} {MiddleName} {LastName}";
-		set
-		{
-			var parts = value.Split(' ');
-			FirstName = parts[0];
-			MiddleName = parts[1];
-			LastName = parts[2];
-		}
-	}
+    public string FirstName
+    {
+        get => _firstName;
+        set
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            _firstName = value;
+        }
+    }
 
-	public string FullName
-	{
-		get => $"{FirstName} {LastName}";
-		set
-		{
-			var parts = value.Split(' ');
-			FirstName = parts[0];
-			LastName = parts[1];
-		}
-	}
+    public string? MiddleName { get; set; }
 
-	public string Initials => $"{FirstName[..1]}{LastName[..1]}";
+    [Key]
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            _lastName = value;
+        }
+    }
 
-	[Phone(), Column("phoneNumber")] public string PhoneNumber { get; protected set; }
+    public string WholeName
+    {
+        get => $"{FirstName} {MiddleName} {LastName}";
+        set
+        {
+            var parts = value.Split(' ');
+            FirstName = parts[0];
+            MiddleName = parts[1];
+            LastName = parts[2];
+        }
+    }
 
-	[EmailAddress] [Column("email")] public string EmailAddress { get; protected set; }
+    public string FullName
+    {
+        get => $"{FirstName} {LastName}";
+        set
+        {
+            var parts = value.Split(' ');
+            FirstName = parts[0];
+            LastName = parts[1];
+        }
+    }
 
-	[Column("website")] public string? Website { get; set; }
-	[Column("summary")] public string? Summary { get; set; }
+    public string Initials => $"{FirstName[..1]}{LastName[..1]}";
 
-	public Profile(string firstName, string lastName, string phoneNumber, string emailAddress)
-	{
-		SetFirstName(firstName);
-		SetLastName(lastName);
-		SetPhoneNumber(phoneNumber);
-		SetEmailAddress(emailAddress);
-	}
+    [Phone()]
+    public string PhoneNumber
 
-	private void SetEmailAddress(string emailAddress)
-	{
-		if(!string.IsNullOrWhiteSpace(emailAddress) && emailAddress.Contains('@'))
-			EmailAddress = emailAddress;
-		else
-			throw new ArgumentException("Email address invalid: must contain '@'", nameof(emailAddress));
-	}
+    {
+        get => _phoneNumber;
+        set
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            _phoneNumber = value;
+        }
+    }
 
-	private void SetPhoneNumber(string phoneNumber)
-	{
-		if(!string.IsNullOrWhiteSpace(phoneNumber))
-			PhoneNumber = phoneNumber;
-		else
-			throw new ArgumentException("Phone number cannot be null or empty", nameof(phoneNumber));
-	}
+    [EmailAddress]
+    public string EmailAddress
 
-	private void SetLastName(string lastName)
-	{
-		if(string.IsNullOrWhiteSpace(lastName))
-			throw new ArgumentException("Last name cannot be null or empty", nameof(lastName));
-		LastName = lastName;
-	}
+    {
+        get => _emailAddress;
+        set
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            if(!value.Contains('@'))
+                throw new ArgumentException("Email address invalid: it must contain '@'", nameof(value));
+            _emailAddress = value;
+        }
+    }
 
-	private void SetFirstName(string? firstName)
-	{
-		if(!string.IsNullOrWhiteSpace(firstName))
-			FirstName = firstName!;
-		else
-			throw new ArgumentException("First name cannot be null or empty", nameof(firstName));
-	}
+    public string? Website { get; set; }
+    public string? Summary { get; set; }
 
-	public static Profile? ParseProfilesFromQuery(SqliteDataReader sqliteDataReader)
-	{
-		if(!sqliteDataReader.HasRows)
-			return null;
-		var firstName = sqliteDataReader.GetNullableValue<string>("firstName");
-		var lastName = sqliteDataReader.GetNullableValue<string>("lastName");
-		var phoneNumber = sqliteDataReader.GetNullableValue<string>("phoneNumber");
-		var emailAddress = sqliteDataReader.GetNullableValue<string>("email");
-		var website = sqliteDataReader.GetNullableValue<string>("website");
-		var summary = sqliteDataReader.GetNullableValue<string>("summary");
-		return new Profile(firstName, lastName, phoneNumber, emailAddress)
-		{
-			Website = website,
-			Summary = summary
-		};
-	}
+    public Profile(string firstName, string lastName, string phoneNumber, string emailAddress)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+        EmailAddress = emailAddress;
+    }
 }

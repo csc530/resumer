@@ -20,7 +20,7 @@ public static class Program
 	//todo: don't like that parent options and arguments are positional; spectre problem
 	public static void AppConfiguration(IConfigurator config)
 	{
-		if(config is null)
+		if(config == null)
 			throw new ArgumentNullException(nameof(config));
 
 	#if DEBUG

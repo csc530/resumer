@@ -58,7 +58,6 @@ public  static partial class Extensions
 
 	#endregion
 
-
 	// todo: inquire about default value being a property - spectre console pr/iss
 	// .DefaultValue(textPrompt);
 
