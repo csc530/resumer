@@ -1,7 +1,5 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore;
-using resume_builder.models;
 using resume_builder.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,7 +7,7 @@ using static resume_builder.Globals;
 
 namespace resume_builder.cli.commands.add;
 
-internal sealed class AddJobCommand : Command<AddJobSettings>
+internal sealed class AddJobCommand: Command<AddJobSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
     {
@@ -23,70 +21,55 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
 
         if(settings.PromptUser)
         {
-            // todo: show entered fields as default
-            var jobTitlePrompt = new TextPrompt<string>("Job title: ")
-            {
-                ShowDefaultValue = false,
-                AllowEmpty = false,
-                Validator = value => string.IsNullOrWhiteSpace(value)
+            var jobTitlePrompt = RenderableFactory.CreateTextPrompt("Job title: ", jobTitle).Validate(value =>
+                string.IsNullOrWhiteSpace(value)
                     ? ValidationResult.Error("Job title is invalid: cannot be empty")
-                    : ValidationResult.Success(),
-            };
-            var descriptionPrompt = new TextPrompt<string?>("Description: ").ShowDefaultValue(false).AllowEmpty();
-            var experiencePrompt = new TextPrompt<string?>("Experience: ").ShowDefaultValue(false).AllowEmpty();
-            var companyPrompt = new TextPrompt<string?>("Company: ").ShowDefaultValue(false).AllowEmpty();
-            var endDatePrompt = new TextPrompt<DateOnly?>("End date: ")
-                                .AllowEmpty()
-                                .DefaultValue(null)
-                                .ShowDefaultValue(false)
-                                .Validate(date => date > startDate
-                                    ? ValidationResult.Success()
-                                    : ValidationResult.Error("[red]End date must be after start date[/]"));
+                    : ValidationResult.Success());
+            var startDatePrompt = RenderableFactory.CreateTextPrompt("Start date: ", startDate ?? Today, true)
+                .Validate(date => date < Today
+                    ? ValidationResult.Error("[red]Start date must be in the past[/]")
+                    : ValidationResult.Success());
+            var descriptionPrompt = RenderableFactory.CreateTextPrompt("Description: ", jobDescription);
+            var experiencePrompt = RenderableFactory.CreateTextPrompt("Experience: ", experience);
+            var companyPrompt = RenderableFactory.CreateTextPrompt("Company: ", company);
+            var endDatePrompt = RenderableFactory.CreateTextPrompt("End date: ", endDate, true)
+                .Validate(date => date > startDate
+                    ? ValidationResult.Success()
+                    : ValidationResult.Error("[red]End date must be after start date[/]"));
 
             jobTitle = AnsiConsole.Prompt(jobTitlePrompt);
             jobDescription = AnsiConsole.Prompt(descriptionPrompt);
             experience = AnsiConsole.Prompt(experiencePrompt);
             company = AnsiConsole.Prompt(companyPrompt);
-            startDate = AnsiConsole.Ask("Start date: ", Today);
+            startDate = AnsiConsole.Prompt(startDatePrompt);
             endDate = AnsiConsole.Prompt(endDatePrompt);
         }
 
         if(string.IsNullOrWhiteSpace(jobTitle))
-            return PrintError(ExitCode.InvalidArgument, "Job title is invalid, it cannot be empty");
+            throw new ArgumentException("Job title is invalid, it cannot be empty");
 
-        try
+        var job = new Job()
         {
-            var job = new Job()
-            {
-                Title = jobTitle,
-                Description = jobDescription,
-                Experience = experience,
-                Company = company,
-                StartDate = (DateOnly)startDate!,
-                EndDate = endDate
-                
-            };
-            ResumeContext db = new ResumeContext();
-            db.Jobs.Add(job);
-            db.SaveChanges(acceptAllChangesOnSuccess: true);
-            AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
-            return ExitCode.Success.ToInt();
-        }
-        catch(Exception e)
-        {
-            return PrintError(settings, e);
-        }
+            Title = jobTitle,
+            Description = jobDescription,
+            Experience = experience,
+            Company = company,
+            StartDate = (DateOnly)startDate!,
+            EndDate = endDate
+        };
+        var db = new ResumeContext();
+        db.Jobs.Add(job);
+        db.SaveChanges(acceptAllChangesOnSuccess: true);
+        AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
+        return ExitCode.Success.ToInt();
     }
 }
-public class AddJobSettings : AddCommandSettings
+
+public class AddJobSettings: AddCommandSettings
 {
     public bool PromptUser =>
-        (JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null &&
-         JobDescription.IsBlank() && Experience.IsBlank())
-        ||
-        //? why did i do this? shouldn't only be if they're all null???
-        (!JobTitle.IsBlank() && !Company.IsBlank() && StartDate != null && EndDate != null &&
-         !JobDescription.IsBlank() && !Experience.IsBlank())
+        (JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null && JobDescription.IsBlank() &&
+         Experience.IsBlank())
         ||
         Interactive;
 
@@ -116,13 +99,13 @@ public class AddJobSettings : AddCommandSettings
 
     public override ValidationResult Validate()
     {
-        if(string.IsNullOrWhiteSpace(JobTitle) && JobTitle != null ||
-           (string.IsNullOrWhiteSpace(JobTitle) && !PromptUser))
+        if(string.IsNullOrWhiteSpace(JobTitle) && !PromptUser)
             return ValidationResult.Error("Job title is invalid: cannot be empty");
 
+        // equivalent to
+        //(StartDate != null && EndDate != null && EndDate < StartDate)
         return EndDate < StartDate
-            ? //(StartDate != null && EndDate < StartDate)
-            ValidationResult.Error($"end date must be after start date: {EndDate} < {StartDate}")
+            ? ValidationResult.Error($"end date must be after start date: {EndDate} !< {StartDate}")
             : ValidationResult.Success();
     }
 }
