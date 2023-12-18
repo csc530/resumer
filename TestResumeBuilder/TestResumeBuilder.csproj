@@ -20,6 +20,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Spectre.Console.Testing" Version="0.48.0" />
+		<PackageReference Include="WaffleGenerator" Version="4.2.1"/>
 		<PackageReference Include="xunit" Version="2.6.3" />
 		<PackageReference Include="xunit.analyzers" Version="1.7.0">
 			<PrivateAssets>all</PrivateAssets>

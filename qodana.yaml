@@ -3,27 +3,48 @@
 #             https://www.jetbrains.com/help/qodana/qodana-yaml.html            #
 #-------------------------------------------------------------------------------#
 version: "1.0"
-
 #Specify inspection profile for code analysis
 profile:
   name: qodana.starter
-
 #Enable inspections
 #include:
 #  - name: <SomeEnabledInspectionId>
-
 #Disable inspections
 #exclude:
 #  - name: <SomeDisabledInspectionId>
 #    paths:
 #      - <path/where/not/run/inspection>
-
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
 #bootstrap: sh ./prepare-qodana.sh
-
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
-
 #Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-dotnet:latest
+include:
+  - name: AutoPropertyCanBeMadeGetOnly.Global
+  - name: AutoPropertyCanBeMadeGetOnly.Local
+  - name: FieldCanBeMadeReadOnly.Global
+  - name: PublicConstructorInAbstractClass
+  - name: MemberCanBePrivate.Global
+  - name: PropertyCanBeMadeInitOnly.Global
+  - name: UseMethodAny.2
+  - name: ConvertIfStatementToReturnStatement
+  - name: MergeIntoPattern
+  - name: UseObjectOrCollectionInitializer
+  - name: ClassNeverInstantiated.Global
+  - name: RedundantAttributeParentheses
+  - name: RedundantIfElseBlock
+  - name: RedundantEmptyObjectCreationArgumentList
+  - name: UnusedMethodReturnValue.Global
+  - name: UnusedMember.Global
+  - name: UnusedParameter.Global
+  - name: VirtualMemberNeverOverridden.Global
+  - name: CA1860
+  - name: CA1827
+  - name: ArrangeModifiersOrder
+  - name: ArrangeRedundantParentheses
+  - name: ArrangeNamespaceBody
+  - name: ArrangeTrailingCommaInMultilineLists
+  - name: ArrangeObjectCreationWhenTypeEvident
+  - name: CheckDependencyLicenses

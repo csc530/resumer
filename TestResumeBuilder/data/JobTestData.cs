@@ -1,0 +1,19 @@
+using Bogus;
+using resume_builder.models;
+
+namespace TestResumeBuilder;
+
+internal class JobTestData: TestData
+{
+    protected static Faker<Job> BogusJob { get; set; } = new Faker<Job>()
+        .RuleFor(job => job.Title, RandomJobTitle)
+        .RuleFor(job => job.Description, RandomTextOrNull)
+        .RuleFor(job => job.Experience, RandomTextOrNull)
+        .RuleFor(job => job.Company, RandomCompany)
+        .RuleFor(job => job.StartDate, RandomPastDate)
+        .RuleFor(job => job.EndDate, RandomEndDate);
+
+    public static string RandomJobTitle() => Faker.Name.JobTitle();
+    public static string RandomCompany() => Faker.Company.CompanyName();
+    public static DateOnly? RandomEndDate() => RandomPastDate().OrNull(Faker);
+}

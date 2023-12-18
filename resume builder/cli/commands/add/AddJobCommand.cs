@@ -45,16 +45,13 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
             endDate = AnsiConsole.Prompt(endDatePrompt);
         }
 
-        if(string.IsNullOrWhiteSpace(jobTitle))
-            throw new ArgumentException("Job title is invalid, it cannot be empty");
-
         var job = new Job()
         {
             Title = jobTitle,
             Description = jobDescription,
             Experience = experience,
             Company = company,
-            StartDate = (DateOnly)startDate!,
+            StartDate = (DateOnly)startDate,
             EndDate = endDate
         };
         var db = new ResumeContext();

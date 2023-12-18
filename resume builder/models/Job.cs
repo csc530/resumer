@@ -1,17 +1,28 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
 public class Job
 {
-    private string? _company;
+    private string _company;
     private string? _description;
     private string? _experience;
     private string _title;
+
+    public Job()
+    {
+        Id = Guid.NewGuid();
+    }
+
+    public Job(Guid id, string title, string company, DateOnly? startDate = null)
+    {
+        Id = id;
+        Title = title;
+        Company = company;
+        StartDate = startDate ?? Globals.Today;
+    }
 
     public Guid Id { get; init; }
 
@@ -21,15 +32,21 @@ public class Job
         get => _title;
         set
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value);
-            _title = Trim(value)!;
+            if(string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Job title cannot be empty");
+            _title = Trim(value.ReplaceLineEndings(" - "));
         }
     }
-    
-    public string? Company
+
+    public string Company
     {
         get => _company;
-        set => _company = Trim(value);
+        set
+        {
+            if(string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Company name cannot be empty");
+            _company = Trim(value);
+        }
     }
 
     public DateOnly StartDate { get; set; }
@@ -47,29 +64,20 @@ public class Job
         set => _experience = Trim(value);
     }
 
-    public Job()
-    {
-        Id = Guid.NewGuid();
-    }
-    public Job(string title, Guid id, DateOnly? startDate = null): this()
-    {
-        Title = title;
-        StartDate = startDate ?? Globals.Today;
-    }
-
+    [return: NotNullIfNotNull(nameof(value))]
     private static string? Trim(string? value) =>
-        string.IsNullOrWhiteSpace(value) ? null : value.ReplaceLineEndings(" - ").Trim();
+        string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 
     public override string ToString()
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.Append($"{Title} ({StartDate:yyyy-MM-dd} - ");
-        if (EndDate == null)
+        if(EndDate == null)
             stringBuilder.Append("present");
         else
             stringBuilder.Append($"{EndDate:yyyy-MM-dd}");
         stringBuilder.Append(')');
-        if (!string.IsNullOrWhiteSpace(Company))
+        if(!string.IsNullOrWhiteSpace(Company))
             stringBuilder.Append($" @ {Company}");
         return stringBuilder.ToString();
     }

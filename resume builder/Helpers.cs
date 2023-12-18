@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Data.Sqlite;
 using resume_builder.cli.settings;
 using resume_builder.models;
@@ -130,7 +131,8 @@ public static class Extensions
     /// </summary>
     /// <param name="s">string to check</param>
     /// <returns>true if the string is null, empty, or whitespace; otherwise false</returns>
-    public static bool IsBlank(this string? s) => s == null || string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s);
+    public static bool IsBlank([NotNullWhen(false)] this string? s) =>
+        s == null || string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s);
 
     #endregion
 
