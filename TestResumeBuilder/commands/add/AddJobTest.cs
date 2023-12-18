@@ -93,14 +93,15 @@ public class AddJobTest: TestBase
         ];
         var result = TestApp.Run(args.Where(x => x != null).ToArray()!);
         Assert.Equal(0, result.ExitCode);
+        Assert.Equal(1, TestDb.Jobs.Count());
         var job = TestDb.Jobs.First(j => j.Title == jobTitle && j.Company == companyName && j.StartDate == startDate);
         Assert.NotNull(job);
+
         //clean inputs; trim and nullify empty strings
         jobDescription = jobDescription?.Trim();
         companyName = companyName.Trim();
         experience = experience?.Trim();
         jobTitle = jobTitle.Trim();
-
 
         Assert.Equal(jobTitle, job!.Title);
         Assert.Equal(companyName, job.Company);

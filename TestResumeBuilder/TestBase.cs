@@ -15,7 +15,7 @@ namespace TestResumeBuilder
             //given
             TestApp = new CommandAppTester();
             TestApp.Configure(Program.AppConfiguration);
-            TestDb = new ResumeContext();
+            TestDb = new TestContext();
         }
 
         public async ValueTask DisposeAsync()
