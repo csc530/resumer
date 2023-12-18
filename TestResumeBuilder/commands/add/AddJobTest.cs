@@ -14,7 +14,7 @@ public class AddJobTest: TestBase
         {
             {
                 "jobTitle", "companyName", new DateOnly(2021, 1, 1), "jobDescription", "experience",
-                new DateOnly(2231,                            1, 1)
+                new DateOnly(2231, 1, 1)
             }
         };
 
@@ -41,9 +41,9 @@ public class AddJobTest: TestBase
         {
             Assert.Equal(0, result.ExitCode);
             Assert.NotNull(resultSettings);
-            Assert.Equal(jobTitle,    resultSettings.JobTitle);
+            Assert.Equal(jobTitle, resultSettings.JobTitle);
             Assert.Equal(companyName, resultSettings.Company);
-            Assert.Equal(startDate,   resultSettings.StartDate);
+            Assert.Equal(startDate, resultSettings.StartDate);
         });
     }
 
@@ -64,17 +64,17 @@ public class AddJobTest: TestBase
             ..cmdArgs, ..descriptionArg, ..expArg, ..endArg, "-t", jobTitle, "-s", startDate.ToString(), "-c",
             companyName
         ];
-        var result = Run(args.Where(x => x != null).ToArray()!);
+        var result = TestApp.Run(args.Where(x => x != null).ToArray()!);
         var resultSettings = result.Settings as AddJobSettings;
         //then
         Assert.Equal(0, result.ExitCode);
         Assert.NotNull(resultSettings);
-        Assert.Equal(jobTitle,       resultSettings.JobTitle);
-        Assert.Equal(companyName,    resultSettings.Company);
-        Assert.Equal(startDate,      resultSettings.StartDate);
+        Assert.Equal(jobTitle, resultSettings.JobTitle);
+        Assert.Equal(companyName, resultSettings.Company);
+        Assert.Equal(startDate, resultSettings.StartDate);
         Assert.Equal(jobDescription, resultSettings.JobDescription);
-        Assert.Equal(experience,     resultSettings.Experience);
-        Assert.Equal(endDate,        resultSettings.EndDate);
+        Assert.Equal(experience, resultSettings.Experience);
+        Assert.Equal(endDate, resultSettings.EndDate);
     }
 
     [Theory]
@@ -103,12 +103,12 @@ public class AddJobTest: TestBase
         experience     = experience?.Trim();
         jobTitle       = jobTitle.Trim();
 
-        Assert.Equal(jobTitle,                                         job!.Title);
-        Assert.Equal(companyName,                                      job.Company);
-        Assert.Equal(startDate,                                        job.StartDate);
+        Assert.Equal(jobTitle, job.Title);
+        Assert.Equal(companyName, job.Company);
+        Assert.Equal(startDate, job.StartDate);
         Assert.Equal(jobDescription.IsBlank() ? null : jobDescription, job.Description);
-        Assert.Equal(experience.IsBlank() ? null : experience,         job.Experience);
-        Assert.Equal(endDate,                                          job.EndDate);
+        Assert.Equal(experience.IsBlank() ? null : experience, job.Experience);
+        Assert.Equal(endDate, job.EndDate);
     }
 }
 
