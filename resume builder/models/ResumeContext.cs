@@ -6,11 +6,11 @@ public class ResumeContext: DbContext
 {
     public ResumeContext()
     {
+    #if DEBUG
+        DbPath = "resume.db";
+    #else
         const Environment.SpecialFolder folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-    #if DEBUG
-        DbPath = "TestResumeBuilder.db";
-    #else
         DbPath = System.IO.Path.Join(path, "resume.db");
     #endif
     }

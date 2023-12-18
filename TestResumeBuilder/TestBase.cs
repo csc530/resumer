@@ -10,12 +10,12 @@ namespace TestResumeBuilder
         internal CommandAppTester TestApp;
         internal ResumeContext TestDb;
 
-        public TestBase()
+        protected TestBase()
         {
             //given
             TestApp = new CommandAppTester();
             TestApp.Configure(Program.AppConfiguration);
-            TestDb = new TestContext();
+            TestDb = new ResumeContext();
         }
 
         public async ValueTask DisposeAsync()

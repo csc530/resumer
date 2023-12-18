@@ -5,14 +5,14 @@
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$USER_HOME$/AppData/Local/resume.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/resume builder/bin/Debug/net8.0/resume.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="TestResumeBuilder.db" uuid="4e7539b7-0654-4b70-88ae-3e7247d2f4f8">
+    <data-source source="LOCAL" name="test.db" uuid="c783e587-84d1-43cc-84ce-e02ff4eb37e1">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/TestResumeBuilder/bin/Debug/net8.0/TestResumeBuilder.db</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/TestResumeBuilder/bin/Debug/net8.0/resume.db</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
