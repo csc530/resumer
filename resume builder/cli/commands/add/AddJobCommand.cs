@@ -26,16 +26,18 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
                     ? ValidationResult.Error("Job title is invalid: cannot be empty")
                     : ValidationResult.Success());
             var startDatePrompt = RenderableFactory.CreateTextPrompt("Start date: ", startDate ?? Today, true)
-                .Validate(date => date < Today
-                    ? ValidationResult.Error("[red]Start date must be in the past[/]")
-                    : ValidationResult.Success());
+                                                   .Validate(date => date < Today
+                                                        ? ValidationResult.Error(
+                                                            "[red]Start date must be in the past[/]")
+                                                        : ValidationResult.Success());
             var descriptionPrompt = RenderableFactory.CreateTextPrompt("Description: ", jobDescription);
             var experiencePrompt = RenderableFactory.CreateTextPrompt("Experience: ", experience);
             var companyPrompt = RenderableFactory.CreateTextPrompt("Company: ", company);
             var endDatePrompt = RenderableFactory.CreateTextPrompt("End date: ", endDate, true)
-                .Validate(date => date > startDate
-                    ? ValidationResult.Success()
-                    : ValidationResult.Error("[red]End date must be after start date[/]"));
+                                                 .Validate(date => date > startDate
+                                                      ? ValidationResult.Success()
+                                                      : ValidationResult.Error(
+                                                          "[red]End date must be after start date[/]"));
 
             jobTitle = AnsiConsole.Prompt(jobTitlePrompt);
             jobDescription = AnsiConsole.Prompt(descriptionPrompt);
@@ -45,7 +47,7 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
             endDate = AnsiConsole.Prompt(endDatePrompt);
         }
 
-        var job = new Job()
+        var job = new Job
         {
             Title = jobTitle,
             Description = jobDescription,

@@ -56,9 +56,9 @@ public class AddJobTest: TestBase
         // and users can't enter the null value
         //which is to say they can choose to enter nothing with empty quotes which this test tests for too
         //when
-        string[]? descriptionArg = jobDescription == null ? [null] : ["-d", $"{jobDescription}"];
-        string[]? expArg = experience == null ? [null] : ["-x", $"{experience}"];
-        string[]? endArg = endDate == null ? [null] : ["-e", $"{endDate}"];
+        string[] descriptionArg = jobDescription == null ? [null] : ["-d", $"{jobDescription}"];
+        string[] expArg = experience == null ? [null] : ["-x", $"{experience}"];
+        string[] endArg = endDate == null ? [null] : ["-e", $"{endDate}"];
         List<string?> args =
         [
             ..cmdArgs, ..descriptionArg, ..expArg, ..endArg, "-t", jobTitle, "-s", startDate.ToString(), "-c",
@@ -99,9 +99,9 @@ public class AddJobTest: TestBase
 
         //clean inputs; trim and nullify empty strings
         jobDescription = jobDescription?.Trim();
-        companyName    = companyName.Trim();
-        experience     = experience?.Trim();
-        jobTitle       = jobTitle.Trim();
+        companyName = companyName.Trim();
+        experience = experience?.Trim();
+        jobTitle = jobTitle.Trim();
 
         Assert.Equal(jobTitle, job.Title);
         Assert.Equal(companyName, job.Company);
