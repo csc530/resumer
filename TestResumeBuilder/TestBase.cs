@@ -1,4 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
 using resume_builder;
 using resume_builder.models;
 using Spectre.Console;
@@ -19,8 +20,7 @@ public abstract class TestBase: IDisposable, IAsyncDisposable
         //given
         TestApp = new CommandAppTester(new FakeTypeRegistrar());
 
-        TestApp.Configure(c =>
-        {
+        TestApp.Configure(c => {
             Program.AppConfiguration(c);
             // c.ConfigureConsole(TestConsole); //? this is what spectre does inside of Run() but only  if the config is null but either way it didn't work for me 
         });
@@ -31,6 +31,7 @@ public abstract class TestBase: IDisposable, IAsyncDisposable
         TestConsole = new TestConsole();
         AnsiConsole.Console = TestConsole;
         TestDb = new ResumeContext();
+        TestDb.Database.Migrate();
     }
 
     public async ValueTask DisposeAsync()

@@ -19,8 +19,8 @@ public class InitTest: TestBase
         //when
         var result = TestApp.Run("init");
         //then
-        Assert.True(File.Exists("TestResumeBuilder.db"));
         Assert.Equal(0, result.ExitCode);
+        Assert.True(File.Exists("resume.db"));
         TestDb = new ResumeContext();
         Assert.True(TestDb.Database.CanConnect());
     }
