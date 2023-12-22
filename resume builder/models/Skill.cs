@@ -1,6 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.Data.Sqlite;
 
 namespace resume_builder.models;
 
@@ -21,7 +19,8 @@ public class Skill
         get => _name;
         set
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value);
+            if(value.IsBlank())
+                throw new ArgumentException("Skill name cannot be empty");
             _name = value;
         }
     }
