@@ -3,9 +3,9 @@ using WaffleGenerator;
 
 namespace TestResumeBuilder;
 
-internal class TestData
+public class TestData
 {
-    private protected const int TestRepetitions = 10;
+    private protected const int TestRepetition = 10;
 
     public const string space = " ";
     public const string tab = "\t";
@@ -44,19 +44,16 @@ internal class TestData
         return todayYear - minYear;
     }
 
-    public static TheoryData<object[]> RandomArgs() => [Faker.Random.WordsArray(2)];
-
-
     public static DateOnly RandomPastDate() => Faker.Date.PastDateOnly(MaxRandomYearsBeforeToday());
     public static DateOnly RandomFutureDate() => Faker.Date.FutureDateOnly(MaxRandomYearsAfterToday());
     public static DateOnly RandomDate() => Faker.Date.BetweenDateOnly(RandomPastDate(), RandomFutureDate());
     public static string? RandomTextOrNull() => Faker.Lorem.Paragraph().OrNull(Faker);
 
-    public static string Waffle() => WaffleEngine.Text(Random.Next(TestRepetitions), Faker.Random.Bool());
+    public static string Waffle() => WaffleEngine.Text(Random.Next(TestRepetition), Faker.Random.Bool());
     public static string? WaffleOrNull() => Waffle().OrNull(Faker);
 
     //#region white spaces
-    public static IEnumerable<string> RandomWhiteSpaceString(int count = TestRepetitions)
+    public static IEnumerable<string> RandomWhiteSpaceString(int count = TestRepetition)
     {
         yield return Faker.Random.String2(Random.Next(count), space);
         yield return Faker.Random.String2(Random.Next(count), tab);

@@ -34,11 +34,10 @@ public class AddJobTest: TestBase
     public void AddJob_WithNameAndStartOptions_ShouldSucceed(string jobTitle, string companyName, DateOnly startDate)
     {
         //when
-        var result = TestApp.Run([.. cmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName]);
+        var result = TestApp.Run(cmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName);
         var resultSettings = result.Settings as AddJobSettings;
         //then
-        Assert.Multiple(() =>
-        {
+        Assert.Multiple(() => {
             Assert.Equal(0, result.ExitCode);
             Assert.NotNull(resultSettings);
             Assert.Equal(jobTitle, resultSettings.JobTitle);
@@ -117,7 +116,7 @@ internal class AddJobTestData: JobTestData
     public static TheoryData<string, string, DateOnly> JobTitleAndStartDate()
     {
         var data = new TheoryData<string, string, DateOnly>();
-        for(var i = TestRepetitions - 1; i >= 0; i--)
+        for(var i = TestRepetition - 1; i >= 0; i--)
             data.Add(RandomJobTitle(), RandomCompany(), RandomPastDate());
         return data;
     }
@@ -125,7 +124,7 @@ internal class AddJobTestData: JobTestData
     public static TheoryData<string, string, DateOnly, string?, string?, DateOnly?> AllOptions()
     {
         var data = new TheoryData<string, string, DateOnly, string?, string?, DateOnly?>();
-        for(var i = TestRepetitions - 1; i >= 0; i--)
+        for(var i = TestRepetition - 1; i >= 0; i--)
             data.Add(RandomJobTitle(), RandomCompany(), RandomPastDate(), WaffleOrNull(), WaffleOrNull(),
                 RandomFutureDate().OrNull(Faker));
         return data;

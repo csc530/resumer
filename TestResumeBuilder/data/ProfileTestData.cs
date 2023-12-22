@@ -17,6 +17,6 @@ internal class ProfileTestData: TestData
                                                     Faker.Lorem.Paragraph().OrNull(Faker));
 
     static public IEnumerable<Profile> InfiniteFakeProfiles => BogusProfile.GenerateForever();
-    static public List<Profile> GetFakeProfiles(int count = TestRepetitions) => BogusProfile.Generate(count);
+    static public List<Profile> GetFakeProfiles(int count = TestRepetition) => BogusProfile.Generate(count);
     static public Profile GetFakeProfile() => BogusProfile.Generate();
 }

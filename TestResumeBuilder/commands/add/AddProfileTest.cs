@@ -141,7 +141,7 @@ public class AddProfileTest: TestBase
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, null, profile.PhoneNumber,
             profile.MiddleName, profile.Website, profile.Summary);
         //then
-        Assert.ThrowsAny<Exception>(() => TestApp.Run([..args, "-e", email]));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(args, "-e", email));
         Assert.Empty(TestDb.Profiles);
     }
 
@@ -219,7 +219,7 @@ internal class AddProfileTestData: ProfileTestData
     public static TheoryData<string, Profile> InvalidEmails()
     {
         var data = new TheoryData<string, Profile>();
-        for(var i = 0; i < TestRepetitions; i++)
+        for(var i = 0; i < TestRepetition; i++)
             data.Add(Faker.Random.String().Replace("@", ""), GetFakeProfile());
         return data;
     }
@@ -235,7 +235,7 @@ internal class AddProfileTestData: ProfileTestData
     public static TheoryData<Profile> AllOptions()
     {
         var data = new TheoryData<Profile>();
-        for(var i = TestRepetitions - 1; i >= 0; i--)
+        for(var i = TestRepetition - 1; i >= 0; i--)
             data.Add(ProfileTestData.GetFakeProfile());
         return data;
     }

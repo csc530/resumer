@@ -18,5 +18,5 @@ internal class JobTestData: TestData
     public static DateOnly? RandomEndDate() => RandomPastDate().OrNull(Faker);
     public static IEnumerable<Job> EternalJobs() => BogusJob.GenerateForever();
     public static Job RandomJob() => BogusJob.Generate();
-    public static IEnumerable<Job> RandomJobs(int count = TestRepetitions) => BogusJob.GenerateLazy(count);
+    public static IEnumerable<Job> RandomJobs(int count = TestRepetition) => BogusJob.GenerateLazy(count);
 }
