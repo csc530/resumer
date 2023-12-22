@@ -9,14 +9,14 @@ public class AddSkillTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddSkillTestData.GetSkillData), MemberType = typeof(AddSkillTestData))]
-    public void AddsSkill_WhenAllFieldsAreValid_ShouldSucceed(string skillName, SkillType skillType)
+    public void ReturnsSuccess_WhenAllFieldsAreValid(string skillName, SkillType skillType)
     {
         var result = TestApp.Run(cmdArgs, skillName, skillType.ToString());
         Assert.Equal(0, result.ExitCode);
     }
 
     [Fact]
-    public void PromptsUser_WhenFieldsAreEmpty_ShouldFail()
+    public void ReturnsError_WhenFieldsAreEmpty()
     {
         Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs));
     }
@@ -25,7 +25,7 @@ public class AddSkillTest: TestBase
     [InlineData(SkillType.Soft)]
     [InlineData(SkillType.Hard)]
     [InlineData(SkillType.Technical)]
-    public void ReturnsError_WhenSkillNameIsEmpty_ShouldFail(SkillType skillType)
+    public void ReturnsError_WhenSkillNameIsEmpty(SkillType skillType)
     {
         Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "", skillType.ToString()));
     }
@@ -36,9 +36,8 @@ public class AddSkillTest: TestBase
     [InlineData("\t")]
     [InlineData("\n")]
     [InlineData("debugging")]
-    [InlineData(
-        "r ut erat et ipsum stet sed zzril eos aliquyam sed duo nisl iusto. Clita clita ipsum dolor illum ut ipsum lorem kasd sea dolores rebum et elitr elitr magna. Feugiat takimata amet mi")]
-    public void ReturnsError_WhenSkillTypeIsInvalid_ShouldFail(string invalidSkillType)
+    [InlineData("um dolor illum ut ipsum lorem kasd sea dolores rebum et elitr elitr magna. Feugiat takimata amet mi")]
+    public void ReturnsError_WhenSkillTypeIsInvalid(string invalidSkillType)
     {
         Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "skill", invalidSkillType));
     }

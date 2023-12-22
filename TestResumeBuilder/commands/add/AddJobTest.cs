@@ -20,7 +20,7 @@ public class AddJobTest: TestBase
 
     // [Fact(Skip = "hangs forever (at least in vs2022) because it's expecting input in interactive mode which can't be emulated right now with its (spectre) test console")]
     [Fact]
-    public void AddJob_WithNoArgs_ShouldFail()
+    public void ReturnsSuccess_WithNoArgs_AndEnteredPrompts()
     {
         //this hangs forever becuase a prompt is required
         //and I have no idea how to inject a response to the app
@@ -31,7 +31,7 @@ public class AddJobTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddJobTestData.JobTitleAndStartDate), MemberType = typeof(AddJobTestData))]
-    public void AddJob_WithNameAndStartOptions_ShouldSucceed(string jobTitle, string companyName, DateOnly startDate)
+    public void ReturnsSuccess_WithValid_NameAndStartOptions(string jobTitle, string companyName, DateOnly startDate)
     {
         //when
         var result = TestApp.Run(cmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName);
@@ -48,7 +48,7 @@ public class AddJobTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddJobTestData.AllOptions), MemberType = typeof(AddJobTestData))]
-    public void AddJob_WithAllOptions_ShouldSucceed(string jobTitle, string companyName, DateOnly startDate,
+    public void ReturnsSuccess_WithValid_AllOptions(string jobTitle, string companyName, DateOnly startDate,
         string? jobDescription, string? experience, DateOnly? endDate)
     {
         //? job description and experience are non-null because in the run it will be parsed/replaced with an empty string
@@ -79,7 +79,7 @@ public class AddJobTest: TestBase
     [Theory]
     [MemberData(nameof(AddJobData))]
     [MemberData(nameof(AddJobTestData.AllOptions), MemberType = typeof(AddJobTestData))]
-    public void AddJob_WithAllOptions_ShouldUpdateDB(string jobTitle, string companyName, DateOnly startDate,
+    public void UpdatesDB_WithValid_AllOptions(string jobTitle, string companyName, DateOnly startDate,
         string? jobDescription, string? experience, DateOnly? endDate)
     {
         string[] descriptionArg = jobDescription == null ? [null] : [$"-d", $"{jobDescription}"];

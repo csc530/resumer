@@ -6,10 +6,10 @@ namespace TestResumeBuilder.commands.add;
 
 public class AddProfileTest: TestBase
 {
-    private readonly string[] _cmdArgs = { "add", "profile" };
+    private readonly string[] _cmdArgs = ["add", "profile"];
 
     [Fact]
-    public void AddProfile_WithNoArgs_ShouldSucceed()
+    public void ReturnsSuccess_WithNoArgs()
     {
         //when
         var result = TestApp.Run(_cmdArgs);
@@ -18,19 +18,9 @@ public class AddProfileTest: TestBase
         Assert.NotEmpty(TestDb.Profiles);
     }
 
-    [Fact]
-    public void AddProfile_NonInteractive_WithNoArgs_ShouldFail()
-    {
-        //when
-        var result = TestApp.Run("add", "-i", "false", "job");
-        //then
-        Assert.Equal(0, result.ExitCode);
-        Assert.NotEmpty(TestDb.Profiles);
-    }
-
     [Theory]
     [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithAllOptions_ShouldSucceed(Profile profile)
+    public void ReturnsSuccess_WithAllOptions(Profile profile)
     {
         //given
         var firstName = profile.FirstName;
@@ -60,7 +50,39 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithAnEmptyFirstname_AndAllOptions_ShouldFail(Profile profile)
+    public void UpdatesDb_WithValid_AllOptions(Profile profile)
+    {
+        //given
+        Assert.Empty(TestDb.Profiles);
+        var firstName = profile.FirstName;
+        var middleName = profile.MiddleName;
+        var lastName = profile.LastName;
+        var email = profile.EmailAddress;
+        var phone = profile.PhoneNumber;
+        var website = profile.Website;
+        var summary = profile.Summary;
+        var args = CreateCmdOptions(profile);
+        //when
+        var result = TestApp.Run(args);
+        //then
+        Assert.Single(TestDb.Profiles);
+        Assert.Equal(0, result.ExitCode);
+        var dbProfile = TestDb.Profiles.First();
+        Assert.NotNull(dbProfile);
+        Assert.Multiple(() => {
+            Assert.Equal(firstName, dbProfile.FirstName);
+            Assert.Equal(middleName, dbProfile.MiddleName);
+            Assert.Equal(lastName, dbProfile.LastName);
+            Assert.Equal(email, dbProfile.EmailAddress);
+            Assert.Equal(phone, dbProfile.PhoneNumber);
+            Assert.Equal(website, dbProfile.Website);
+            Assert.Equal(summary, dbProfile.Summary);
+        });
+    }
+
+    [Theory]
+    [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
+    public void ReturnsError_WithAnEmptyFirstname_AndAllOptions(Profile profile)
     {
         //given
         var args = CreateCmdOptions(string.Empty, profile.LastName, profile.EmailAddress, profile.PhoneNumber,
@@ -73,7 +95,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.WhiteSpaceStringAndProfile), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithWhitespaceFirstname_AndAllOptions_ShouldFail(string firstName, Profile profile)
+    public void ReturnsError_WithWhitespaceFirstname_AndAllOptions(string firstName, Profile profile)
     {
         //given
         var args = CreateCmdOptions(firstName, profile.LastName, profile.EmailAddress, profile.PhoneNumber,
@@ -85,7 +107,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithAnEmptyLastname_AndAllOptions_ShouldFail(Profile profile)
+    public void ReturnsError_WithAnEmptyLastname_AndAllOptions(Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, string.Empty, profile.EmailAddress, profile.PhoneNumber,
@@ -98,7 +120,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.WhiteSpaceStringAndProfile), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithWhitespaceLastname_AndAllOptions_ShouldFail(string lastname, Profile profile)
+    public void ReturnsError_WithWhitespaceLastname_AndAllOptions(string lastname, Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, lastname, profile.EmailAddress, profile.PhoneNumber,
@@ -110,7 +132,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithAnEmptyEmail_AndAllOptions_ShouldFail(Profile profile)
+    public void ReturnsError_WithAnEmptyEmail_AndAllOptions(Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, string.Empty, profile.PhoneNumber,
@@ -123,7 +145,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.WhiteSpaceStringAndProfile), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithWhitespaceEmail_AndAllOptions_ShouldFail(string email, Profile profile)
+    public void ReturnsError_WithWhitespaceEmail_AndAllOptions(string email, Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, email, profile.PhoneNumber,
@@ -135,7 +157,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.InvalidEmails), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithInvalidEmail_ShouldFail(string email, Profile profile)
+    public void ReturnsError_WithInvalidEmail(string email, Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, null, profile.PhoneNumber,
@@ -147,7 +169,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.AllOptions), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithAnEmptyPhoneNumber_AndAllOptions_ShouldFail(Profile profile)
+    public void ReturnsError_WithAnEmptyPhoneNumber_AndAllOptions(Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, profile.EmailAddress, string.Empty,
@@ -160,7 +182,7 @@ public class AddProfileTest: TestBase
 
     [Theory]
     [MemberData(nameof(AddProfileTestData.WhiteSpaceStringAndProfile), MemberType = typeof(AddProfileTestData))]
-    public void AddProfile_WithWhitespacePhoneNumber_AndAllOptions_ShouldFail(string phone, Profile profile)
+    public void ReturnsError_WithWhitespacePhoneNumber_AndAllOptions(string phone, Profile profile)
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, profile.EmailAddress, phone,

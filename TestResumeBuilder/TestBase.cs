@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
 using resume_builder;
 using resume_builder.models;
 using Spectre.Console;
@@ -9,6 +8,7 @@ namespace TestResumeBuilder;
 
 [UsesVerify]
 //todo:  find way to pass text to test command app for prompts
+//todo: fix db concurrency errors for tests and errs/bugs
 public abstract class TestBase: IDisposable, IAsyncDisposable
 {
     internal readonly CommandAppTester TestApp;
@@ -31,7 +31,8 @@ public abstract class TestBase: IDisposable, IAsyncDisposable
         TestConsole = new TestConsole();
         AnsiConsole.Console = TestConsole;
         TestDb = new ResumeContext();
-        TestDb.Database.Migrate();
+        TestDb.Database.EnsureDeleted();
+        TestDb.Database.EnsureCreated();
     }
 
     public async ValueTask DisposeAsync()
