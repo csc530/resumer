@@ -2,20 +2,35 @@
 <project version="4">
   <component name="SolutionCommentsState">
     <snapshots>
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Program.cs" tabOrder="1" startOffset="455" endOffset="539" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Program.cs" tabOrder="1" startOffset="897" endOffset="954" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="1650" endOffset="1759" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="2229" endOffset="2417" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="2817" endOffset="3005" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="3117" endOffset="3225" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="3497" endOffset="3847" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="3944" endOffset="4339" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="4294" endOffset="4689" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="4787" endOffset="5182" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="819" endOffset="854" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="851" endOffset="910" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="914" endOffset="980" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="1119" endOffset="1157" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/ResumeContextModelSnapshot.cs" tabOrder="1" endOffset="21" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/20231215180441_InitialCreate.cs" tabOrder="1" startOffset="124" endOffset="142" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/20231215180441_InitialCreate.cs" tabOrder="1" startOffset="208" endOffset="226" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/20231215180441_InitialCreate.cs" tabOrder="1" startOffset="3799" endOffset="3817" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="1647" endOffset="1759" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="3136" endOffset="3333" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="3858" endOffset="4226" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="4547" endOffset="4776" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="4966" endOffset="5376" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="6577" endOffset="6906" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Helpers.cs" tabOrder="1" startOffset="7311" endOffset="7939" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="407" endOffset="442" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="4402" endOffset="4490" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Program.cs" tabOrder="1" startOffset="484" endOffset="568" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Program.cs" tabOrder="1" startOffset="1177" endOffset="1328" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Program.cs" tabOrder="1" startOffset="1350" endOffset="1407" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/TestBase.cs" tabOrder="1" startOffset="188" endOffset="250" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/TestBase.cs" tabOrder="1" startOffset="251" endOffset="308" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/TestBase.cs" tabOrder="1" startOffset="552" endOffset="559" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/TestBase.cs" tabOrder="1" startOffset="712" endOffset="863" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/TestBase.cs" tabOrder="1" startOffset="884" endOffset="1262" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="2563" endOffset="2640" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/models/ResumeContext.cs" tabOrder="1" startOffset="765" endOffset="880" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/20231215180441_InitialCreate.Designer.cs" tabOrder="1" endOffset="21" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/resume builder/Migrations/20231215180441_InitialCreate.Designer.cs" tabOrder="1" startOffset="454" endOffset="472" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/commands/InitTest.cs" tabOrder="1" startOffset="206" endOffset="212" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/commands/InitTest.cs" tabOrder="1" startOffset="263" endOffset="269" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/commands/InitTest.cs" tabOrder="1" startOffset="393" endOffset="399" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumeBuilder/commands/InitTest.cs" tabOrder="1" startOffset="450" endOffset="456" displayKind="Render" />
     </snapshots>
   </component>
 </project>
