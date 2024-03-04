@@ -12,3 +12,11 @@ so I made this and hopefully i don't quit and it turns into something nice :)
 - [ ] add corruption handler and detector for db
     - [ ] if it exists but isn't populated
     - [ ] missing or mal formatted tables
+- [] managed personal job details
+  - [] projects
+  - [] jobs
+  - [] volunteering
+  - [] skills
+  - [] references
+- [] curate profile per resume
+  - select skills, jobs, summary
