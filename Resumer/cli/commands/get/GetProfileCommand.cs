@@ -6,23 +6,19 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class GetProfileCommand: Command<GetProfileCommandSettings>
+public class GetProfileCommand: Command
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] GetProfileCommandSettings settings)
+    public override int Execute(CommandContext context)
     {
         var profiles = new ResumeContext().Profiles;
-        var rows = new Table();
+        var table = new Table();
+        table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
         foreach(var profile in profiles)
-            rows.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber, profile.Summary.GetPrintValue(),
+            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber, profile.Summary.GetPrintValue(),
                 profile.Website.GetPrintValue());
-        AnsiConsole.Write(rows);
-        settings.GetTable();
-        AnsiConsole.WriteLine();
-        AnsiConsole.MarkupLineInterpolated($"[bold green]{profiles.Count()}[/] profiles found");
+        AnsiConsole.Write(table);
+        if(!profiles.Any())
+            AnsiConsole.MarkupLine("[bold red]No[/] profiles found");
         return ExitCode.Success.ToInt();
     }
-}
-
-public class GetProfileCommandSettings: OutputCommandSettings
-{
 }

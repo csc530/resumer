@@ -87,7 +87,7 @@ public class Profile
         }
     }
 
-    [EmailAddress]
+    [EmailAddress(ErrorMessage = "Email address invalid: it must contain '@'")]
     public string EmailAddress
 
     {
@@ -96,8 +96,6 @@ public class Profile
         {
             if(value.IsBlank())
                 throw new ArgumentException("Email address cannot be blank");
-            if(!value.Contains('@'))
-                throw new ArgumentException($"Email address invalid: it must contain '@': {value}");
             _emailAddress = value;
         }
     }

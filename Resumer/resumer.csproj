@@ -17,12 +17,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="EmailCore.Validation" Version="1.1.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.0"/>
+        <PackageReference Include="PhoneNumbersCore" Version="1.1.1" />
         <PackageReference Include="Spectre.Console" Version="0.47.0"/>
         <PackageReference Include="Spectre.Console.Analyzer" Version="0.48.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

@@ -41,7 +41,11 @@
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.Designer.cs" tabOrder="1" startOffset="461" endOffset="479" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="353" endOffset="389" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="871" endOffset="909" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="2187" endOffset="2289" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="1560" endOffset="1662" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProfileCommand.cs" tabOrder="1" startOffset="1718" endOffset="1720" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1181" endOffset="1344" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1437" endOffset="1577" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1656" endOffset="1842" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="435" endOffset="519" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1158" endOffset="1309" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1331" endOffset="1388" displayKind="Render" />
