@@ -1,18 +1,18 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="resume builder add job" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/resume builder/bin/Release/net8.0/resume builder.exe"/>
-    <option name="PROGRAM_PARAMETERS" value="add job --start 2023.12.10 --title freelance -c walmart" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/resume builder/bin/Release/net8.0"/>
+  <configuration default="false" name="get job" type="DotNetProject" factoryName=".NET Project">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0/Resumer.exe" />
+    <option name="PROGRAM_PARAMETERS" value="get -p jobs" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/resume builder/resume builder.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Resumer/Resumer.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
     <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value="net8.0"/>
+    <option name="PROJECT_TFM" value="net8.0" />
     <method v="2">
       <option name="Build" />
     </method>

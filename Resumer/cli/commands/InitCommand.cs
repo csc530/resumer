@@ -9,13 +9,12 @@ internal class InitCommand : Command
 {
 	public override int Execute(CommandContext context)
 	{
-		ResumeContext database = new();
-
-		if(!database.Database.CanConnect())
+		var db = new ResumeContext().Database;
+		if(db.GetPendingMigrations().Any() || !db.CanConnect())
 		{
 			AnsiConsole.WriteLine("📁 Creating database");
-			database.Database.Migrate();
-			if(!database.Database.CanConnect())
+			db.Migrate();
+			if(!db.CanConnect())
 			{
 				AnsiConsole.WriteLine("❌ Error creating database");
 				return ExitCode.Error.ToInt();

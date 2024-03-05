@@ -29,11 +29,11 @@ public static class Program
         config.SetApplicationVersion("1.0.0");
         config.CaseSensitivity(CaseSensitivity.None);
 
-        config.AddBranch("config", config => {
-            config.SetDescription("configure resume builder settings");
-            config.AddCommand<GetConfigCommand>("get")
-                  .WithDescription("get configuration settings")
-                  .WithAlias("g");
+        config.AddBranch("config", configurator => {
+            configurator.SetDescription("configure resume builder settings");
+            configurator.AddCommand<GetConfigCommand>("get")
+                        .WithDescription("get configuration settings")
+                        .WithAlias("g");
             // config.AddCommand<SetConfigCommand>("set")
             //       .WithDescription("set configuration settings")
             //       .WithAlias("s");
