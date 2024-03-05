@@ -9,12 +9,12 @@ namespace TestResumer.commands.add;
 
 public class AddProjectTest: TestBase
 {
-    static readonly string[] cmdArgs = {"add", "project"};
+    static readonly string[] CmdArgs = {"add", "project"};
     
     [Fact]
     public void ReturnsSuccess_WithNoArgs_AndEnteredPrompts()
     {
-        var result = TestApp.Run(cmdArgs);
+        var result = TestApp.Run(CmdArgs);
         Assert.Equal(ExitCode.Error.ToInt(), result.ExitCode);
     }
     
@@ -23,7 +23,7 @@ public class AddProjectTest: TestBase
     [MemberData(nameof(AddProjectTestData.ProjectNames), MemberType = typeof(AddProjectTestData))]
     public void ReturnsSuccess_WithValid_Name(string projectName)
     {
-        var result = TestApp.Run(cmdArgs, "-n", projectName);
+        var result = TestApp.Run(CmdArgs, "-n", projectName);
         var resultSettings = result.Settings as AddProjectSettings;
         Assert.Multiple(() => {
             Assert.Equal(0, result.ExitCode);
@@ -39,7 +39,7 @@ public class AddProjectTest: TestBase
         //given
         var args = CreateCmdOptions(project);
         //when
-        var result = TestApp.Run(cmdArgs, args.ToArray());
+        var result = TestApp.Run(CmdArgs, args.ToArray());
         var resultSettings = result.Settings as AddProjectSettings;
         //then
         Assert.Multiple(() => {
@@ -97,8 +97,8 @@ public class AddProjectTest: TestBase
     [Fact]
     public void ReturnsError_WithoutProjectName()
     {
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs));
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "-n"));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(CmdArgs));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(CmdArgs, "-n"));
     }
 
     [Theory]
@@ -106,7 +106,7 @@ public class AddProjectTest: TestBase
     // [MemberData(nameof(TestData.RandomWhiteSpaceString), MemberType = typeof(TestData))]
     public void ReturnsError_WhenProjectNameIsInvalid(string invalidProjectName)
     {
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "-n", invalidProjectName));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(CmdArgs, "-n", invalidProjectName));
     }
     
 }

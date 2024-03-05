@@ -8,7 +8,7 @@ namespace TestResumer.commands.add;
 
 public class AddJobTest: TestBase
 {
-    static readonly string[] cmdArgs = ["add", "job"];
+    static readonly string[] CmdArgs = ["add", "job"];
 
     public static readonly TheoryData<string, string, DateOnly, string?, string?, DateOnly?> AddJobData =
         new()
@@ -26,7 +26,7 @@ public class AddJobTest: TestBase
         //this hangs forever becuase a prompt is required
         //and I have no idea how to inject a response to the app
         //I added a timeout so it sould stop
-        var result = TestApp.Run(cmdArgs);
+        var result = TestApp.Run(CmdArgs);
         Assert.Equal(ExitCode.Error.ToInt(), result.ExitCode);
     }
 
@@ -35,7 +35,7 @@ public class AddJobTest: TestBase
     public void ReturnsSuccess_WithValid_NameAndStartOptions(string jobTitle, string companyName, DateOnly startDate)
     {
         //when
-        var result = TestApp.Run(cmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName);
+        var result = TestApp.Run(CmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName);
         var resultSettings = result.Settings as AddJobSettings;
         //then
         Assert.Multiple(() => {
@@ -61,7 +61,7 @@ public class AddJobTest: TestBase
         string[] endArg = endDate == null ? [null] : ["-e", $"{endDate}"];
         List<string?> args =
         [
-            ..cmdArgs, ..descriptionArg, ..expArg, ..endArg, "-t", jobTitle, "-s", startDate.ToString(), "-c",
+            ..CmdArgs, ..descriptionArg, ..expArg, ..endArg, "-t", jobTitle, "-s", startDate.ToString(), "-c",
             companyName
         ];
         var result = TestApp.Run(args.Where(x => x != null).ToArray()!);
@@ -88,7 +88,7 @@ public class AddJobTest: TestBase
         string[] endArg = endDate == null ? [null] : [$"-e", $"{endDate}"];
         string?[] args =
         [
-            ..cmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName, ..descriptionArg, ..expArg,
+            ..CmdArgs, "-t", jobTitle, "-s", startDate.ToString(), "-c", companyName, ..descriptionArg, ..expArg,
             ..endArg
         ];
         var result = TestApp.Run(args.Where(x => x != null).ToArray()!);

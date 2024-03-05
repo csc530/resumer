@@ -4,7 +4,7 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.settings;
 
-public class OutputCommandSettings : CLISettings
+public class OutputCommandSettings : CliSettings
 {
 	[CommandOption("-b|--border")]
 	[Description("table border style")]

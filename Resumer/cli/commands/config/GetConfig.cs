@@ -7,35 +7,35 @@ public class GetConfigCommand: Command<GetConfigCommandSettings>
 {
     public override int Execute(CommandContext context, GetConfigCommandSettings settings)
     {
-        ResumeContext ResumeContext = new();
+        ResumeContext resumeContext = new();
         if(settings.Db)
         {
-            System.Console.WriteLine("DB Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("DB Location: " + resumeContext.DbPath);
         }
 
         if(settings.Profile)
         {
-            System.Console.WriteLine("Profile Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("Profile Location: " + resumeContext.DbPath);
         }
 
         if(settings.Jobs)
         {
-            System.Console.WriteLine("Jobs Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("Jobs Location: " + resumeContext.DbPath);
         }
 
         if(settings.Projects)
         {
-            System.Console.WriteLine("Projects Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("Projects Location: " + resumeContext.DbPath);
         }
 
         if(settings.Companies)
         {
-            System.Console.WriteLine("Companies Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("Companies Location: " + resumeContext.DbPath);
         }
 
         if(settings.Skills)
         {
-            System.Console.WriteLine("Skills Location: " + ResumeContext.DbPath);
+            System.Console.WriteLine("Skills Location: " + resumeContext.DbPath);
         }
 
         return 0;

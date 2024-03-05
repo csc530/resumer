@@ -5,21 +5,21 @@ namespace TestResumer.commands.add;
 
 public class AddSkillTest: TestBase
 {
-    private readonly string[] cmdArgs = { "add", "skill" };
+    private readonly string[] _cmdArgs = { "add", "skill" };
 
 
     [Theory]
     [MemberData(nameof(AddSkillTestData.GetSkillData), MemberType = typeof(AddSkillTestData))]
     public void ReturnsSuccess_WhenAllFieldsAreValid(string skillName, SkillType skillType)
     {
-        var result = TestApp.Run(cmdArgs, skillName, skillType.ToString());
+        var result = TestApp.Run(_cmdArgs, skillName, skillType.ToString());
         Assert.Equal(0, result.ExitCode);
     }
 
     [Fact]
     public void ReturnsError_WhenFieldsAreEmpty()
     {
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(_cmdArgs));
     }
 
     [Theory]
@@ -28,7 +28,7 @@ public class AddSkillTest: TestBase
     [InlineData(SkillType.Technical)]
     public void ReturnsError_WhenSkillNameIsEmpty(SkillType skillType)
     {
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "", skillType.ToString()));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(_cmdArgs, "", skillType.ToString()));
     }
 
     [Theory]
@@ -40,7 +40,7 @@ public class AddSkillTest: TestBase
     [InlineData("um dolor illum ut ipsum lorem kasd sea dolores rebum et elitr elitr magna. Feugiat takimata amet mi")]
     public void ReturnsError_WhenSkillTypeIsInvalid(string invalidSkillType)
     {
-        Assert.ThrowsAny<Exception>(() => TestApp.Run(cmdArgs, "skill", invalidSkillType));
+        Assert.ThrowsAny<Exception>(() => TestApp.Run(_cmdArgs, "skill", invalidSkillType));
     }
 }
 

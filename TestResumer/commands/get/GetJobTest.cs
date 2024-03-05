@@ -7,13 +7,13 @@ namespace TestResumer.commands.get;
 [UsesVerify]
 public class GetJobTest: TestBase
 {
-    private static readonly string[] cmdArgs = ["get", "job"];
+    private static readonly string[] CmdArgs = ["get", "job"];
 
     [Fact]
     public void GetJobs_WithNoJobData_ShouldReturnNothing()
     {
         //when
-        var result = TestApp.Run(cmdArgs);
+        var result = TestApp.Run(CmdArgs);
         //then
         Assert.Empty(TestDb.Jobs);
         Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
@@ -27,7 +27,7 @@ public class GetJobTest: TestBase
         TestDb.Jobs.AddRange(jobs);
         TestDb.SaveChanges();
         //when
-        var result = TestApp.Run(cmdArgs);
+        var result = TestApp.Run(CmdArgs);
         //then
         Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
         for(var index = 0; index < jobs.Count; index++)
@@ -39,7 +39,7 @@ public class GetJobTest: TestBase
     public void GetJob_WithNoArgs_ShouldSucceed()
     {
         //when
-        var result = TestApp.Run(cmdArgs);
+        var result = TestApp.Run(CmdArgs);
         //then
         Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
     }
@@ -51,7 +51,7 @@ public class GetJobTest: TestBase
         TestDb.Jobs.AddRange(JobTestData.RandomJobs(10));
         TestDb.SaveChanges(true);
         //when
-        var result = TestApp.Run(cmdArgs, "1", "2", "3");
+        var result = TestApp.Run(CmdArgs, "1", "2", "3");
         //then
         Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
         Assert.Multiple(() =>
@@ -69,7 +69,7 @@ public class GetJobTest: TestBase
         TestDb.Jobs.AddRange(JobTestData.RandomJobs(10));
         TestDb.SaveChanges();
         //when
-        var result = TestApp.Run(cmdArgs, "52", "13", "313");
+        var result = TestApp.Run(CmdArgs, "52", "13", "313");
         //then
         Assert.NotEqual(ExitCode.Success.ToInt(), result.ExitCode);
     }

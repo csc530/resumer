@@ -56,7 +56,7 @@ internal sealed class AddProjectCommand: Command<AddProjectSettings>
             projectStartDate = RenderableFactory.CreateTextPrompt<DateOnly?>("Start Date:", allowEmpty: true).Show();
             projectEndDate = RenderableFactory.CreateTextPrompt<DateOnly?>("End Date:", allowEmpty: true).Show();
         }
-        
+
         project = new Project(projectName!)
         {
             Type = projectType,

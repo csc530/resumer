@@ -4,7 +4,7 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.add;
 
-public class AddCommandSettings: CLISettings
+public class AddCommandSettings: CliSettings
 {
     //todo: change to be user first (interactive) and cmd/pipeable second (non interactive)
     //probably make it command level

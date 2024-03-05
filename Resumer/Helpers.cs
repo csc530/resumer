@@ -20,7 +20,7 @@ public static class Globals
         return exitCode.ToInt();
     }
 
-    public static int PrintError(CLISettings settings, Exception exception)
+    public static int PrintError(CliSettings settings, Exception exception)
     {
         AnsiConsole.Foreground = Color.Red;
         if(exception.GetType() == typeof(SqliteException))

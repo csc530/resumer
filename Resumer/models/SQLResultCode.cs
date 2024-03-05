@@ -62,7 +62,7 @@ public enum SqlResultCode
 	///<summary>
 	/// Some kind of disk I/O error occurred
 	///</summary>
-	IOErr = 10,
+	IoErr = 10,
 
 	///<summary>
 	/// The database disk image is malformed
@@ -122,7 +122,7 @@ public enum SqlResultCode
 	///<summary>
 	/// Uses OS features not supported on host
 	///</summary>
-	NoLFS = 22,
+	NoLfs = 22,
 
 	///<summary>
 	/// Authorization denied
@@ -175,7 +175,7 @@ public  static partial class Extensions
 		SqlResultCode.Success => "Success",
 		SqlResultCode.Error => "Error",
 		SqlResultCode.Readonly => "Database is readonly",
-		SqlResultCode.IOErr => "disk I/O error occurred",
+		SqlResultCode.IoErr => "disk I/O error occurred",
 		SqlResultCode.NotNull => "not null constraint violated",
 		SqlResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
 		SqlResultCode.Constraint => "constraint violation",
