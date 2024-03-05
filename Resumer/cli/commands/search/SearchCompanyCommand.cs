@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.search;
 
 public class SearchCompanyCommand: Command<SearchCompanyCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] SearchCompanyCommandSettings settings)
+    public override int Execute(CommandContext context, SearchCompanyCommandSettings settings)
     {
         ResumeContext database = new();
         var companies = from job in database.Jobs

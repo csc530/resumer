@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.add;
 
 internal sealed class AddJobCommand: Command<AddJobSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
+    public override int Execute(CommandContext context, AddJobSettings settings)
     {
         //? prompt user for required fields
         var jobTitle = settings.JobTitle;

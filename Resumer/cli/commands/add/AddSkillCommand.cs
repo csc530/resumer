@@ -8,7 +8,7 @@ namespace Resumer.cli.commands.add;
 
 public class AddSkillCommand: Command<AddSkillSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddSkillSettings settings)
+    public override int Execute(CommandContext context, AddSkillSettings settings)
     {
         var skillName = settings.Skill;
         var skillType = settings.SkillType;

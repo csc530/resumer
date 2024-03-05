@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.get;
 
 public class GetSkillCommand : Command<OutputCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] OutputCommandSettings settings)
+    public override int Execute(CommandContext context, OutputCommandSettings settings)
     {
         DbSet<Skill> skills;
         try

@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.get;
 
 public class GetJobCommand: JobOutputCommand<GetJobCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] GetJobCommandSettings settings)
+    public override int Execute(CommandContext context, GetJobCommandSettings settings)
     {
         var ids = settings.Ids ?? Array.Empty<int>();
         var rows = new Dictionary<int, Job>();

@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.search;
 
 public class SearchJobCommand: JobOutputCommand<SearchJobSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] SearchJobSettings settings)
+    public override int Execute(CommandContext context, SearchJobSettings settings)
     {
         Dictionary<int, Job> rows;
 

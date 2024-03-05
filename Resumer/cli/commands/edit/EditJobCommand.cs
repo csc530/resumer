@@ -5,7 +5,7 @@ namespace Resumer.cli.commands.edit;
 
 public class EditJobCommand: Command<EditJobSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] EditJobSettings settings)
+    public override int Execute(CommandContext context, EditJobSettings settings)
     {
         throw new NotImplementedException();
     }

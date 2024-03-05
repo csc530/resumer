@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.search;
 
 public class SearchSkillCommand : Command<SearchSkillCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] SearchSkillCommandSettings settings)
+    public override int Execute(CommandContext context, SearchSkillCommandSettings settings)
     {
         ResumeContext resumeContext = new();
         var skills = resumeContext.Skills

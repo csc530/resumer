@@ -6,9 +6,9 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class GetProfileCommand: Command
+public class GetProfileCommand: Command<OutputCommandSettings>
 {
-    public override int Execute(CommandContext context)
+    public override int Execute(CommandContext context, OutputCommandSettings settings)
     {
         var profiles = new ResumeContext().Profiles;
         var table = new Table();

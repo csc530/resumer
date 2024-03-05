@@ -2,68 +2,24 @@
 <project version="4">
   <component name="SolutionCommentsState">
     <snapshots>
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="28" endOffset="153" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="305" endOffset="369" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="414" endOffset="513" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="563" endOffset="734" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="790" endOffset="887" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="940" endOffset="1025" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="1077" endOffset="1258" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="1316" endOffset="1436" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="1491" endOffset="1618" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="1690" endOffset="1804" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="1919" endOffset="2126" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="2285" endOffset="2302" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="2444" endOffset="2461" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="2570" endOffset="2595" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="2770" endOffset="2797" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="2857" endOffset="2874" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="3117" endOffset="3170" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="3434" endOffset="3451" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="3645" endOffset="3694" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="3738" endOffset="3751" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="3822" endOffset="3869" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="4086" endOffset="4103" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/19e2281e9d7121d16924b0d6285b605d6e30aba552bc777c972e64f35530808e/SelectionPrompt.cs" tabOrder="1" startOffset="5563" endOffset="5607" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="205" endOffset="267" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="268" endOffset="325" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="569" endOffset="576" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="736" endOffset="886" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="907" endOffset="1285" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="205" endOffset="267" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="268" endOffset="325" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="569" endOffset="576" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="736" endOffset="886" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="907" endOffset="1285" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/ResumeContext.cs" tabOrder="1" startOffset="708" endOffset="823" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/ResumeContext.cs" tabOrder="2" startOffset="708" endOffset="823" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.Designer.cs" tabOrder="1" endOffset="21" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.Designer.cs" tabOrder="1" startOffset="461" endOffset="479" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="353" endOffset="389" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="871" endOffset="909" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddSkillCommand.cs" tabOrder="1" startOffset="1560" endOffset="1662" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProfileCommand.cs" tabOrder="1" startOffset="1718" endOffset="1720" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1181" endOffset="1344" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1437" endOffset="1577" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1656" endOffset="1842" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="435" endOffset="519" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1158" endOffset="1309" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1331" endOffset="1388" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/InitCommand.cs" tabOrder="1" startOffset="539" endOffset="622" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.cs" tabOrder="1" startOffset="124" endOffset="142" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.cs" tabOrder="1" startOffset="215" endOffset="233" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240305023005_removeCompaniesModel.cs" tabOrder="1" startOffset="775" endOffset="793" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/86d6d0d46cb352dbd2a8abe4fe4f36371b7a15ae8ffffdad8613a9dcb98e6ad/IPrompt.cs" tabOrder="1" startOffset="28" endOffset="141" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/86d6d0d46cb352dbd2a8abe4fe4f36371b7a15ae8ffffdad8613a9dcb98e6ad/IPrompt.cs" tabOrder="1" startOffset="176" endOffset="337" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/86d6d0d46cb352dbd2a8abe4fe4f36371b7a15ae8ffffdad8613a9dcb98e6ad/IPrompt.cs" tabOrder="1" startOffset="377" endOffset="649" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="386" endOffset="421" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="3244" endOffset="3246" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="4541" endOffset="4629" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb5dbb7f99ebe6941d94ed38f389d87a7d8f33135a0396976e3d967828dbe51/AnsiConsole.Prompt.cs" tabOrder="1" startOffset="28" endOffset="112" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb5dbb7f99ebe6941d94ed38f389d87a7d8f33135a0396976e3d967828dbe51/AnsiConsole.Prompt.cs" tabOrder="1" startOffset="159" endOffset="406" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb5dbb7f99ebe6941d94ed38f389d87a7d8f33135a0396976e3d967828dbe51/AnsiConsole.Prompt.cs" tabOrder="1" startOffset="620" endOffset="868" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb5dbb7f99ebe6941d94ed38f389d87a7d8f33135a0396976e3d967828dbe51/AnsiConsole.Prompt.cs" tabOrder="1" startOffset="984" endOffset="1315" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/eb5dbb7f99ebe6941d94ed38f389d87a7d8f33135a0396976e3d967828dbe51/AnsiConsole.Prompt.cs" tabOrder="1" startOffset="1500" endOffset="1812" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="32" endOffset="199" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="307" endOffset="567" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="737" endOffset="1010" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1113" endOffset="1130" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1292" endOffset="1309" displayKind="Render" />
+      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1567" endOffset="1584" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddCommandSettings.cs" tabOrder="1" startOffset="173" endOffset="297" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="366" endOffset="401" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="3224" endOffset="3306" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="4521" endOffset="4609" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="2492" endOffset="2569" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProfileCommand.cs" tabOrder="1" startOffset="1698" endOffset="1818" displayKind="Render" />
     </snapshots>
   </component>
 </project>

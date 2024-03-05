@@ -38,7 +38,7 @@ public class AddProjectSettings: AddCommandSettings
 
 internal sealed class AddProjectCommand: Command<AddProjectSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddProjectSettings settings)
+    public override int Execute(CommandContext context, AddProjectSettings settings)
     {
         var projectName = settings.ProjectName;
         var projectType = settings.ProjectType;
@@ -56,9 +56,7 @@ internal sealed class AddProjectCommand: Command<AddProjectSettings>
             projectStartDate = RenderableFactory.CreateTextPrompt<DateOnly?>("Start Date:", allowEmpty: true).Show();
             projectEndDate = RenderableFactory.CreateTextPrompt<DateOnly?>("End Date:", allowEmpty: true).Show();
         }
-
-        // if(!settings.DryRun)
-        //     settings.Resume.Projects.Add(project);
+        
         project = new Project(projectName!)
         {
             Type = projectType,
