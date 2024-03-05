@@ -12,15 +12,14 @@ public class AddSkillCommand: Command<AddSkillSettings>
     {
         var skillName = settings.Skill;
         var skillType = settings.SkillType;
-        if(settings.Interactive || skillName.IsBlank() && skillType == null)
+        if(settings.Interactive || skillName.IsBlank() || skillType == null)
         {
-            skillName = AnsiConsole.Ask<string>("Skill: ");
-            skillType = new SelectionPrompt<SkillType>()
-                       .Title("Skill Type")
-                       .AddChoices(Enum.GetValues<SkillType>())
-                       .MoreChoicesText("[grey](Move up and down to reveal more skill types)[/]")
-                       .WrapAround()
-                       .Show(AnsiConsole.Console);
+            skillName = RenderableFactory.CreateTextPrompt("Skill: ", skillName, false).Show();
+            skillType = AnsiConsole.Prompt(new SelectionPrompt<SkillType>()
+                                          .Title("Skill Type")
+                                          .AddChoices(Enum.GetValues<SkillType>())
+                                          .MoreChoicesText("[grey](Move up and down to reveal more skill types)[/]")
+                                          .WrapAround());
         }
 
         var skill = new Skill(skillName, skillType.Value);
@@ -42,6 +41,5 @@ public class AddSkillSettings: AddCommandSettings
     //ex. s => soft
     [CommandArgument(1, "[type]")]
     [Description("The type of skill: soft, hard, etc.")]
-    [DefaultValue(models.SkillType.Soft)]
     public SkillType? SkillType { get; set; }
 }
