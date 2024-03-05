@@ -39,7 +39,6 @@ public abstract class TestBase: IDisposable, IAsyncDisposable
         TestDb.Jobs.RemoveRange(TestDb.Jobs);
         TestDb.Projects.RemoveRange(TestDb.Projects);
         TestDb.Profiles.RemoveRange(TestDb.Profiles);
-        TestDb.Companies.RemoveRange(TestDb.Companies);
         TestDb.Skills.RemoveRange(TestDb.Skills);
         await TestDb.SaveChangesAsync();
         await TestDb.DisposeAsync();
@@ -51,7 +50,6 @@ public abstract class TestBase: IDisposable, IAsyncDisposable
         TestDb.Jobs.RemoveRange(TestDb.Jobs);
         TestDb.Projects.RemoveRange(TestDb.Projects);
         TestDb.Profiles.RemoveRange(TestDb.Profiles);
-        TestDb.Companies.RemoveRange(TestDb.Companies);
         TestDb.Skills.RemoveRange(TestDb.Skills);
         TestDb.SaveChanges();
         TestDb.Dispose();

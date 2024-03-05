@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
@@ -37,7 +38,6 @@ public class Job
             _title = Trim(value.ReplaceLineEndings(" - "));
         }
     }
-
     public string Company
     {
         get => _company;

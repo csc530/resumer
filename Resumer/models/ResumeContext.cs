@@ -20,7 +20,6 @@ public class ResumeContext: DbContext
     public DbSet<Job> Jobs { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Profile> Profiles { get; set; }
-    public DbSet<Company> Companies { get; set; }
     public DbSet<Skill> Skills { get; set; }
 
     public string DbPath { get; }

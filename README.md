@@ -1,5 +1,8 @@
 # resumer
+
 save your job details and easily build a resume from them
+
+a user first cli app.
 
 ## why?
 
@@ -9,14 +12,15 @@ so I made this and hopefully i don't quit and it turns into something nice :)
 
 ## todo ✅
 
+- [ ] add long entry (txt/md) input for experience/skills,etc.
 - [ ] add corruption handler and detector for db
-    - [ ] if it exists but isn't populated
-    - [ ] missing or mal formatted tables
-- [] managed personal job details
-  - [] projects
-  - [] jobs
-  - [] volunteering
-  - [] skills
-  - [] references
-- [] curate profile per resume
+   - [ ] if it exists but isn't populated
+   - [ ] missing or mal formatted tables
+- [ ] managed personal job details
+  - [ ] projects
+  - [ ] jobs
+  - [ ] volunteering
+  - [ ] skills
+  - [ ] references
+- [ ] curate profile per resume
   - select skills, jobs, summary

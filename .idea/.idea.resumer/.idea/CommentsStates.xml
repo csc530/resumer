@@ -5,7 +5,22 @@
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="435" endOffset="519" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1158" endOffset="1309" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1331" endOffset="1388" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="205" endOffset="267" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="268" endOffset="325" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="569" endOffset="576" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="736" endOffset="886" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="2" startOffset="907" endOffset="1285" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/InitCommand.cs" tabOrder="1" startOffset="539" endOffset="622" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="205" endOffset="267" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="268" endOffset="325" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="569" endOffset="576" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="736" endOffset="886" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/TestResumer/TestBase.cs" tabOrder="1" startOffset="907" endOffset="1285" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/ResumeContext.cs" tabOrder="1" startOffset="708" endOffset="823" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="386" endOffset="421" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="3244" endOffset="3246" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="4541" endOffset="4629" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/ResumeContext.cs" tabOrder="2" startOffset="708" endOffset="823" displayKind="Render" />
     </snapshots>
   </component>
 </project>

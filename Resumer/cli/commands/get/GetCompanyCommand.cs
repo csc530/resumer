@@ -11,20 +11,20 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
     public override int Execute([NotNull] CommandContext context, [NotNull] OutputCommandSettings settings)
     {
         ResumeContext database = new();
-        var companies = database.Companies;
-        if(companies.Count() == 0)
+        var companies = database.Jobs.Select(job => job.Company).Distinct();
+        if(!companies.Any())
             AnsiConsole.MarkupLine("No companies found");
         else
         {
             var table = settings.GetTable();
             if(table == null)
                 foreach(var company in companies)
-                    AnsiConsole.WriteLine(company.Name);
+                    AnsiConsole.WriteLine(company);
             else
             {
                 table.AddTableColumn("Company Name");
                 foreach(var company in companies)
-                    table.AddRow(company.Name);
+                    table.AddRow(company);
                 AnsiConsole.Write(table);
             }
         }

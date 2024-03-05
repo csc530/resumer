@@ -7,14 +7,14 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.search;
 
-public class SearchCompanyCommand : Command<SearchCompanyCommandSettings>
+public class SearchCompanyCommand: Command<SearchCompanyCommandSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] SearchCompanyCommandSettings settings)
     {
         ResumeContext database = new();
-        var companies = from company in database.Companies
-                        where company.Name.Contains(settings.Name)
-                        select company.Name;
+        var companies = from job in database.Jobs
+            where job.Company.Contains(settings.Name)
+            select job.Company;
         if(!companies.Any())
             AnsiConsole.MarkupLine("No companies found");
         else
@@ -36,7 +36,7 @@ public class SearchCompanyCommand : Command<SearchCompanyCommandSettings>
     }
 }
 
-public class SearchCompanyCommandSettings : OutputCommandSettings
+public class SearchCompanyCommandSettings: OutputCommandSettings
 {
     [CommandArgument(0, "[name]")]
     [Description("The name of the company")]
