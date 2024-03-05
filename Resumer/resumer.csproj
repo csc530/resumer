@@ -7,7 +7,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latestmajor</LangVersion>
-        <StartupObject>resume_builder.Program</StartupObject>
+        <StartupObject>Resumer.Program</StartupObject>
         <GenerateDocumentationFile>False</GenerateDocumentationFile>
         <AssemblyName>Resumer</AssemblyName>
     </PropertyGroup>
