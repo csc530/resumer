@@ -74,7 +74,7 @@ public class Profile
     public List<Education> Education { get; set; }
     public List<string> Interests { get; set; }
     public List<string> Languages { get; set; }
-    public List<string> Certifications { get; set; }
+    public List<Certificate> Certifications { get; set; }
 
     public string? Website { get; set; }
     public string? Objective { get; set; }
