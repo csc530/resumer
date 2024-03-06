@@ -45,6 +45,40 @@ public class Profile
         }
     }
 
+    public string PhoneNumber
+
+    {
+        get => _phoneNumber;
+        set
+        {
+            if(value.IsBlank())
+                throw new ArgumentException("Phone number cannot be blank");
+            _phoneNumber = value;
+        }
+    }
+
+    public string EmailAddress
+
+    {
+        get => _emailAddress;
+        set
+        {
+            if(value.IsBlank())
+                throw new ArgumentException("Email address cannot be blank");
+            _emailAddress = value;
+        }
+    }
+
+    public string? Location { get; set; }
+
+    public List<Education> Education { get; set; }
+    public List<string> Interests { get; set; }
+    public List<string> Languages { get; set; }
+    public List<string> Certifications { get; set; }
+
+    public string? Website { get; set; }
+    public string? Objective { get; set; }
+
 
     /// <summary>
     /// Gets the name whole name - first, middle and last names
@@ -73,33 +107,4 @@ public class Profile
     /// </value>
     [NotMapped]
     public string Initials => $"{FirstName[0]}{MiddleName?[0]}{LastName[0]}";
-
-    [Phone()]
-    public string PhoneNumber
-
-    {
-        get => _phoneNumber;
-        set
-        {
-            if(value.IsBlank())
-                throw new ArgumentException("Phone number cannot be blank");
-            _phoneNumber = value;
-        }
-    }
-
-    [EmailAddress(ErrorMessage = "Email address invalid: it must contain '@'")]
-    public string EmailAddress
-
-    {
-        get => _emailAddress;
-        set
-        {
-            if(value.IsBlank())
-                throw new ArgumentException("Email address cannot be blank");
-            _emailAddress = value;
-        }
-    }
-
-    public string? Website { get; set; }
-    public string? Summary { get; set; }
 }

@@ -56,9 +56,9 @@ public sealed class AddProfileCommand: Command<AddProfileSettings>
         {
             MiddleName = middleName,
             Website = website,
-            Summary = summary
+            Objective = summary
         };
-        profile.Summary = settings.Summary;
+        profile.Objective = settings.Summary;
         profile.Website = settings.Website;
         ResumeContext database = new();
 

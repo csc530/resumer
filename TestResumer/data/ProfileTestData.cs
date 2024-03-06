@@ -13,7 +13,7 @@ internal class ProfileTestData: TestData
                                                .RuleFor(profile => profile.MiddleName,
                                                     Faker.Random.Word().OrNull(Faker))
                                                 //.RuleFor(profile => profile.EmailAddress, (_, profile) => Faker.Internet.Email(profile.FirstName, profile.LastName))
-                                               .RuleFor(profile => profile.Summary,
+                                               .RuleFor(profile => profile.Objective,
                                                     Faker.Lorem.Paragraph().OrNull(Faker));
 
     static public IEnumerable<Profile> InfiniteFakeProfiles => BogusProfile.GenerateForever();

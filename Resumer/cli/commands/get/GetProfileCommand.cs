@@ -14,7 +14,7 @@ public class GetProfileCommand: Command<OutputCommandSettings>
         var table = new Table();
         table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
         foreach(var profile in profiles)
-            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber, profile.Summary.GetPrintValue(),
+            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber, profile.Objective.GetPrintValue(),
                 profile.Website.GetPrintValue());
         AnsiConsole.Write(table);
         if(!profiles.Any())

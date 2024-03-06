@@ -2,24 +2,14 @@
 <project version="4">
   <component name="SolutionCommentsState">
     <snapshots>
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1181" endOffset="1344" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1437" endOffset="1577" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="1656" endOffset="1842" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="435" endOffset="519" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1158" endOffset="1309" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Program.cs" tabOrder="1" startOffset="1331" endOffset="1388" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="32" endOffset="199" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="307" endOffset="567" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="737" endOffset="1010" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1113" endOffset="1130" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1292" endOffset="1309" displayKind="Render" />
-      <stateSnapshot moniker="$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f36db23497e6e9e064f46761706a2ffbffe3dd216b7bfa6186a729b46225e13/CommandOfT.cs" tabOrder="1" startOffset="1567" endOffset="1584" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddCommandSettings.cs" tabOrder="1" startOffset="173" endOffset="297" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="2010" endOffset="2173" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="2266" endOffset="2406" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/models/Profile.cs" tabOrder="1" startOffset="2485" endOffset="2671" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240306013708_addResumeModelAndUpdateProfile,ProjectModels.Designer.cs" tabOrder="1" endOffset="21" displayKind="Render" />
+      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/Migrations/20240306013708_addResumeModelAndUpdateProfile,ProjectModels.Designer.cs" tabOrder="1" startOffset="508" endOffset="526" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="366" endOffset="401" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="3224" endOffset="3306" displayKind="Render" />
       <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddJobCommand.cs" tabOrder="1" startOffset="4521" endOffset="4609" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProjectCommand.cs" tabOrder="1" startOffset="2492" endOffset="2569" displayKind="Render" />
-      <stateSnapshot moniker="$PROJECT_DIR$/Resumer/cli/commands/add/AddProfileCommand.cs" tabOrder="1" startOffset="1698" endOffset="1818" displayKind="Render" />
     </snapshots>
   </component>
 </project>

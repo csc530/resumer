@@ -2,30 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
+[PrimaryKey(nameof(Title), nameof(Company), nameof(StartDate))]
 public class Job
 {
     private string _company;
     private string? _description;
     private string? _experience;
     private string _title;
-
-    public Job()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Job(Guid id, string title, string company, DateOnly? startDate = null)
-    {
-        Id = id;
-        Title = title;
-        Company = company;
-        StartDate = startDate ?? Globals.Today;
-    }
-
-    public Guid Id { get; init; }
 
     [MinLength(1, ErrorMessage = "Job title cannot be empty")]
     public string Title
@@ -49,7 +36,7 @@ public class Job
         }
     }
 
-    public DateOnly StartDate { get; set; }
+    public DateOnly StartDate { get; set; } = Globals.Today;
     public DateOnly? EndDate { get; set; }
 
     public string? Description
