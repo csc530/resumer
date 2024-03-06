@@ -7,12 +7,12 @@ using Spectre.Console;
 
 namespace Resumer;
 
-public static class Globals
+public static partial class Globals
 {
     public const string NullString = "<null/>";
     public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
 
-    public static int PrintError(ExitCode exitCode, string message)
+    public static int CommandError(ExitCode exitCode, string message)
     {
         AnsiConsole.Foreground = Color.Red;
         AnsiConsole.WriteLine($"Error {exitCode.ToInt()}: {exitCode}");
@@ -20,7 +20,7 @@ public static class Globals
         return exitCode.ToInt();
     }
 
-    public static int PrintError(CliSettings settings, Exception exception)
+    public static int CommandError(CliSettings settings, Exception exception)
     {
         AnsiConsole.Foreground = Color.Red;
         if(exception.GetType() == typeof(SqliteException))
@@ -45,6 +45,28 @@ public static class Globals
             AnsiConsole.WriteLine(exception.Message);
             return ExitCode.Error.ToInt();
         }
+    }
+
+    /// <summary>
+    ///  Display an error message and return the error code
+    /// </summary>
+    /// <param name="error"></param>
+    /// <param name="errCode"></param>
+    /// <param name="help"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public static int CommandError(string error, ExitCode errCode, string? help = null)
+    {
+        AnsiConsole.Foreground = Color.Red;
+        AnsiConsole.WriteLine($"Error {errCode.ToInt()}: {errCode}");
+        AnsiConsole.WriteLine(error);
+        if(help != null)
+        {
+            AnsiConsole.Foreground = Color.Cyan2;
+            AnsiConsole.WriteLine(help);
+        }
+        AnsiConsole.Reset();
+        return errCode.ToInt();
     }
 }
 

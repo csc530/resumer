@@ -19,7 +19,7 @@ public class GetSkillCommand : Command<OutputCommandSettings>
         }
         catch(Exception e)
         {
-            return Globals.PrintError(settings, e);
+            return Globals.CommandError(settings, e);
         }
 
         if(skills.Count() == 0)

@@ -1,6 +1,7 @@
 ﻿using Resumer.cli.commands;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
+using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
 using Resumer.cli.commands.search;
 using Resumer.cli.settings;
@@ -28,6 +29,10 @@ public static class Program
         config.SetApplicationName("resume builder");
         config.SetApplicationVersion("1.0.0");
         config.CaseSensitivity(CaseSensitivity.None);
+
+        config.AddCommand<ExportCommand>("export")
+              .WithDescription("export resume to various formats")
+              .WithAlias("e");
 
         config.AddBranch("config", configurator => {
             configurator.SetDescription("configure resume builder settings");
