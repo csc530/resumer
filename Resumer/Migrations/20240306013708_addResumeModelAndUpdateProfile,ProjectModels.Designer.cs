@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Resumer.models;
 
@@ -10,59 +11,14 @@ using Resumer.models;
 namespace resume_builder.Migrations
 {
     [DbContext(typeof(ResumeContext))]
-    partial class ResumeContextModelSnapshot : ModelSnapshot
+    [Migration("20240306013708_addResumeModelAndUpdateProfile,ProjectModels")]
+    partial class addResumeModelAndUpdateProfileProjectModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");
-
-            modelBuilder.Entity("Resumer.models.Certificate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CredentialId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly?>("ExpirationDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly?>("IssueDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Issuer")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileEmailAddress")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileFirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileLastName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfilePhoneNumber")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
-
-                    b.ToTable("Certificate");
-                });
 
             modelBuilder.Entity("Resumer.models.Education", b =>
                 {
@@ -148,6 +104,10 @@ namespace resume_builder.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Certifications")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Interests")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -216,13 +176,6 @@ namespace resume_builder.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("Resumer.models.Certificate", b =>
-                {
-                    b.HasOne("Resumer.models.Profile", null)
-                        .WithMany("Certifications")
-                        .HasForeignKey("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
-                });
-
             modelBuilder.Entity("Resumer.models.Education", b =>
                 {
                     b.HasOne("Resumer.models.Profile", null)
@@ -232,8 +185,6 @@ namespace resume_builder.Migrations
 
             modelBuilder.Entity("Resumer.models.Profile", b =>
                 {
-                    b.Navigation("Certifications");
-
                     b.Navigation("Education");
                 });
 #pragma warning restore 612, 618

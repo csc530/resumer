@@ -1,7 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.RegularExpressions;
-using PhoneNumbers;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -21,17 +19,13 @@ public sealed class AddProfileCommand: Command<AddProfileSettings>
         var website = settings.Website;
         var summary = settings.Summary;
 
-        var phoneNumberUtil = PhoneNumberUtil.GetInstance();
 
         if(settings.PromptUser)
         {
             var firstNamePrompt = RenderableFactory.CreateTextPrompt("First name: ", firstName);
             var lastNamePrompt = RenderableFactory.CreateTextPrompt("Last name: ", lastName);
             var middleNamePrompt = RenderableFactory.CreateTextPrompt("Middle name: ", middleName).AllowEmpty();
-            var phoneNumberPrompt = RenderableFactory.CreateTextPrompt("Phone number: ", phoneNumber)
-                                                     .Validate(phone => PhoneNumberUtil.IsViablePhoneNumber(phone)
-                                                          ? ValidationResult.Success()
-                                                          : ValidationResult.Error("Invalid phone number"));
+            var phoneNumberPrompt = RenderableFactory.CreateTextPrompt("Phone number: ", phoneNumber);
             var emailAddressPrompt = RenderableFactory.CreateTextPrompt("Email address: ", emailAddress).Validate(
                 //from https://learn.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
                 email => string.IsNullOrWhiteSpace(email) || Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
@@ -44,9 +38,7 @@ public sealed class AddProfileCommand: Command<AddProfileSettings>
             firstName = AnsiConsole.Prompt(firstNamePrompt);
             lastName = AnsiConsole.Prompt(lastNamePrompt);
             middleName = AnsiConsole.Prompt(middleNamePrompt);
-            var phone = phoneNumberUtil.Parse(AnsiConsole.Prompt(phoneNumberPrompt),
-                CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
-            phoneNumber = $"+{phone.CountryCode} {phone.NationalNumber}{(phone.HasExtension ? $",{phone.Extension}" : "")}";
+            phoneNumber = (AnsiConsole.Prompt(phoneNumberPrompt));
             emailAddress = AnsiConsole.Prompt(emailAddressPrompt);
             website = AnsiConsole.Prompt(websitePrompt);
             summary = AnsiConsole.Prompt(summaryPrompt);
@@ -56,9 +48,9 @@ public sealed class AddProfileCommand: Command<AddProfileSettings>
         {
             MiddleName = middleName,
             Website = website,
-            Summary = summary
+            Objective = summary
         };
-        profile.Summary = settings.Summary;
+        profile.Objective = settings.Summary;
         profile.Website = settings.Website;
         ResumeContext database = new();
 

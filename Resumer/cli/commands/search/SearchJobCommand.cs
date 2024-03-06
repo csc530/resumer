@@ -27,7 +27,7 @@ public class SearchJobCommand: JobOutputCommand<SearchJobSettings>
         }
         catch(Exception e)
         {
-            return Globals.PrintError(settings, e);
+            return Globals.CommandError(settings, e);
         }
 
         var jobs = rows;

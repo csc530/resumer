@@ -29,7 +29,7 @@ public class AddProfileTest: TestBase
         var email = profile.EmailAddress;
         var phone = profile.PhoneNumber;
         var website = profile.Website;
-        var summary = profile.Summary;
+        var summary = profile.Objective;
         var args = CreateCmdOptions(profile);
         //when
         var result = TestApp.Run(args);
@@ -60,7 +60,7 @@ public class AddProfileTest: TestBase
         var email = profile.EmailAddress;
         var phone = profile.PhoneNumber;
         var website = profile.Website;
-        var summary = profile.Summary;
+        var summary = profile.Objective;
         var args = CreateCmdOptions(profile);
         //when
         var result = TestApp.Run(args);
@@ -76,7 +76,7 @@ public class AddProfileTest: TestBase
             Assert.Equal(email, dbProfile.EmailAddress);
             Assert.Equal(phone, dbProfile.PhoneNumber);
             Assert.Equal(website, dbProfile.Website);
-            Assert.Equal(summary, dbProfile.Summary);
+            Assert.Equal(summary, dbProfile.Objective);
         });
     }
 
@@ -86,7 +86,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(string.Empty, profile.LastName, profile.EmailAddress, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //when
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
@@ -99,7 +99,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(firstName, profile.LastName, profile.EmailAddress, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
         Assert.Empty(TestDb.Profiles);
@@ -111,7 +111,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, string.Empty, profile.EmailAddress, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //when
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
@@ -124,7 +124,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, lastname, profile.EmailAddress, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
         Assert.Empty(TestDb.Profiles);
@@ -136,7 +136,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, string.Empty, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //when
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
@@ -149,7 +149,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, email, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
         Assert.Empty(TestDb.Profiles);
@@ -161,7 +161,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, null, profile.PhoneNumber,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args, "-e", email));
         Assert.Empty(TestDb.Profiles);
@@ -173,7 +173,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, profile.EmailAddress, string.Empty,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //when
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
@@ -186,7 +186,7 @@ public class AddProfileTest: TestBase
     {
         //given
         var args = CreateCmdOptions(profile.FirstName, profile.LastName, profile.EmailAddress, phone,
-            profile.MiddleName, profile.Website, profile.Summary);
+            profile.MiddleName, profile.Website, profile.Objective);
         //then
         Assert.ThrowsAny<Exception>(() => TestApp.Run(args));
         Assert.Empty(TestDb.Profiles);
@@ -201,7 +201,7 @@ public class AddProfileTest: TestBase
         var email = profile.EmailAddress;
         var phone = profile.PhoneNumber;
         var website = profile.Website;
-        var summary = profile.Summary;
+        var summary = profile.Objective;
 
         string[] args = [.._cmdArgs, "-f", firstName, "-l", lastName, "-e", email, "-p", phone];
         if(middleName != null)
