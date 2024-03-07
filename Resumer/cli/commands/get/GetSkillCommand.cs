@@ -7,23 +7,15 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class GetSkillCommand : Command<OutputCommandSettings>
+public class GetSkillCommand: Command<OutputCommandSettings>
 {
     public override int Execute(CommandContext context, OutputCommandSettings settings)
     {
-        DbSet<Skill> skills;
-        try
-        {
-            ResumeContext database = new();
-            skills = database.Skills;
-        }
-        catch(Exception e)
-        {
-            return Globals.CommandError(settings, e);
-        }
+        ResumeContext database = new();
+        var skills = database.Skills;
 
-        if(skills.Count() == 0)
-            AnsiConsole.MarkupLine("No skills found");
+        if(!skills.Any())
+            return CommandOutput.Success(("No skills found"));
         else
         {
             var table = settings.GetTable();
@@ -37,8 +29,8 @@ public class GetSkillCommand : Command<OutputCommandSettings>
                     table.AddRow(skill.Name, skill.Type.ToString());
                 AnsiConsole.Write(table);
             }
-        }
 
-        return ExitCode.Success.ToInt();
+            return CommandOutput.Success();
+        }
     }
 }

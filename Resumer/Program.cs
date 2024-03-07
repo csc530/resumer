@@ -17,7 +17,7 @@ public static class Program
     {
         var app = new CommandApp();
         app.Configure(AppConfiguration);
-        return CommandOutput.Error(ExitCode.Canceled,"❌ Error running application");
+        return app.Run(args);
     }
 
     //todo: don't like that parent options and arguments are positional; spectre problem

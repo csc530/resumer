@@ -12,7 +12,7 @@ public class ExportCommand: Command<ExportCommandSettings>
     {
         var db = new ResumeContext();
         if(!db.Profiles.Any())
-            return Globals.CommandError("No profiles found",ExitCode.NoData, "Please add a profile before exporting, use the 'add profile' command");
+            return CommandOutput.Error(ExitCode.NoData, "No profiles found", "Please add a profile before exporting, use the 'add profile' command");
 
         var format = settings.Format;
         var output = settings.Output;
@@ -87,7 +87,7 @@ public class ExportCommand: Command<ExportCommandSettings>
         Console.WriteLine($"Certifications: {certifications}");
 
 
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success();
     }
 
 

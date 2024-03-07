@@ -46,7 +46,7 @@ internal sealed class AddProjectCommand: Command<AddProjectSettings>
         var projectUrl = settings.ProjectUrl;
         var projectStartDate = settings.ProjectStartDate;
         var projectEndDate = settings.ProjectEndDate;
-        Project? project = null;
+
         if(settings.PromptUser)
         {
             projectName = AnsiConsole.Ask<string>("Project Name:");
@@ -57,7 +57,7 @@ internal sealed class AddProjectCommand: Command<AddProjectSettings>
             projectEndDate = RenderableFactory.CreateTextPrompt<DateOnly?>("End Date:", allowEmpty: true).Show();
         }
 
-        project = new Project(projectName!)
+        var project = new Project(projectName!)
         {
             Type = projectType,
             Description = projectDescription,
@@ -69,7 +69,6 @@ internal sealed class AddProjectCommand: Command<AddProjectSettings>
         var db = new ResumeContext();
         db.Projects.Add(project);
         db.SaveChanges();
-        AnsiConsole.MarkupLine($"[green]Added project {projectName}[/]");
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success($"[green]Added project {projectName}[/]");
     }
 }

@@ -10,67 +10,10 @@ namespace Resumer;
 public static partial class Globals
 {
     public const string NullString = "<null/>";
-    public static DateOnly Today { get; } = DateOnly.FromDateTime(DateTime.Today);
-
-    public static int CommandError(ExitCode exitCode, string message)
-    {
-        AnsiConsole.Foreground = Color.Red;
-        AnsiConsole.WriteLine($"Error {exitCode.ToInt()}: {exitCode}");
-        AnsiConsole.WriteLine(message);
-        return exitCode.ToInt();
-    }
-
-    public static int CommandError(CliSettings settings, Exception exception)
-    {
-        AnsiConsole.Foreground = Color.Red;
-        if(exception.GetType() == typeof(SqliteException))
-        {
-            var e = (SqliteException)exception;
-            var err = $"Database Error {e.SqliteErrorCode}";
-            if(settings.Verbose)
-                err += $"-{e.SqliteExtendedErrorCode}";
-            err += $": {((SqlResultCode)e.SqliteErrorCode).GetMessage()}";
-            AnsiConsole.WriteLine($"{err}");
-            if(settings.Verbose)
-                AnsiConsole.WriteLine($"{e.Message}");
-            return ExitCode.DbError.ToInt();
-        }
-        else if(exception is InvalidOperationException)
-        {
-            AnsiConsole.WriteLine("Invalid operation");
-            return ExitCode.Fail.ToInt();
-        }
-        else
-        {
-            AnsiConsole.WriteLine(exception.Message);
-            return ExitCode.Error.ToInt();
-        }
-    }
-
-    /// <summary>
-    ///  Display an error message and return the error code
-    /// </summary>
-    /// <param name="error"></param>
-    /// <param name="errCode"></param>
-    /// <param name="help"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public static int CommandError(string error, ExitCode errCode, string? help = null)
-    {
-        AnsiConsole.Foreground = Color.Red;
-        AnsiConsole.WriteLine($"Error {errCode.ToInt()}: {errCode}");
-        AnsiConsole.WriteLine(error);
-        if(help != null)
-        {
-            AnsiConsole.Foreground = Color.Cyan2;
-            AnsiConsole.WriteLine(help);
-        }
-        AnsiConsole.Reset();
-        return errCode.ToInt();
-    }
+    public static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
 }
 
-public static class Extensions
+public static partial class Extensions
 {
     // todo: inquire about default value being a property - spectre console pr/iss
     // .DefaultValue(textPrompt);
@@ -85,45 +28,6 @@ public static class Extensions
 
     public static string GetPrintValue(this object? value, bool allowBlank = false) =>
         GetPrintValue(value?.ToString(), allowBlank);
-
-    #region conversions
-
-    public static int ToInt(this ExitCode exitCode) => (int)exitCode;
-    public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
-
-    #endregion
-
-    #region sql values
-
-    public static object? GetNullableValue(this DbDataReader reader, string columnName)
-    {
-        var ordinal = reader.GetOrdinal(columnName);
-        return reader.GetNullableValue(ordinal);
-    }
-
-    public static object? GetNullableValue(this DbDataReader reader, int ordinal) =>
-        reader.IsDBNull(ordinal) ? null : reader[ordinal];
-
-    public static T? GetNullableValue<T>(this DbDataReader reader, string columnName)
-    {
-        var ordinal = reader.GetOrdinal(columnName);
-        return reader.GetNullableValue<T>(ordinal);
-    }
-
-    public static T? GetNullableValue<T>(this DbDataReader reader, int ordinal)
-    {
-        var val = GetNullableValue(reader, ordinal);
-        return val == null ? (T?)val : reader.GetFieldValue<T?>(ordinal);
-    }
-
-    /// <summary>
-    /// because why won't it just auto convert it to a <see cref="DBNull.Value"/>
-    /// </summary>
-    /// <inheritdoc cref="SqliteParameterCollection.AddWithValue(string,object)"/>
-    public static void AddWithNullableValue(this SqliteParameterCollection parameters, string name, object? value)
-        => parameters.AddWithValue(name, value ?? DBNull.Value);
-
-    #endregion
 
     #region strings
 

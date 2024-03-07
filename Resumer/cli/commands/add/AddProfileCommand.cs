@@ -50,25 +50,21 @@ public sealed class AddProfileCommand: Command<AddProfileSettings>
             Website = website,
             Objective = summary
         };
-        profile.Objective = settings.Summary;
-        profile.Website = settings.Website;
+
         ResumeContext database = new();
 
         database.Profiles.Add(profile);
         database.SaveChanges();
 
-        AnsiConsole.MarkupLine($"✅ profile: [BOLD]{profile.FullName}[/] added");
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success($"✅ profile: [BOLD]{profile.FullName}[/] added");
     }
 }
 
 public class AddProfileSettings: AddCommandSettings
 {
-    public bool PromptUser =>
+    public bool PromptUser =>Interactive||
         (FirstName.IsBlank() && LastName.IsBlank() && MiddleName.IsBlank() && PhoneNumber.IsBlank() &&
-         EmailAddress.IsBlank() && Website.IsBlank() && Summary.IsBlank())
-        ||
-        Interactive;
+         EmailAddress.IsBlank() && Website.IsBlank() && Summary.IsBlank());
 
     [CommandOption("-f|--first <FirstName>")]
     public string? FirstName { get; set; }

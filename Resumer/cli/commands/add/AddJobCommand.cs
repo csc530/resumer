@@ -21,23 +21,23 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
 
         if(settings.PromptUser)
         {
-            var jobTitlePrompt = RenderableFactory.CreateTextPrompt("Job title: ", jobTitle).Validate(value =>
-                string.IsNullOrWhiteSpace(value)
-                    ? ValidationResult.Error()
-                    : ValidationResult.Success())
-                .ValidationErrorMessage("[red]Job title cannot be empty[/]");
+            var jobTitlePrompt = RenderableFactory.CreateTextPrompt("Job title: ", jobTitle)
+                                                  .Validate(value => string.IsNullOrWhiteSpace(value)
+                                                                ? ValidationResult.Error()
+                                                                : ValidationResult.Success())
+                                                  .ValidationErrorMessage("[red]Job title cannot be empty[/]");
             var startDatePrompt = RenderableFactory.CreateTextPrompt("Start date: ", startDate ?? Today, true)
                                                    .Validate(date => date > Today
-                                                        ? ValidationResult.Success()
-                                                        : ValidationResult.Error())
+                                                                 ? ValidationResult.Success()
+                                                                 : ValidationResult.Error())
                                                    .ValidationErrorMessage("[red]Start date must be before today[/]");
             var descriptionPrompt = RenderableFactory.CreateTextPrompt("Description: ", jobDescription);
             var experiencePrompt = RenderableFactory.CreateTextPrompt("Experience: ", experience);
             var companyPrompt = RenderableFactory.CreateTextPrompt("Company: ", company);
             var endDatePrompt = RenderableFactory.CreateTextPrompt("End date: ", endDate, true)
                                                  .Validate(date => date >= startDate
-                                                      ? ValidationResult.Success()
-                                                      : ValidationResult.Error())
+                                                               ? ValidationResult.Success()
+                                                               : ValidationResult.Error())
                                                  .ValidationErrorMessage("[red]End date must be after start date[/]");
 
             jobTitle = AnsiConsole.Prompt(jobTitlePrompt);
@@ -62,18 +62,16 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
         db.Jobs.Add(job);
         db.SaveChanges(acceptAllChangesOnSuccess: true);
         AnsiConsole.MarkupLine($"✅ Job \"[bold]{job.Title}[/]\" added");
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success();
     }
 }
 
 public class AddJobSettings: AddCommandSettings
 {
     //todo: replace prompt user with yes flag; that will fail if inputs don't match up
-    public bool PromptUser =>
-        (JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null && JobDescription.IsBlank() &&
-         Experience.IsBlank())
-        ||
-        Interactive;
+    public bool PromptUser => Interactive ||
+                              (JobTitle.IsBlank() && Company.IsBlank() && StartDate == null && EndDate == null &&
+                               JobDescription.IsBlank() && Experience.IsBlank());
 
     [Description("start date at the job")]
     [CommandOption("-s|--start <StartDate>")]

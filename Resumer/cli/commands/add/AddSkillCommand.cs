@@ -26,8 +26,7 @@ public class AddSkillCommand: Command<AddSkillSettings>
         ResumeContext database = new();
         database.Skills.Add(skill);
         database.SaveChanges();
-        AnsiConsole.MarkupLineInterpolated($"""✅ [bold]{skill.Type}[/] Skill "[bold]{skill.Name}[/]" added""");
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success($"""✅ [bold]{skill.Type}[/] Skill "[bold]{skill.Name}[/]" added""");
     }
 }
 

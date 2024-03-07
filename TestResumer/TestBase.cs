@@ -72,4 +72,6 @@ public static class TestHelpers
     public static CommandAppFailure RunAndCatch<T>(this CommandAppTester commandAppTester, IEnumerable<string> cmdArgs,
         params string[] args)
         where T : Exception => commandAppTester.RunAndCatch<T>(cmdArgs.Concat(args).ToArray());
+
+    public static int ToInt(this ExitCode exitCode) => (int) exitCode;
 }

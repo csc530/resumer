@@ -11,14 +11,19 @@ public class GetProfileCommand: Command<OutputCommandSettings>
     public override int Execute(CommandContext context, OutputCommandSettings settings)
     {
         var profiles = new ResumeContext().Profiles;
+
+        if(!profiles.Any())
+            return CommandOutput.Success("[bold red]No[/] profiles found");
+
         var table = new Table();
         table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
+
         foreach(var profile in profiles)
-            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber, profile.Objective.GetPrintValue(),
+            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber,
+                profile.Objective.GetPrintValue(),
                 profile.Website.GetPrintValue());
         AnsiConsole.Write(table);
-        if(!profiles.Any())
-            AnsiConsole.MarkupLine("[bold red]No[/] profiles found");
-        return ExitCode.Success.ToInt();
+
+        return CommandOutput.Success();
     }
 }

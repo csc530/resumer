@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -11,47 +12,39 @@ public class GetJobCommand: JobOutputCommand<GetJobCommandSettings>
 {
     public override int Execute(CommandContext context, GetJobCommandSettings settings)
     {
-        var ids = settings.Ids ?? Array.Empty<int>();
         var rows = new Dictionary<int, Job>();
         ResumeContext database = new();
+        var ids = settings.Ids ?? database.Jobs.AsEnumerable().Select((_, i) => i).ToArray();
+
         if(!database.Jobs.Any())
+            return CommandOutput.Success("No jobs found");
+
+        foreach(var id in ids)
         {
-            AnsiConsole.MarkupLine("No jobs");
-            return ExitCode.Success.ToInt();
-        }
-
-        if(ids.Length == 0)
-            rows = database.Jobs
-                           .AsEnumerable()
-                           .Select((job, i) => new KeyValuePair<int, Job>(i, job))
-                           .ToDictionary(pair => pair.Key, pair => pair.Value);
-        else
-            foreach(var id in ids)
-                if(id < database.Jobs.Count())
-                {
-                    var job = database.Jobs.ElementAt(id);
-                    rows.Add(id, job);
-                }
-                else
-                {
-                    AnsiConsole.MarkupLine($"Invalid job id: {id}");
-                    return ExitCode.InvalidArgument.ToInt();
-                }
-
-
-        var jobs = rows.Values;
-        if(jobs.Count == 0)
-            AnsiConsole.MarkupLine("No jobs found");
-        else
-        {
-            var table = settings.GetTable();
-            if(table == null)
-                PrintJobsPlain(settings, rows);
+            Job job;
+            if(id < database.Jobs.Count() && id >= 0)
+                job = database.Jobs.ElementAt(id);
+            else if(id < 0 && id >= -database.Jobs.Count())
+                job = database.Jobs.ElementAt(database.Jobs.Count() + id);
             else
-                PrintJobsTable(settings, table, rows);
+            {
+                AnsiConsole.MarkupLine($"[yellow]Invalid job id: {id}[/]");
+                continue;
+            }
+
+            rows.Add(id, job);
         }
 
-        return ExitCode.Success.ToInt();
+
+        var table = settings.GetTable();
+        if(rows.Values.Count == 0)
+            AnsiConsole.MarkupLine("No jobs found");
+        else if(table == null)
+            PrintJobsPlain(settings, rows);
+        else
+            PrintJobsTable(settings, table!, rows);
+
+        return CommandOutput.Success();
     }
 }
 

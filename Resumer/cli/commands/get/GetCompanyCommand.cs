@@ -29,6 +29,6 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
             }
         }
 
-        return ExitCode.Success.ToInt();
+        return CommandOutput.Success();
     }
 }

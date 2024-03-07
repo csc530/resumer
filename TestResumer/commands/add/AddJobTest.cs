@@ -27,7 +27,7 @@ public class AddJobTest: TestBase
         //and I have no idea how to inject a response to the app
         //I added a timeout so it sould stop
         var result = TestApp.Run(CmdArgs);
-        Assert.Equal(ExitCode.Error.ToInt(), result.ExitCode);
+        Assert.Equal((int)ExitCode.Error, result.ExitCode);
     }
 
     [Theory]
