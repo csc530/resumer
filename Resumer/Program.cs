@@ -1,10 +1,12 @@
-﻿using Resumer.cli.commands;
+﻿using System.Data.Common;
+using Resumer.cli.commands;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
 using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
-using Resumer.cli.commands.search;
 using Resumer.cli.settings;
+using Resumer.models;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Resumer;
@@ -15,7 +17,7 @@ public static class Program
     {
         var app = new CommandApp();
         app.Configure(AppConfiguration);
-        return app.Run(args);
+        return CommandOutput.Error(ExitCode.Canceled,"❌ Error running application");
     }
 
     //todo: don't like that parent options and arguments are positional; spectre problem
@@ -39,9 +41,6 @@ public static class Program
             configurator.AddCommand<GetConfigCommand>("get")
                         .WithDescription("get configuration settings")
                         .WithAlias("g");
-            // config.AddCommand<SetConfigCommand>("set")
-            //       .WithDescription("set configuration settings")
-            //       .WithAlias("s");
         });
 
         //todo: add option if adding an existing entry to edit it
@@ -79,19 +78,6 @@ public static class Program
             get.AddCommand<GetProfileCommand>("profile")
                .WithAlias("user")
                .WithAlias("u");
-        });
-
-        config.AddBranch<OutputCommandSettings>("search", search => {
-            search.SetDescription("search for jobs matching search terms");
-            search.AddCommand<SearchCompanyCommand>("company")
-                  .WithAlias("c")
-                  .WithAlias("companies");
-            search.AddCommand<SearchSkillCommand>("skill")
-                  .WithAlias("s")
-                  .WithAlias("skills");
-            search.AddCommand<SearchJobCommand>("job")
-                  .WithAlias("jobs")
-                  .WithAlias("j");
         });
 
         config.AddCommand<InitCommand>("init")
