@@ -6,15 +6,13 @@ public class ResumeContext: DbContext
 {
     public ResumeContext()
     {
-
+        string path;
     #if DEBUG
-        DbPath = Directory.GetCurrentDirectory();
+        path = Directory.GetCurrentDirectory();
     #else
-        const Environment.SpecialFolder folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join(path, "resume.db");
+        path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
     #endif
-        DbPath = Path.Join(DbPath, "resume.db");
+        DbPath = Path.Join(path, "resume.db");
     }
 
     public DbSet<Job> Jobs { get; set; }
