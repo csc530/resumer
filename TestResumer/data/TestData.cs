@@ -27,17 +27,17 @@ public class TestData
     public const string BraillePatternBlank = "\u2800";
 
 
-    private static Random Random { get; set; } = new();
-    protected static Faker Faker { get; set; } = new();
+    private static Random Random { get; } = new();
+    protected static Faker Faker { get; } = new();
 
-    static private protected int MaxRandomYearsAfterToday()
+    private protected static int MaxRandomYearsAfterToday()
     {
         DateOnly.MaxValue.Deconstruct(out var maxYear, out _, out _);
         DateOnly.FromDateTime(DateTime.Today).Deconstruct(out var todayYear, out _, out _);
         return maxYear - todayYear;
     }
 
-    static private protected int MaxRandomYearsBeforeToday()
+    private protected static int MaxRandomYearsBeforeToday()
     {
         DateOnly.MinValue.Deconstruct(out var minYear, out _, out _);
         DateOnly.FromDateTime(DateTime.Today).Deconstruct(out var todayYear, out _, out _);

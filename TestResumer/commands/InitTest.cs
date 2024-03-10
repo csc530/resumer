@@ -22,7 +22,6 @@ public class InitTest: TestBase
         //then
         Assert.Equal(0, result.ExitCode);
         Assert.True(File.Exists("resume.db"));
-        TestDb = new ResumeContext();
         Assert.True(TestDb.Database.CanConnect());
     }
 }

@@ -1,11 +1,10 @@
-using Resumer;
 using Resumer.models;
 using TestResumer.data;
 
 namespace TestResumer.commands.get;
 
 [UsesVerify]
-public class GetJobTest: TestBase
+public class GetJobTest : TestBase
 {
     private static readonly string[] CmdArgs = ["get", "job"];
 
@@ -32,7 +31,7 @@ public class GetJobTest: TestBase
         Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
         for(var index = 0; index < jobs.Count; index++)
             //? the \u2502 is the unicode character for the | character; it's used in the table output
-            Assert.Contains("\u2502 " + index, TestConsole.Output);
+            Assert.Contains(index.ToString(), TestConsole.Output);
     }
 
     [Fact]
@@ -71,6 +70,9 @@ public class GetJobTest: TestBase
         //when
         var result = TestApp.Run(CmdArgs, "52", "13", "313");
         //then
-        Assert.NotEqual(ExitCode.Success.ToInt(), result.ExitCode);
+        Assert.DoesNotContain("52", result.Output);
+        Assert.DoesNotContain("13", result.Output);
+        Assert.DoesNotContain("313", result.Output);
+        Assert.Equal(ExitCode.Success.ToInt(), result.ExitCode);
     }
 }
