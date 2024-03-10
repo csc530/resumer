@@ -7,7 +7,7 @@ using static Resumer.Globals;
 namespace Resumer.cli.commands;
 
 //todo: add or suggest init call when db is out of date; in instance of an app update
-internal class InitCommand: Command
+internal class InitCommand : Command
 {
     public override int Execute(CommandContext context)
     {
@@ -22,6 +22,6 @@ internal class InitCommand: Command
 
         return !db.CanConnect() ? CommandOutput.Error(ExitCode.DbError, "❌ Error creating database") :
             //todo: check for existing file with the same of db and ask to overwrite or recover
-            CommandOutput.Success($"{Emoji.Known.CheckMark} Database initialized");
+            CommandOutput.Success($"✅ Database initialized");
     }
 }

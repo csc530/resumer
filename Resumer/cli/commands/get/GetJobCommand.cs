@@ -18,33 +18,34 @@ public class GetJobCommand: JobOutputCommand<GetJobCommandSettings>
 
         if(!database.Jobs.Any())
             return CommandOutput.Success("No jobs found");
-
-        foreach(var id in ids)
+        else
         {
-            Job job;
-            if(id < database.Jobs.Count() && id >= 0)
-                job = database.Jobs.ElementAt(id);
-            else if(id < 0 && id >= -database.Jobs.Count())
-                job = database.Jobs.ElementAt(database.Jobs.Count() + id);
-            else
+            foreach(var id in ids)
             {
-                AnsiConsole.MarkupLine($"[yellow]Invalid job id: {id}[/]");
-                continue;
+                Job job;
+                if(id < database.Jobs.Count() && id >= 0)
+                    job = database.Jobs.ElementAt(id);
+                else if(id < 0 && id >= -database.Jobs.Count())
+                    job = database.Jobs.ElementAt(database.Jobs.Count() + id);
+                else
+                {
+                    AnsiConsole.MarkupLine($"[yellow]Invalid job id: {id}[/]");
+                    continue;
+                }
+                rows.Add(id, job);
             }
 
-            rows.Add(id, job);
+
+            var table = settings.GetTable();
+            if(rows.Values.Count == 0)
+                AnsiConsole.MarkupLine("No jobs found");
+            else if(table == null)
+                PrintJobsPlain(settings, rows);
+            else
+                PrintJobsTable(settings, table!, rows);
+
+            return CommandOutput.Success();
         }
-
-
-        var table = settings.GetTable();
-        if(rows.Values.Count == 0)
-            AnsiConsole.MarkupLine("No jobs found");
-        else if(table == null)
-            PrintJobsPlain(settings, rows);
-        else
-            PrintJobsTable(settings, table!, rows);
-
-        return CommandOutput.Success();
     }
 }
 

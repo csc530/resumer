@@ -8,54 +8,19 @@ namespace Resumer.cli.commands.add;
 
 public class AddProjectSettings: AddCommandSettings
 {
-    public bool PromptUser => (ProjectName == null && ProjectDescription == null && ProjectType == null && ProjectUrl == null && ProjectStartDate == null && ProjectEndDate == null) || Interactive;
-
-    [CommandOption("-n|--name <NAME>")]
-    [Description("The name of the project")]
-
-    public string? ProjectName { get; set; }
-
-    [CommandOption("-t|--type <TYPE>")]
-    [Description("The type of the project")] //todo: enum?[]
-    public string? ProjectType { get; set; }
-
-    [CommandOption("-d|--description <DESCRIPTION>")]
-    [Description("The description of the project")]
-    public string? ProjectDescription { get; set; }
-
-    [CommandOption("-u|--url <URL>")]
-    [Description("The url to the project")]
-    public Uri? ProjectUrl { get; set; }
-
-    [CommandOption("-s|--start <START>")]
-    [Description("The start date of the project")]
-    public DateOnly? ProjectStartDate { get; set; }
-
-    [CommandOption("-e|--end <END>")]
-    [Description("The end date of the project")]
-    public DateOnly? ProjectEndDate { get; set; }
 }
 
 internal sealed class AddProjectCommand: Command<AddProjectSettings>
 {
     public override int Execute(CommandContext context, AddProjectSettings settings)
     {
-        var projectName = settings.ProjectName;
-        var projectType = settings.ProjectType;
-        var projectDescription = settings.ProjectDescription;
-        var projectUrl = settings.ProjectUrl;
-        var projectStartDate = settings.ProjectStartDate;
-        var projectEndDate = settings.ProjectEndDate;
+        var projectName = AnsiConsole.Ask<string>("Project Name:");
+        var projectType = RenderableFactory.CreateTextPrompt<string?>("Project Type:", allowEmpty: true).Show();
+        var projectDescription = RenderableFactory.CreateTextPrompt<string?>("Project Description:", allowEmpty: true).Show();
+        var projectUrl = new TextPrompt<Uri?>("Project URL:").AllowEmpty().ShowDefaultValue().Show();
+        var projectStartDate = RenderableFactory.CreateTextPrompt<DateOnly?>("Start Date:", allowEmpty: true).Show();
+        var projectEndDate = RenderableFactory.CreateTextPrompt<DateOnly?>("End Date:", allowEmpty: true).Show();
 
-        if(settings.PromptUser)
-        {
-            projectName = AnsiConsole.Ask<string>("Project Name:");
-            projectType = RenderableFactory.CreateTextPrompt<string?>("Project Type:", allowEmpty: true).Show();
-            projectDescription = RenderableFactory.CreateTextPrompt<string?>("Project Description:", allowEmpty: true).Show();
-            projectUrl = new TextPrompt<Uri?>("Project URL:").AllowEmpty().ShowDefaultValue().Show();
-            projectStartDate = RenderableFactory.CreateTextPrompt<DateOnly?>("Start Date:", allowEmpty: true).Show();
-            projectEndDate = RenderableFactory.CreateTextPrompt<DateOnly?>("End Date:", allowEmpty: true).Show();
-        }
 
         var project = new Project(projectName!)
         {

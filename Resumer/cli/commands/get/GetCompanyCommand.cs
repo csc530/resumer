@@ -12,6 +12,7 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
     {
         ResumeContext database = new();
         var companies = database.Jobs.Select(job => job.Company).Distinct();
+
         if(!companies.Any())
             AnsiConsole.MarkupLine("No companies found");
         else

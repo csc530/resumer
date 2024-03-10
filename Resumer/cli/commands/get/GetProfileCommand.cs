@@ -14,16 +14,19 @@ public class GetProfileCommand: Command<OutputCommandSettings>
 
         if(!profiles.Any())
             return CommandOutput.Success("[bold red]No[/] profiles found");
+        else
+        {
+            var table = new Table();
+            table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
 
-        var table = new Table();
-        table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
+            foreach(var profile in profiles)
+                table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber,
+                    profile.Objective.GetPrintValue(),
+                    profile.Website.GetPrintValue());
 
-        foreach(var profile in profiles)
-            table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber,
-                profile.Objective.GetPrintValue(),
-                profile.Website.GetPrintValue());
-        AnsiConsole.Write(table);
+            AnsiConsole.Write(table);
 
-        return CommandOutput.Success();
+            return CommandOutput.Success();
+        }
     }
 }

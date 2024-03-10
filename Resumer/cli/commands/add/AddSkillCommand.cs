@@ -12,14 +12,15 @@ public class AddSkillCommand: Command<AddSkillSettings>
     {
         var skillName = settings.Skill;
         var skillType = settings.SkillType;
-        if(settings.Interactive || skillName.IsBlank() || skillType == null)
+
+        if(skillName == null && skillType == null)
         {
-            skillName = RenderableFactory.CreateTextPrompt("Skill: ", skillName, false).Show();
+            skillName = RenderableFactory.CreateTextPrompt("Skill: ", skillName).Show();
             skillType = AnsiConsole.Prompt(new SelectionPrompt<SkillType>()
-                                          .Title("Skill Type")
-                                          .AddChoices(Enum.GetValues<SkillType>())
-                                          .MoreChoicesText("[grey](Move up and down to reveal more skill types)[/]")
-                                          .WrapAround());
+                                           .Title("Skill Type")
+                                           .AddChoices(Enum.GetValues<SkillType>())
+                                           .MoreChoicesText("[grey](Move up and down to reveal more skill types)[/]")
+                                           .WrapAround());
         }
 
         var skill = new Skill(skillName, skillType.Value);

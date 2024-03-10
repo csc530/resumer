@@ -48,20 +48,24 @@ public static class Program
             add.SetDescription("add new information to job database/bank");
             add.AddCommand<AddJobCommand>("job")
                .WithDescription("add a new job")
-               .WithExample("add", "job", "-s", "2022-01-01", "-e", "2026-11-01", "-t", "foreman")
-               .WithAlias("j");
+               .WithAlias("j")
+               .WithAlias("jobs");
             add.AddCommand<AddProfileCommand>("profile")
                .WithDescription("add a new profile")
                .WithAlias("user")
-               .WithAlias("u");
+               .WithAlias("u")
+               .WithAlias("users")
+               .WithAlias("profiles");
             add.AddCommand<AddSkillCommand>("skill")
                .WithDescription("add a new skill")
                .WithExample("add", "skill", "Teamwork", "soft")
                .WithExample("add", "skill", "'Psychoanalytic therapy'", "hard")
-               .WithAlias("s");
+               .WithAlias("s")
+               .WithAlias("skills");
             add.AddCommand<AddProjectCommand>("project")
                .WithDescription("add a new project")
-               .WithAlias("p");
+               .WithAlias("p")
+               .WithAlias("projects");
         });
 
         config.AddBranch<OutputCommandSettings>("get", get => {
@@ -71,13 +75,16 @@ public static class Program
                .WithAlias("skills");
             get.AddCommand<GetCompanyCommand>("company")
                .WithAlias("c")
+               .WithAlias("companies")
                .WithDescription("get company information you've worked for");
             get.AddCommand<GetJobCommand>("job")
                .WithAlias("jobs")
                .WithAlias("j");
             get.AddCommand<GetProfileCommand>("profile")
                .WithAlias("user")
-               .WithAlias("u");
+               .WithAlias("u")
+               .WithAlias("users")
+               .WithAlias("profiles");
         });
 
         config.AddCommand<InitCommand>("init")
