@@ -1,6 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -29,7 +27,7 @@ public class GetJobCommand: JobOutputCommand<GetJobCommandSettings>
                     job = database.Jobs.ElementAt(database.Jobs.Count() + id);
                 else
                 {
-                    AnsiConsole.MarkupLine($"[yellow]Invalid job id: {id}[/]");
+                    CommandOutput.Warn($"Job {id} not found");
                     continue;
                 }
                 rows.Add(id, job);

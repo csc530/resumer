@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Resumer.cli.commands.export;
 
 namespace Resumer.models;
 
 public class Resume
 {
-    [Key]
+    public Guid Id { get; set; }
     public string Name { get; set; }
+    public DateTime DateCreated { get; set; }
+
     public Profile Profile { get; set; }
     public List<Job> Jobs { get; set; }
     public List<Skill> Skills { get; set; }
