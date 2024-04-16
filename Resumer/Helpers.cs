@@ -1,15 +1,12 @@
-using System.Data.Common;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Data.Sqlite;
-using Resumer.cli.settings;
-using Resumer.models;
+using System.Text;
 using Spectre.Console;
 
 namespace Resumer;
 
 public static partial class Globals
 {
-    public const string NullString = "<null/>";
     public static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
 }
 
@@ -19,15 +16,13 @@ public static partial class Extensions
     // .DefaultValue(textPrompt);
 
 
-    public static string GetPrintValue(this string? value, bool allowBlank = false)
+    public static string Print<T>(this T value) where T : IEnumerable
     {
-        if(allowBlank)
-            return value ?? "";
-        return string.IsNullOrWhiteSpace(value) ? Globals.NullString : value;
+        var builder = new StringBuilder();
+        foreach (var item in value)
+            builder.AppendLine($"● {item}");
+        return builder.ToString();
     }
-
-    public static string GetPrintValue(this object? value, bool allowBlank = false) =>
-        GetPrintValue(value?.ToString(), allowBlank);
 
     #region strings
 
@@ -49,17 +44,6 @@ public static partial class Extensions
     public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
         strings.Select(s => s.Surround(txt)).ToList();
 
-    public static bool IsNullOrEmpty(this string s) => string.IsNullOrEmpty(s);
-    public static bool IsNullOrWhiteSpace(this string s) => string.IsNullOrWhiteSpace(s);
-
-    /// <summary>
-    /// check if a string is null, empty, or whitespace
-    /// </summary>
-    /// <param name="s">string to check</param>
-    /// <returns>true if the string is null, empty, or whitespace; otherwise false</returns>
-    public static bool IsBlank([NotNullWhen(false)] this string? s) =>
-        s == null || string.IsNullOrEmpty(s) || string.IsNullOrWhiteSpace(s);
-
     #endregion
 
     #region Table
@@ -73,71 +57,77 @@ public static partial class Extensions
     public static Table AddTableRow(this Table table, params KeyValuePair<bool, object?>[] columns)
     {
         var row = columns.Where(col => col.Key)
-                         .Select(col => col.Value.GetPrintValue(allowBlank: true))
-                         .ToArray();
+            .Select(col => col.Value?.ToString() ?? string.Empty) //todo: handle null values; i.e. print overload
+            .ToArray();
         table.AddRow(row);
         return table;
     }
 
     public static Table AddTableColumn(this Table table, string name, bool nowrap = false) =>
-        table.AddColumn(RenderableFactory.CreateTableColumn(name, nowrap));
+        table.AddColumn(name, c => c.NoWrap = nowrap);
 
     public static Table AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
     {
-        foreach(var column in columns)
+        foreach (var column in columns)
             table.AddTableColumn(column, nowrap);
         return table;
     }
 
     public static Table AddTableColumn(this Table table, params string[] columns)
     {
-        foreach(var column in columns)
+        foreach (var column in columns)
             table.AddTableColumn(column);
         return table;
     }
 
     #endregion
-}
 
-public static class RenderableFactory
-{
-    public static TableColumn CreateTableColumn(string name, bool nowrap = false) => new TableColumn(name)
+    public static void AddFromPrompt<T>(this List<T> list, string prompt)
     {
-        Footer = new Text(name),
-        Header = new Text(name),
-        NoWrap = nowrap
-    };
+        var textPrompt = new SimplePrompt<T>(prompt);
+        T? input;
 
+        do
+        {
+            input = AnsiConsole.Prompt(textPrompt);
+            if(input != null)
+                list.Add(input);
+        } while(input != null && !string.IsNullOrWhiteSpace(input.ToString()));
 
-    /// <inheritdoc cref="CreateTextPrompt{T}(string,bool,System.Func{T,Spectre.Console.ValidationResult}?)"/>
-    /// <param name="defaultValue">The default value of the prompt.</param>
-    /// <remarks>If the default value is null and allowEmpty is false, the default value will not be displayed (empty brackets) nor set.</remarks>
-    public static TextPrompt<T> CreateTextPrompt<T>(string prompt, T defaultValue, bool allowEmpty = false,
-        Func<T, ValidationResult>? validator = null)
-    {
-        if(defaultValue == null && !allowEmpty)
-            return CreateTextPrompt(prompt, allowEmpty, validator);
-        return CreateTextPrompt(prompt, allowEmpty, validator).DefaultValue(defaultValue).ShowDefaultValue();
     }
 
-    ///<summary>
-    /// Creates a text prompt with the specified prompt message, default value, and optional parameters.
-    /// </summary>
-    ///
-    /// <typeparam name="T">The type of the prompt result.</typeparam>
-    /// <param name="prompt">The prompt message to display to the user.</param>
-    /// <param name="allowEmpty">Optional. Specifies whether empty input is allowed. Defaults to false.</param>
-    /// <param name="validator">Optional. A function that validates the input value. Defaults to null.</param>
-    ///
-    /// <returns>A <see cref="TextPrompt{T}"/> object representing the created text prompt.</returns>
-    public static TextPrompt<T> CreateTextPrompt<T>(string prompt, bool allowEmpty = false,
-        Func<T, ValidationResult>? validator = null) =>
-        new(prompt)
-        {
-            AllowEmpty = allowEmpty,
-            Validator = validator,
-            ShowDefaultValue = false
-        };
+    public static List<string> AddFromPrompt(IEnumerable<string> list, string prompt)
+    {
+        var textPrompt = new TextPrompt<string?>(prompt).HideDefaultValue().AllowEmpty();
+        string? input;
+        var newlist = list.ToList();
 
-    public static T Show<T>(this TextPrompt<T> textPrompt) => textPrompt.Show(AnsiConsole.Console);
+        do
+        {
+            input = AnsiConsole.Prompt(textPrompt);
+            if(!string.IsNullOrWhiteSpace(input))
+                newlist.Add(input);
+        } while(!string.IsNullOrWhiteSpace(input));
+
+        return newlist;
+    }
+}
+
+/// <summary>
+/// a <see cref="TextPrompt{T}"/> wrapper to create a prompt that allows for empty input and does not display the default value which is set to null (default).
+/// </summary>
+/// <typeparam name="T">the type of the prompt input</typeparam>
+public class SimplePrompt<T> : IPrompt<T?>
+{
+    private readonly TextPrompt<T?> _textPrompt;
+
+    public SimplePrompt(string message, T? defaultValue = default)
+    {
+        _textPrompt = new TextPrompt<T?>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
+    }
+
+    public T? Show(IAnsiConsole console) => _textPrompt.Show(console);
+
+    public Task<T?> ShowAsync(IAnsiConsole console, CancellationToken cancellationToken) =>
+        _textPrompt.ShowAsync(console, cancellationToken);
 }

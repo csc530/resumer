@@ -1,15 +1,15 @@
-using Resumer.models;
-
 namespace TestResumer.commands;
 
-public class InitTest: TestBase
+public class InitTest : TestBase
 {
+    private const string CmdArgs = "init";
+
     [Fact]
     public void Init_WithNoArgs_ShouldReturnSuccess()
     {
 
         //when
-        var result = TestApp.Run("init");
+        var result = TestApp.Run(CmdArgs);
         //then
         Assert.Equal(0, result.ExitCode);
     }
@@ -18,7 +18,7 @@ public class InitTest: TestBase
     public void Init_WithNoArgs_ShouldCreateDb()
     {
         //when
-        var result = TestApp.Run("init");
+        var result = TestApp.Run(CmdArgs);
         //then
         Assert.Equal(0, result.ExitCode);
         Assert.True(File.Exists("resume.db"));

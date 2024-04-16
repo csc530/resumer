@@ -8,7 +8,7 @@ namespace Resumer.cli.commands.get;
 
 public class GetProfileCommand: Command<OutputCommandSettings>
 {
-    public override int Execute(CommandContext context, OutputCommandSettings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] OutputCommandSettings settings)
     {
         var profiles = new ResumeContext().Profiles;
 
@@ -17,12 +17,17 @@ public class GetProfileCommand: Command<OutputCommandSettings>
         else
         {
             var table = new Table();
-            table.AddColumns("Name", "Email", "Phone", "Summary", "Website");
+            table.AddColumns("Name", "Email", "Phone", "Location", "Interests", "Objective", "Languages", "Website");
 
             foreach(var profile in profiles)
-                table.AddRow(profile.WholeName, profile.EmailAddress, profile.PhoneNumber,
-                    profile.Objective.GetPrintValue(),
-                    profile.Website.GetPrintValue());
+                table.AddRow(profile.WholeName,
+                    profile.EmailAddress,
+                    profile.PhoneNumber,
+                    profile.Location ?? "",
+                    string.Join(", ", profile.Interests),
+                    profile.Objective ?? "",
+                    string.Join(", ", profile.Languages),
+                    profile.Website ?? "");
 
             AnsiConsole.Write(table);
 

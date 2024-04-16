@@ -19,7 +19,7 @@ public class Skill
         get => _name;
         set
         {
-            if(value.IsBlank())
+            if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Skill name cannot be empty");
             _name = value;
         }

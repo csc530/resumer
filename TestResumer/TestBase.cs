@@ -1,8 +1,6 @@
-﻿using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using Resumer.models;
+﻿using Resumer.models;
 using Spectre.Console;
+using Spectre.Console.Cli;
 using Spectre.Console.Testing;
 
 namespace TestResumer;
@@ -18,18 +16,18 @@ public abstract class TestBase
     protected TestBase()
     {
         //given
+        TestConsole = new TestConsole();
         TestApp = new CommandAppTester();
-        TestApp.Configure(c => {
-                              Resumer.Program.AppConfiguration(c);
-                              // c.ConfigureConsole(TestConsole); //? this is what spectre does inside of Run() but only  if the config is null but either way it didn't work for me
-                          });
+        TestApp.Configure(c =>
+        {
+            Resumer.Program.AppConfiguration(c);
+            c.ConfigureConsole(TestConsole); //? this is what spectre does inside of Run() but only  if the config is null but either way it didn't work for me
+        });
         //! I shouldn't have to do this but it doesn't work without it, the results are always empty
         //? plus I have to use TestConsole instead TestApp.Run() to get the output (.output)
         //* and it has to be after the configure because it does edit the AnsiConsole object but it doesn't work🤷🏿‍♂️
         //* even still it's sometime-ish persisting previous runs output
-        TestConsole = new TestConsole();
         AnsiConsole.Console = TestConsole;
-        TestDb = new ResumeContext();
     }
 
     ~TestBase()

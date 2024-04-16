@@ -8,8 +8,6 @@ namespace Resumer.models;
 public class Job
 {
     private string _company;
-    private string? _description;
-    private string? _experience;
     private string _title;
 
     public Job(string title, string company)
@@ -46,17 +44,9 @@ public class Job
     public DateOnly StartDate { get; set; } = Globals.Today;
     public DateOnly? EndDate { get; set; }
 
-    public string? Description
-    {
-        get => _description;
-        set => _description = Trim(value);
-    }
+    public List<string> Description { get; set; } = [];
 
-    public string? Experience
-    {
-        get => _experience;
-        set => _experience = Trim(value);
-    }
+    public List<string> Experience { get; set; } = [];
 
     [return: NotNullIfNotNull(nameof(value))]
     private static string? Trim(string? value) =>

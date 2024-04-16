@@ -6,27 +6,32 @@ using static Resumer.Globals;
 
 namespace Resumer.cli.commands.add;
 
-internal sealed class AddJobCommand: Command<AddJobSettings>
+internal sealed class AddJobCommand : Command<AddJobSettings>
 {
-    public override int Execute([NotNull]CommandContext context, [NotNull]AddJobSettings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
     {
         var jobTitle = AnsiConsole.Ask<string>("Job Title:");
-        var jobDescription = AnsiConsole.Prompt(new TextPrompt<string?>("Description:").AllowEmpty());
-        var experience = AnsiConsole.Prompt(RenderableFactory.CreateTextPrompt<string?>("Experience:").AllowEmpty());
+        var jobDescription = new List<string>();
+        jobDescription.AddFromPrompt("Job Description (point form):");
+
+        var experience = new List<string>();
+        experience.AddFromPrompt("Experience (point form):");
+
         var company = AnsiConsole.Ask<string>("Company:");
         var startDate = AnsiConsole.Prompt(new TextPrompt<DateOnly>("Start Date:").DefaultValue(Today));
 
-        var endDatePrompt = RenderableFactory.CreateTextPrompt<DateOnly?>("End date:", null, true)
-                                             .Validate(date => date >= startDate
-                                                           ? ValidationResult.Success()
-                                                           : ValidationResult.Error())
-                                             .ValidationErrorMessage("End date must be after start date")
-                                             .HideDefaultValue();
+        var endDatePrompt = new TextPrompt<DateOnly?>("End date:")
+            .HideDefaultValue()
+            .DefaultValue(null)
+            .AllowEmpty()
+            .Validate(date => date >= startDate
+                ? ValidationResult.Success()
+                : ValidationResult.Error("End date must be after start date"));
         var endDate = AnsiConsole.Prompt(endDatePrompt);
 
         var job = new Job(jobTitle, company)
         {
-            Description = jobDescription,
+            Description =  jobDescription,
             Experience = experience,
             StartDate = startDate,
             EndDate = endDate
@@ -39,6 +44,4 @@ internal sealed class AddJobCommand: Command<AddJobSettings>
     }
 }
 
-public class AddJobSettings: AddCommandSettings
-{
-}
+public class AddJobSettings : AddCommandSettings;

@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.edit;

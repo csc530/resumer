@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -8,14 +9,15 @@ namespace Resumer.cli.commands.export;
 
 public class ExportCommand: Command<ExportCommandSettings>
 {
-    public override int Execute(CommandContext context, ExportCommandSettings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] ExportCommandSettings settings)
     {
         var db = new ResumeContext();
         if(!db.Profiles.Any())
-            return CommandOutput.Error(ExitCode.NoData, "No profiles found", "Please add a profile before exporting, use the 'add profile' command");
+            return CommandOutput.Error(ExitCode.NoData, "No profiles found",
+                "Please add a profile before exporting, use the 'add profile' command");
 
-        var format = settings.Format;
-        var output = settings.Output;
+        string format;
+        string output;
         var template = settings.Template;
         List<Job> jobs = [];
         List<Skill> skills = [];
@@ -25,54 +27,40 @@ public class ExportCommand: Command<ExportCommandSettings>
         Profile profile;
         List<Certificate> certifications = [];
 
-        var formatPrompt = new SelectionPrompt<string>().Title("Select export format")
-                                                        .AddChoiceGroup("plain text", Globals.TextFormatNames)
-                                                        .AddChoiceGroup("binary", Globals.BinaryFormatNames);
-        var outputPrompt = new TextPrompt<string>("Output file (null will write to stdout)").AllowEmpty()
-           .DefaultValue($"resume.{format.ToLower()}");
-        var profilePrompt = new SelectionPrompt<Profile>().Title("Select profile").AddChoices(db.Profiles);
-        var jobPrompt = new MultiSelectionPrompt<Job>().Title("Select jobs").AddChoices(db.Jobs).NotRequired();
-        var skillPrompt = new MultiSelectionPrompt<Skill>().Title("Select skills").AddChoices(db.Skills).NotRequired();
-        var projectPrompt = new MultiSelectionPrompt<Project>().Title("Select projects").AddChoices(db.Projects).NotRequired();
+        var formatPrompt = new SelectionPrompt<string>().Title("Select export format").AddChoiceGroup("plain text", Globals.TextFormatNames).AddChoiceGroup("binary", Globals.BinaryFormatNames);
 
         format = AnsiConsole.Prompt(formatPrompt);
-        output = AnsiConsole.Prompt(outputPrompt);
-        profile = AnsiConsole.Prompt(profilePrompt);
+        output = AnsiConsole.Prompt(new TextPrompt<string>("Output file (no input will write to stdout)").AllowEmpty());
+        profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>().Title("Select profile").AddChoices(db.Profiles));
 
         if(!db.Jobs.Any())
             AnsiConsole.MarkupLine("[yellow]No jobs found[/]");
         else
-            jobs = AnsiConsole.Prompt(jobPrompt);
+            jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select jobs").AddChoices(db.Jobs).NotRequired());
+
         if(!db.Skills.Any())
             AnsiConsole.MarkupLine("[yellow]No skills found[/]");
         else
-            skills = AnsiConsole.Prompt(skillPrompt);
+            skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>().Title("Select skills").AddChoices(db.Skills).NotRequired());
+
         if(!db.Projects.Any())
             AnsiConsole.MarkupLine("[yellow]No projects found[/]");
         else
-            projects = AnsiConsole.Prompt(projectPrompt);
+            projects = AnsiConsole.Prompt(new MultiSelectionPrompt<Project>().Title("Select projects").AddChoices(db.Projects).NotRequired());
 
         //? dependent upon profile
-        var certificatePrompt = new MultiSelectionPrompt<Certificate>().Title("Select certificates")
-                                                                       .AddChoices(profile.Certifications)
-                                                                       .NotRequired();
-        var languagePrompt = new MultiSelectionPrompt<string>().Title("Select languages")
-                                                               .AddChoices(profile.Languages).NotRequired();
-        var educationPrompt = new MultiSelectionPrompt<Education>().Title("Select education")
-                                                                   .AddChoices(profile.Education).NotRequired();
-
         if(profile.Certifications.Count == 0)
             AnsiConsole.MarkupLine("[yellow]No certifications found[/]");
         else
-            certifications = AnsiConsole.Prompt(certificatePrompt);
+            certifications = AnsiConsole.Prompt(new MultiSelectionPrompt<Certificate>().Title("Select certificates").AddChoices(profile.Certifications).NotRequired());
         if(profile.Languages.Count == 0)
             AnsiConsole.MarkupLine("[yellow]No languages found[/]");
         else
-            languages = AnsiConsole.Prompt(languagePrompt);
+            languages = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Select languages").AddChoices(profile.Languages).NotRequired());
         if(profile.Education.Count == 0)
             AnsiConsole.MarkupLine("[yellow]No education found[/]");
         else
-            education = AnsiConsole.Prompt(educationPrompt);
+            education = AnsiConsole.Prompt(new MultiSelectionPrompt<Education>().Title("Select education").AddChoices(profile.Education).NotRequired());
 
 
         Console.WriteLine($"Exporting to {format} format");
@@ -89,8 +77,6 @@ public class ExportCommand: Command<ExportCommandSettings>
 
         return CommandOutput.Success();
     }
-
-
 }
 
 public class ExportCommandSettings: CommandSettings

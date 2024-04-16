@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
-public class ResumeContext: DbContext
+public class ResumeContext : DbContext
 {
     public ResumeContext()
     {
@@ -22,7 +22,7 @@ public class ResumeContext: DbContext
 
     public string DbPath { get; }
 
-// The following configures EF to create a Sqlite database file in the
+// The following configures EF to create a sqlite database file in the
 // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite($"Data Source={DbPath}");

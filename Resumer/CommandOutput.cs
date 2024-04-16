@@ -51,8 +51,16 @@ public static class CommandOutput
     /// <returns>Success exit code</returns>
     public static int Success(string? msg = null)
     {
-        if(!string.IsNullOrWhiteSpace(msg))
+        if(msg == null)
+            AnsiConsole.WriteLine();
+        else
             AnsiConsole.MarkupLine(msg);
         return (int)ExitCode.Success;
     }
+
+    /// <summary>
+    /// Display a warning message
+    /// </summary>
+    /// <param name="message">warning message</param>
+    public static void Warn(string message) => AnsiConsole.MarkupLine($"[yellow]{message}[/]");
 }

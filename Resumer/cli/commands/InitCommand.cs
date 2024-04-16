@@ -2,7 +2,6 @@
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using static Resumer.Globals;
 
 namespace Resumer.cli.commands;
 
@@ -16,7 +15,7 @@ internal class InitCommand : Command
         {
             AnsiConsole.WriteLine("📁 Creating database");
             if(!Path.Exists(new ResumeContext().DbPath))
-                File.Create(new ResumeContext().DbPath);
+                File.Create(new ResumeContext().DbPath).Close();
             db.Migrate();
         }
 

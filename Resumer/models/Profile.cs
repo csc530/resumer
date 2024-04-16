@@ -25,9 +25,9 @@ public class Profile
         get => _firstName;
         set
         {
-            if(value.IsBlank())
+            if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("First name cannot be blank");
-            _firstName = value;
+            _firstName = value.Trim();
         }
     }
 
@@ -39,9 +39,9 @@ public class Profile
         get => _lastName;
         set
         {
-            if(value.IsBlank())
+            if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Last name cannot be blank");
-            _lastName = value;
+            _lastName = value.Trim();
         }
     }
 
@@ -51,9 +51,9 @@ public class Profile
         get => _phoneNumber;
         set
         {
-            if(value.IsBlank())
+            if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Phone number cannot be blank");
-            _phoneNumber = value;
+            _phoneNumber = value.Trim();
         }
     }
 
@@ -63,9 +63,9 @@ public class Profile
         get => _emailAddress;
         set
         {
-            if(value.IsBlank())
+            if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Email address cannot be blank");
-            _emailAddress = value;
+            _emailAddress = value.Trim();
         }
     }
 
@@ -88,7 +88,7 @@ public class Profile
     /// </value>
     /// 
     [NotMapped]
-    public string WholeName => $"{FirstName} {MiddleName} {LastName}";
+    public string WholeName => $"{FirstName} {(MiddleName == null ? "" : $"{MiddleName} ")}{LastName}";
 
     /// <summary>
     /// Gets the full name - first and last names

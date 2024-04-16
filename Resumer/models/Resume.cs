@@ -6,7 +6,7 @@ public class Resume
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
-    public DateTime DateCreated { get; set; }
+    public DateTime DateCreated { get; init; }
 
     public Profile Profile { get; set; }
     public List<Job> Jobs { get; set; }

@@ -1,4 +1,4 @@
-using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Resumer.models;
 using Spectre.Console;
@@ -7,48 +7,53 @@ using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.add;
 
-public sealed class AddProfileCommand: Command<AddProfileSettings>
+public sealed partial class AddProfileCommand : Command<AddProfileSettings>
 {
-    public override int Execute(CommandContext context, AddProfileSettings settings)
+    public override int Execute([NotNull] CommandContext context, [NotNull] AddProfileSettings settings)
     {
-        var firstNamePrompt = RenderableFactory.CreateTextPrompt<string>("First name: ");
-        var lastNamePrompt = RenderableFactory.CreateTextPrompt<string>("Last name: ");
-        var middleNamePrompt = RenderableFactory.CreateTextPrompt<string?>("Middle name: ").AllowEmpty();
-        var phoneNumberPrompt = RenderableFactory.CreateTextPrompt<string>("Phone number: ");
-        var emailAddressPrompt = RenderableFactory.CreateTextPrompt<string>("Email address: ").Validate(
+        var emailAddressPrompt = new TextPrompt<string>("Email address:")
+            .ValidationErrorMessage("Invalid email address: email should contain '@' and a domain (e.g. @example.ca).")
             //from https://learn.microsoft.com/en-us/dotnet/standard/base-types/how-to-verify-that-strings-are-in-valid-email-format
-            email => string.IsNullOrWhiteSpace(email) || Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250))
-                ? ValidationResult.Success()
-                : ValidationResult.Error("Invalid email address"));
-        var websitePrompt = RenderableFactory.CreateTextPrompt<string?>("Website: ").AllowEmpty();
-        var summaryPrompt = RenderableFactory.CreateTextPrompt<string?>("Summary: ").AllowEmpty();
+            .Validate(email => string.IsNullOrWhiteSpace(email) || !EmailRegex().IsMatch(email)
+                ? ValidationResult.Error()
+                : ValidationResult.Success());
 
-        var firstName = AnsiConsole.Prompt(firstNamePrompt);
-        var lastName = AnsiConsole.Prompt(lastNamePrompt);
-        var middleName = AnsiConsole.Prompt(middleNamePrompt);
-        var phoneNumber = (AnsiConsole.Prompt(phoneNumberPrompt));
+        var firstName = AnsiConsole.Ask<string>("First name:");
+        var lastName = AnsiConsole.Ask<string>("Last name:");
+        var middleName = AnsiConsole.Prompt(new SimplePrompt<string>("Middle name: "));
+
+        var phoneNumber = AnsiConsole.Ask<string>("Phone number:");
         var emailAddress = AnsiConsole.Prompt(emailAddressPrompt);
-        var website = AnsiConsole.Prompt(websitePrompt);
-        var summary = AnsiConsole.Prompt(summaryPrompt);
+
+        var interests = new List<string>();
+        interests.AddFromPrompt("Interests:");
+        var languages = new List<string>();
+        languages.AddFromPrompt("Languages:");
+
+        var location = AnsiConsole.Prompt(new SimplePrompt<string>("Location:"));
+        var website = AnsiConsole.Prompt(new SimplePrompt<string>("Website:"));
+        var objective = AnsiConsole.Prompt(new SimplePrompt<string>("Summary:"));
 
 
         var profile = new Profile(firstName, lastName, phoneNumber, emailAddress)
         {
+            Objective = objective,
             MiddleName = middleName,
+            Languages = languages,
+            Interests = interests,
+            Location = location,
             Website = website,
-            Objective = summary
         };
 
         ResumeContext database = new();
-
         database.Profiles.Add(profile);
         database.SaveChanges();
 
         return CommandOutput.Success($"✅ profile: [BOLD]{profile.FullName}[/] added");
     }
+
+    [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase, "en-CA")]
+    private static partial Regex EmailRegex();
 }
 
-public class AddProfileSettings: AddCommandSettings
-{
-}
+public class AddProfileSettings : AddCommandSettings;
