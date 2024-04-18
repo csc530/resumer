@@ -4,7 +4,7 @@ namespace Resumer.models;
 
 public class Project
 {
-    private string _name;
+    private string _title;
     private string? _type;
     private string? _description;
 
@@ -17,14 +17,14 @@ public class Project
     public Guid Id { get; init; }
 
     [MinLength(1, ErrorMessage = "Project name cannot be empty")]
-    public required string Name
+    public required string Title
     {
-        get => _name;
+        get => _title;
         set
         {
             if(string.IsNullOrWhiteSpace(value))
                 throw new ArgumentException("Project name cannot be empty");
-            _name = value.Trim();
+            _title = value.Trim();
         }
     }
 

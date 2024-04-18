@@ -120,12 +120,14 @@ namespace resume_builder.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Experience")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("StartDate")
@@ -198,11 +200,11 @@ namespace resume_builder.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<DateOnly?>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Type")

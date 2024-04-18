@@ -14,17 +14,17 @@ internal sealed class AddProjectCommand : Command<AddProjectSettings>
         var projectDescription = AnsiConsole.Prompt(new SimplePrompt<string>("Project Description:"));
         var projectDetails = new List<string>();
         projectDetails.AddFromPrompt("Project Details (point form):");
-        var projectUrl = AnsiConsole.Prompt(new TextPrompt<Uri?>("Project URL:").HideDefaultValue().AllowEmpty());
+        var projectUrl = AnsiConsole.Prompt(new SimplePrompt<string>("Project URL:"));
         var projectStartDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("Start Date:"));
         var projectEndDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("End Date:"));
 
         var project = new Project()
         {
-            Name = projectName,
+            Title = projectName,
             Type = projectType,
             Description = projectDescription,
             Details = projectDetails,
-            Link = projectUrl,
+            Link = string.IsNullOrWhiteSpace(projectUrl) ? null : new Uri(projectUrl),
             StartDate = projectStartDate,
             EndDate = projectEndDate
         };
