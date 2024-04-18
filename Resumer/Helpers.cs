@@ -5,9 +5,12 @@ using Spectre.Console;
 
 namespace Resumer;
 
-public static partial class Globals
+public static partial class Utility
 {
     public static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Today);
+
+    public static string PrintDuration(DateOnly? startDate, DateOnly? endDate = null) =>
+        startDate == null ? string.Empty : $"{startDate:MMM yyyy} - {endDate?.ToString("MMM yyyy") ?? "present"}";
 }
 
 public static partial class Extensions
@@ -85,7 +88,7 @@ public static partial class Extensions
     public static void AddFromPrompt<T>(this List<T> list, string prompt)
     {
         var textPrompt = new SimplePrompt<T>(prompt);
-        T? input;
+        T input;
 
         do
         {
@@ -93,7 +96,6 @@ public static partial class Extensions
             if(input != null)
                 list.Add(input);
         } while(input != null && !string.IsNullOrWhiteSpace(input.ToString()));
-
     }
 
     public static List<string> AddFromPrompt(IEnumerable<string> list, string prompt)
@@ -117,17 +119,17 @@ public static partial class Extensions
 /// a <see cref="TextPrompt{T}"/> wrapper to create a prompt that allows for empty input and does not display the default value which is set to null (default).
 /// </summary>
 /// <typeparam name="T">the type of the prompt input</typeparam>
-public class SimplePrompt<T> : IPrompt<T?>
+public class SimplePrompt<T> : IPrompt<T>
 {
-    private readonly TextPrompt<T?> _textPrompt;
+    private readonly TextPrompt<T> _textPrompt;
 
-    public SimplePrompt(string message, T? defaultValue = default)
+    public SimplePrompt(string message, T defaultValue = default)
     {
-        _textPrompt = new TextPrompt<T?>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
+        _textPrompt = new TextPrompt<T>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
     }
 
-    public T? Show(IAnsiConsole console) => _textPrompt.Show(console);
+    public T Show(IAnsiConsole console) => _textPrompt.Show(console);
 
-    public Task<T?> ShowAsync(IAnsiConsole console, CancellationToken cancellationToken) =>
+    public Task<T> ShowAsync(IAnsiConsole console, CancellationToken cancellationToken) =>
         _textPrompt.ShowAsync(console, cancellationToken);
 }

@@ -107,4 +107,6 @@ public class Profile
     /// </value>
     [NotMapped]
     public string Initials => $"{FirstName[0]}{MiddleName?[0]}{LastName[0]}";
+
+    public override string ToString() => $"{WholeName} - {EmailAddress} - {PhoneNumber}";
 }

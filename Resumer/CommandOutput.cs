@@ -1,4 +1,5 @@
 using System.Data.Common;
+using System.Text.RegularExpressions;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -27,18 +28,16 @@ public static class CommandOutput
     /// <param name="help"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public static int Error(ExitCode exitCode, string msg, string? help = null)
+    public static int Error(ExitCode exitCode, string? msg = null, string? help = null)
     {
-        AnsiConsole.Foreground = Color.Red;
         var errNo = (int)exitCode;
-        AnsiConsole.WriteLine($"Error {errNo}: {exitCode}");
-        AnsiConsole.MarkupLine(msg);
+        var error = Regex.Replace(exitCode.ToString(), "[A-Z]", " $0").Trim();
+        AnsiConsole.MarkupLine($"[red]Error {errNo}: {error}[/]");
 
+        if(msg != null)
+            AnsiConsole.MarkupLine(msg);
         if(help != null)
-        {
-            AnsiConsole.Foreground = Color.Cyan2;
-            AnsiConsole.MarkupLine(help);
-        }
+            AnsiConsole.MarkupLine($"[italic]{help}[/]");
 
         AnsiConsole.Reset();
         return errNo;

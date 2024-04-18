@@ -30,6 +30,7 @@ public class Job
             _title = Trim(value.ReplaceLineEndings(" - "));
         }
     }
+
     public string Company
     {
         get => _company;
@@ -41,7 +42,7 @@ public class Job
         }
     }
 
-    public DateOnly StartDate { get; set; } = Globals.Today;
+    public DateOnly StartDate { get; set; } = Utility.Today;
     public DateOnly? EndDate { get; set; }
 
     public List<string> Description { get; set; } = [];
@@ -68,4 +69,5 @@ public class Job
             stringBuilder.Append($" @ {Company}");
         return stringBuilder.ToString();
     }
+
 }

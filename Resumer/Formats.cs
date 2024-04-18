@@ -2,10 +2,11 @@ namespace Resumer;
 
 public enum Formats
 {
-    Txt = 0b100000,
-    Json = 1 + Txt,
-    Csv = 2 + Txt,
-    Html = 3 + Txt,
+    Text = 0b100000,
+    Txt = 1 + Text,
+    Json = 2 + Text,
+    Csv = 3 + Text,
+    Html = 4 + Text,
 
 
     Binary = 0b1000000000,
@@ -16,7 +17,7 @@ public enum Formats
     Pptx = 5 + Binary,
 }
 
-public static partial class Globals
+public static partial class Utility
 {
     public static IEnumerable<string> FormatNames => Enum.GetNames<Formats>();
     public static IEnumerable<Formats> Formats => Enum.GetValues<Formats>();

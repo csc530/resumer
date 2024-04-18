@@ -7,79 +7,79 @@ using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.export;
 
-public class ExportCommand: Command<ExportCommandSettings>
+public class ExportCommand : Command<ExportCommandSettings>
 {
     public override int Execute([NotNull] CommandContext context, [NotNull] ExportCommandSettings settings)
     {
         var db = new ResumeContext();
         if(!db.Profiles.Any())
             return CommandOutput.Error(ExitCode.NoData, "No profiles found",
-                "Please add a profile before exporting, use the 'add profile' command");
+                "Please add a profile before exporting (resumer add profile)");
 
-        string format;
-        string output;
-        var template = settings.Template;
+        var name = AnsiConsole.Ask<string>("Resume title:");
+
         List<Job> jobs = [];
         List<Skill> skills = [];
         List<Project> projects = [];
-        List<string> languages = [];
-        List<Education> education = [];
-        Profile profile;
-        List<Certificate> certifications = [];
 
-        var formatPrompt = new SelectionPrompt<string>().Title("Select export format").AddChoiceGroup("plain text", Globals.TextFormatNames).AddChoiceGroup("binary", Globals.BinaryFormatNames);
+        var formatPrompt = new SelectionPrompt<Formats>().Title("Select export format")
+            .AddChoiceGroup(Formats.Text, Utility.TextFormats).AddChoiceGroup(Formats.Binary, Utility.BinaryFormats)
+            .WrapAround();
 
-        format = AnsiConsole.Prompt(formatPrompt);
-        output = AnsiConsole.Prompt(new TextPrompt<string>("Output file (no input will write to stdout)").AllowEmpty());
-        profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>().Title("Select profile").AddChoices(db.Profiles));
+        var format = AnsiConsole.Prompt(formatPrompt);
+        var exportToFile = AnsiConsole.Confirm("Export to file?");
+
+        var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>().Title("Select profile").AddChoices(db.Profiles));
 
         if(!db.Jobs.Any())
-            AnsiConsole.MarkupLine("[yellow]No jobs found[/]");
+            CommandOutput.Warn("No jobs found");
         else
-            jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select jobs").AddChoices(db.Jobs).NotRequired());
+            jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select jobs").AddChoices(db.Jobs)
+                .NotRequired());
 
         if(!db.Skills.Any())
-            AnsiConsole.MarkupLine("[yellow]No skills found[/]");
+            CommandOutput.Warn("No skills found");
         else
-            skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>().Title("Select skills").AddChoices(db.Skills).NotRequired());
+            skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>().Title("Select skills").AddChoices(db.Skills)
+                .NotRequired());
 
         if(!db.Projects.Any())
-            AnsiConsole.MarkupLine("[yellow]No projects found[/]");
+            CommandOutput.Warn("No projects found");
         else
             projects = AnsiConsole.Prompt(new MultiSelectionPrompt<Project>().Title("Select projects").AddChoices(db.Projects).NotRequired());
 
-        //? dependent upon profile
-        if(profile.Certifications.Count == 0)
-            AnsiConsole.MarkupLine("[yellow]No certifications found[/]");
+
+        var resume = new Resume
+        {
+            Profile = profile,
+            Jobs = jobs,
+            Skills = skills,
+            Projects = projects,
+            Name = name,
+        };
+
+
+        var output = format switch
+        {
+            Formats.Txt => resume.ExportToTxt(),
+            // Formats.Binary => resume.ExportToBinary(),
+            _ => throw new NotSupportedException("Unsupported format")
+        };
+
+        if(exportToFile)
+        {
+            var defaultFileName = $"{resume.Name}_{resume.DateCreated:yyyy-MM-dd_HH-mm-ss}.{format.ToString().ToLower()}";
+            var fileName = AnsiConsole.Prompt(new SimplePrompt<string>("file name:", defaultFileName));
+
+            File.WriteAllText(fileName, output);
+            return CommandOutput.Success($"Exported to [bold]{fileName}[/]");
+        }
         else
-            certifications = AnsiConsole.Prompt(new MultiSelectionPrompt<Certificate>().Title("Select certificates").AddChoices(profile.Certifications).NotRequired());
-        if(profile.Languages.Count == 0)
-            AnsiConsole.MarkupLine("[yellow]No languages found[/]");
-        else
-            languages = AnsiConsole.Prompt(new MultiSelectionPrompt<string>().Title("Select languages").AddChoices(profile.Languages).NotRequired());
-        if(profile.Education.Count == 0)
-            AnsiConsole.MarkupLine("[yellow]No education found[/]");
-        else
-            education = AnsiConsole.Prompt(new MultiSelectionPrompt<Education>().Title("Select education").AddChoices(profile.Education).NotRequired());
-
-
-        Console.WriteLine($"Exporting to {format} format");
-        Console.WriteLine($"Output file: {output}");
-        Console.WriteLine($"Template file: {template}");
-        Console.WriteLine($"Profile: {profile}");
-        Console.WriteLine($"Jobs: {jobs}");
-        Console.WriteLine($"Skills: {skills}");
-        Console.WriteLine($"Projects: {projects}");
-        Console.WriteLine($"Languages: {languages}");
-        Console.WriteLine($"Education: {education}");
-        Console.WriteLine($"Certifications: {certifications}");
-
-
-        return CommandOutput.Success();
+            return CommandOutput.Success(output);
     }
 }
 
-public class ExportCommandSettings: CommandSettings
+public class ExportCommandSettings : CommandSettings
 {
     [CommandOption("-f|--format <FORMAT>")]
     [Description("Export format")]

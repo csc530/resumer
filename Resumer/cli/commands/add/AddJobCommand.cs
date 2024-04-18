@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using static Resumer.Globals;
+using static Resumer.Utility;
 
 namespace Resumer.cli.commands.add;
 
@@ -21,8 +21,8 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
         var startDate = AnsiConsole.Prompt(new TextPrompt<DateOnly>("Start Date:").DefaultValue(Today));
 
         var endDatePrompt = new TextPrompt<DateOnly?>("End date:")
-            .HideDefaultValue()
             .DefaultValue(null)
+            .HideDefaultValue()
             .AllowEmpty()
             .Validate(date => date >= startDate
                 ? ValidationResult.Success()
