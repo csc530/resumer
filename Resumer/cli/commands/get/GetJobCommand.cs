@@ -10,53 +10,23 @@ public class GetJobCommand: JobOutputCommand<GetJobCommandSettings>
 {
     public override int Execute(CommandContext context, GetJobCommandSettings settings)
     {
-        var rows = new Dictionary<int, Job>();
         ResumeContext database = new();
-        var ids = settings.Ids ?? database.Jobs.AsEnumerable().Select((_, i) => i).ToArray();
 
         if(!database.Jobs.Any())
             return CommandOutput.Success("No jobs found");
         else
         {
-            foreach(var id in ids)
-            {
-                Job job;
-                if(id < database.Jobs.Count() && id >= 0)
-                    job = database.Jobs.ElementAt(id);
-                else if(id < 0 && id >= -database.Jobs.Count())
-                    job = database.Jobs.ElementAt(database.Jobs.Count() + id);
-                else
-                {
-                    CommandOutput.Warn($"Job {id} not found");
-                    continue;
-                }
-                rows.Add(id, job);
-            }
+            var table = settings.GetTable(typeof(Job), "Jobs");
 
+            if(table == null)
+                return CommandOutput.Error(ExitCode.Error,"Invalid table settings");
 
-            var table = settings.GetTable();
-            if(rows.Values.Count == 0)
-                AnsiConsole.MarkupLine("No jobs found");
-            else if(table == null)
-                PrintJobsPlain(settings, rows);
-            else
-                PrintJobsTable(settings, table!, rows);
+            foreach (var job in database.Jobs)
+                table.AddObj(job);
 
-            return CommandOutput.Success();
+            return CommandOutput.Success(table);
         }
     }
 }
 
-public class GetJobCommandSettings: JobOutputSettings
-{
-    [CommandArgument(0, "[id]")]
-    [Description("id(s) of jobs to retrieve")]
-    public int[]? Ids { get; set; }
-
-    public override ValidationResult Validate()
-    {
-        return Ids != null && Array.Exists(Ids, id => id < 0)
-            ? ValidationResult.Error("id must be greater than or equal to zero (0)")
-            : ValidationResult.Success();
-    }
-}
+public class GetJobCommandSettings: JobOutputSettings;

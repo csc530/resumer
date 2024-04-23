@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 
 namespace Resumer;
 
@@ -48,18 +49,25 @@ public static class CommandOutput
     /// </summary>
     /// <param name="msg">optional success message to print to console</param>
     /// <returns>Success exit code</returns>
-    public static int Success(string? msg = null)
+    public static int Success(string msg)
     {
-        if(msg == null)
-            AnsiConsole.WriteLine();
-        else
-            AnsiConsole.MarkupLine(msg);
-        return (int)ExitCode.Success;
+        AnsiConsole.MarkupLine(msg);
+        return Success();
+    }
+    public static int Success(IRenderable msg)
+    {
+        AnsiConsole.Write(msg);
+        return Success();
     }
 
+    public static int Success() => (int)ExitCode.Success;
     /// <summary>
     /// Display a warning message
     /// </summary>
     /// <param name="message">warning message</param>
     public static void Warn(string message) => AnsiConsole.MarkupLine($"[yellow]{message}[/]");
+
+
+
+
 }

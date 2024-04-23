@@ -1,6 +1,5 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+using System.Reflection;
 using Spectre.Console;
 
 namespace Resumer;
@@ -18,14 +17,29 @@ public static partial class Extensions
     // todo: inquire about default value being a property - spectre console pr/iss
     // .DefaultValue(textPrompt);
 
-
-    public static string Print<T>(this T value) where T : IEnumerable
+    public static void AddObj<T>(this Table table, T obj)
     {
-        var builder = new StringBuilder();
-        foreach (var item in value)
-            builder.AppendLine($"● {item}");
-        return builder.ToString();
+        if(obj == null)
+            return;
+
+        var row = obj.GetType().GetProperties()
+            .Where(prop => prop.CanRead && prop.MemberType == MemberTypes.Property)
+            .Select(prop => Markup.Escape(prop.GetValue(obj).Print()))
+            .ToArray();
+        table.AddRow(row);
     }
+
+    public static string Print(this object? value)
+    {
+        if(value == null)
+            return string.Empty;
+
+        if(value.GetType() != typeof(string) && value.GetType().GetInterface(nameof(IEnumerable)) != null)
+            return string.Join("\n+ ", (IEnumerable<object?>)value);
+
+        return value.ToString() ?? string.Empty;
+    }
+
 
     #region strings
 
@@ -123,7 +137,7 @@ public class SimplePrompt<T> : IPrompt<T?>
 {
     private readonly TextPrompt<T?> _textPrompt;
 
-    public SimplePrompt(string message,T? defaultValue = default)
+    public SimplePrompt(string message, T? defaultValue = default)
     {
         _textPrompt = new TextPrompt<T?>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
     }
