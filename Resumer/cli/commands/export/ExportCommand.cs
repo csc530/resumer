@@ -22,31 +22,42 @@ public class ExportCommand : Command<ExportCommandSettings>
         List<Skill> skills = [];
         List<Project> projects = [];
 
-        var formatPrompt = new SelectionPrompt<Formats>().Title("Select export format")
-            .AddChoiceGroup(Formats.Text, Utility.TextFormats).AddChoiceGroup(Formats.Binary, Utility.BinaryFormats)
+        var formatPrompt = new SelectionPrompt<Formats>()
+            .Title("Select export format")
+            .AddChoiceGroup(Formats.Text, Utility.TextFormats)
+            .AddChoiceGroup(Formats.Binary, Utility.BinaryFormats)
             .WrapAround();
 
         var format = AnsiConsole.Prompt(formatPrompt);
         var exportToFile = AnsiConsole.Confirm("Export to file?");
 
-        var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>().Title("Select profile").AddChoices(db.Profiles));
+        var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>()
+            .Title("Select profile")
+            .AddChoices(db.Profiles.OrderBy(profile => profile.WholeName)));
 
         if(!db.Jobs.Any())
             CommandOutput.Warn("No jobs found");
         else
-            jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select jobs").AddChoices(db.Jobs)
+            jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>()
+                .Title("Select jobs")
+                .AddChoices(db.Jobs.OrderByDescending(job => job.StartDate))
                 .NotRequired());
 
         if(!db.Skills.Any())
             CommandOutput.Warn("No skills found");
         else
-            skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>().Title("Select skills").AddChoices(db.Skills)
+            skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>()
+                .Title("Select skills")
+                .AddChoices(db.Skills)
                 .NotRequired());
 
         if(!db.Projects.Any())
             CommandOutput.Warn("No projects found");
         else
-            projects = AnsiConsole.Prompt(new MultiSelectionPrompt<Project>().Title("Select projects").AddChoices(db.Projects).NotRequired());
+            projects = AnsiConsole.Prompt(new MultiSelectionPrompt<Project>()
+                .Title("Select projects")
+                .AddChoices(db.Projects)
+                .NotRequired());
 
 
         var resume = new Resume
@@ -68,8 +79,9 @@ public class ExportCommand : Command<ExportCommandSettings>
 
         if(exportToFile)
         {
-            var defaultFileName = $"{resume.Name}_{resume.DateCreated:yyyy-MM-dd_HH-mm-ss}.{format.ToString().ToLower()}";
-            var fileName = AnsiConsole.Prompt(new SimplePrompt<string>("file name:", defaultFileName));
+            var defaultFileName =
+                $"{resume.Name}_{resume.DateCreated:yyyy-MM-dd_HH-mm-ss}.{format.ToString().ToLower()}";
+            var fileName = AnsiConsole.Prompt(new TextPrompt<string>("file name:").DefaultValue(defaultFileName));
 
             File.WriteAllText(fileName, output);
             return CommandOutput.Success($"Exported to [bold]{fileName}[/]");
