@@ -1,6 +1,7 @@
 ﻿using Resumer.cli.commands;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
+using Resumer.cli.commands.delete;
 using Resumer.cli.commands.edit;
 using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
@@ -42,7 +43,6 @@ public static class Program
                 .WithAlias("g");
         });
 
-        //todo: add option if adding an existing entry to edit it
         config.AddBranch<AddCommandSettings>("add", add =>
         {
             add.SetDescription("add new information to job database/bank");
@@ -71,9 +71,6 @@ public static class Program
         config.AddBranch("edit", edit =>
         {
             edit.SetDescription("edit job information in database/bank");
-            edit.AddCommand<EditSkillCommand>("skill")
-                .WithAlias("s")
-                .WithAlias("skills");
             edit.AddCommand<EditJobCommand>("job")
                 .WithAlias("j")
                 .WithAlias("jobs");
@@ -81,8 +78,31 @@ public static class Program
                 .WithAlias("user")
                 .WithAlias("u")
                 .WithAlias("users")
+                .WithAlias("p")
                 .WithAlias("profiles");
         });
+
+        config.AddBranch("delete", delete =>
+            {
+                delete.SetDescription("delete job information from database/bank");
+                delete.AddCommand<DeleteJobCommand>("job")
+                    .WithAlias("j")
+                    .WithAlias("jobs");
+                delete.AddCommand<DeleteProfileCommand>("profile")
+                    .WithAlias("user")
+                    .WithAlias("u")
+                    .WithAlias("users")
+                    .WithAlias("p")
+                    .WithAlias("profiles");
+                delete.AddCommand<DeleteSkillCommand>("skill")
+                    .WithAlias("s")
+                    .WithAlias("skills");
+            })
+            .WithAlias("d")
+            .WithAlias("del")
+            .WithAlias("remove")
+            .WithAlias("rm");
+
 
         config.AddBranch<OutputCommandSettings>("get", get =>
         {

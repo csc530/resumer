@@ -7,7 +7,7 @@ using Spectre.Console.Rendering;
 
 namespace Resumer;
 
-public static class CommandOutput
+public static partial class CommandOutput
 {
     public static int Error(Exception exception, CliSettings settings)
     {
@@ -22,18 +22,18 @@ public static class CommandOutput
     }
 
     /// <summary>
-    ///  Display an error message and return the error code
+    ///  Display the name of the exit code with an optional custom error message and return the error code
     /// </summary>
-    /// <param name="exitCode"></param>
-    /// <param name="msg"></param>
-    /// <param name="help"></param>
-    /// <returns></returns>
+    /// <param name="exitCode">exit code</param>
+    /// <param name="msg">optional error message</param>
+    /// <param name="help">hint for how to fix the error</param>
+    /// <returns>the exit code</returns>
     /// <exception cref="NotImplementedException"></exception>
     public static int Error(ExitCode exitCode, string? msg = null, string? help = null)
     {
         var errNo = (int)exitCode;
-        var error = Regex.Replace(exitCode.ToString(), "[A-Z]", " $0").Trim();
-        AnsiConsole.MarkupLine($"[red]Error {errNo}: {error}[/]");
+        var error = CapitalLettersRegex().Replace(exitCode.ToString(), " $0").Trim();
+        AnsiConsole.MarkupLine($"[red]Error 0x{errNo:X4}: {error}[/]");
 
         if(msg != null)
             AnsiConsole.MarkupLine(msg);
@@ -54,6 +54,7 @@ public static class CommandOutput
         AnsiConsole.MarkupLine(msg);
         return Success();
     }
+
     public static int Success(IRenderable msg)
     {
         AnsiConsole.Write(msg);
@@ -61,13 +62,13 @@ public static class CommandOutput
     }
 
     public static int Success() => (int)ExitCode.Success;
+
     /// <summary>
     /// Display a warning message
     /// </summary>
     /// <param name="message">warning message</param>
     public static void Warn(string message) => AnsiConsole.MarkupLine($"[yellow]{message}[/]");
 
-
-
-
+    [GeneratedRegex("[A-Z]")]
+    private static partial Regex CapitalLettersRegex();
 }
