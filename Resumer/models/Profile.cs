@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
-[PrimaryKey(nameof(FirstName), nameof(LastName), nameof(EmailAddress), nameof(PhoneNumber))]
 public class Profile
 {
     private string _emailAddress;
@@ -19,6 +18,8 @@ public class Profile
         PhoneNumber = phoneNumber;
         EmailAddress = emailAddress;
     }
+
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     public string FirstName
     {

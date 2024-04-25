@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
-[PrimaryKey(nameof(School), nameof(Degree), nameof(StartDate))]
 public class Education
 {
+    public Guid Id { get; init; } = Guid.NewGuid();
     public string School { get; set; }
     public string Degree { get; set; }
     public string? FieldOfStudy { get; set; }
