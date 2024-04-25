@@ -17,6 +17,9 @@ public static partial class Extensions
     // todo: inquire about default value being a property - spectre console pr/iss
     // .DefaultValue(textPrompt);
 
+    public static IEnumerable<T> Clone<T>(this IEnumerable<T> list) where T : ICloneable =>
+        list.Select(item => (T)item.Clone()).ToList();
+
     public static void AddObj<T>(this Table table, T obj)
     {
         if(obj == null)
@@ -34,7 +37,7 @@ public static partial class Extensions
         if(value == null)
             return string.Empty;
 
-        if(value.GetType() != typeof(string) && value.GetType().GetInterface(nameof(IEnumerable)) != null)
+        if(value is not string && value.GetType().GetInterface(nameof(IEnumerable)) != null)
             return string.Join("\n+ ", (IEnumerable<object?>)value);
 
         return value.ToString() ?? string.Empty;
@@ -85,14 +88,14 @@ public static partial class Extensions
 
     public static Table AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
     {
-        foreach (var column in columns)
+        foreach(var column in columns)
             table.AddTableColumn(column, nowrap);
         return table;
     }
 
     public static Table AddTableColumn(this Table table, params string[] columns)
     {
-        foreach (var column in columns)
+        foreach(var column in columns)
             table.AddTableColumn(column);
         return table;
     }
@@ -126,6 +129,37 @@ public static partial class Extensions
         } while(!string.IsNullOrWhiteSpace(input));
 
         return newlist;
+    }
+
+    public static void EditFromPrompt(this List<string> description, string prompt)
+    {
+        string? input;
+        var i = 0;
+        var count = description.Count; //? count is not updated when description is modified;
+
+        do
+        {
+            if(i < count)
+            {
+                input = AnsiConsole.Prompt(new TextPrompt<string>(prompt).DefaultValue(description[i]).AllowEmpty());
+                if(string.IsNullOrWhiteSpace(input) || input == "-")
+                {
+                    description.RemoveAt(i);
+                    count--;
+                    i--;
+
+                }
+                else
+                    description[i] = input;
+                i++;
+            }
+            else
+            {
+                input = AnsiConsole.Prompt(new SimplePrompt<string>(prompt));
+                if(!string.IsNullOrWhiteSpace(input))
+                    description.Add(input);
+            }
+        } while(i < count || !string.IsNullOrWhiteSpace(input));
     }
 }
 

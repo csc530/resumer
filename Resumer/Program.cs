@@ -1,6 +1,7 @@
 ﻿using Resumer.cli.commands;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
+using Resumer.cli.commands.edit;
 using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
 using Resumer.cli.settings;
@@ -65,6 +66,22 @@ public static class Program
                 .WithDescription("add a new project")
                 .WithAlias("p")
                 .WithAlias("projects");
+        });
+
+        config.AddBranch("edit", edit =>
+        {
+            edit.SetDescription("edit job information in database/bank");
+            edit.AddCommand<EditSkillCommand>("skill")
+                .WithAlias("s")
+                .WithAlias("skills");
+            edit.AddCommand<EditJobCommand>("job")
+                .WithAlias("j")
+                .WithAlias("jobs");
+            edit.AddCommand<EditProfileCommand>("profile")
+                .WithAlias("user")
+                .WithAlias("u")
+                .WithAlias("users")
+                .WithAlias("profiles");
         });
 
         config.AddBranch<OutputCommandSettings>("get", get =>
