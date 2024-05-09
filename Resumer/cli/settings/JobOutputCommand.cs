@@ -65,7 +65,7 @@ public abstract class JobOutputCommand<T>: Command<T> where T : JobOutputSetting
             table.AddTableRow(columnConditionValuePairs.ToArray());
         }
 
-        Spectre.Console.AnsiConsole.Write(table);
+        AnsiConsole.Write(table);
     }
 
     /// <summary>

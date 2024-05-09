@@ -1,6 +1,5 @@
 using System.Text;
 using Resumer.models;
-using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.config;
@@ -26,9 +25,7 @@ public class GetConfigCommand: Command<GetConfigCommandSettings>
                     return CommandOutput.Error(ExitCode.InvalidArgument, "Unknown setting: " + setting);
             }
 
-        AnsiConsole.MarkupLine(output.ToString());
-
-        return CommandOutput.Success();
+        return CommandOutput.Success(output.ToString());
     }
 }
 

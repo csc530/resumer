@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Resumer.models;
 using Spectre.Console;
@@ -31,7 +32,7 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
 
         var job = new Job(jobTitle, company)
         {
-            Description =  jobDescription,
+            Description = jobDescription,
             Experience = experience,
             StartDate = startDate,
             EndDate = endDate
@@ -40,6 +41,7 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
         var db = new ResumeContext();
         db.Jobs.Add(job);
         db.SaveChanges(acceptAllChangesOnSuccess: true);
+
         return CommandOutput.Success($"✅ Job \"[bold]{job.Title}[/]\" added");
     }
 }

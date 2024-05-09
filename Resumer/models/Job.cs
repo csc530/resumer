@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 

@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace Resumer.models;
 
 public class Education

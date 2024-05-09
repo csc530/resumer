@@ -1,4 +1,4 @@
-﻿using Resumer.cli.commands;
+﻿using Microsoft.EntityFrameworkCore;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
 using Resumer.cli.commands.delete;
@@ -6,6 +6,7 @@ using Resumer.cli.commands.edit;
 using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
 using Resumer.cli.settings;
+using Resumer.models;
 using Spectre.Console.Cli;
 
 namespace Resumer;
@@ -14,6 +15,10 @@ public static class Program
 {
     private static int Main(string[] args)
     {
+        var database = new ResumeContext().Database;
+        if(database.GetPendingMigrations().Any())
+            database.Migrate();
+
         var app = new CommandApp();
         app.Configure(AppConfiguration);
         return app.Run(args);
@@ -123,9 +128,5 @@ public static class Program
                 .WithAlias("users")
                 .WithAlias("profiles");
         });
-
-        config.AddCommand<InitCommand>("init")
-            .WithDescription("initializes resume database")
-            .WithAlias("start");
     }
 }

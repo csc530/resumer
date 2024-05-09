@@ -7,7 +7,7 @@ public class Certificate
     private string? _description;
     private string? _credentialId;
 
-    public Guid Id { get; init; }
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     public string Name
     {
@@ -37,10 +37,5 @@ public class Certificate
     {
         get => _credentialId;
         set => _credentialId = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
-    }
-
-    public Certificate()
-    {
-        Id = Guid.NewGuid();
     }
 }

@@ -2,15 +2,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
-public class ResumeContext : DbContext
+public sealed class ResumeContext : DbContext
 {
     public ResumeContext()
     {
-        string path;
     #if DEBUG
-        path = Directory.GetCurrentDirectory();
+        var path = Directory.GetCurrentDirectory();
     #else
-        path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
     #endif
         DbPath = Path.Join(path, "resume.db");
     }
@@ -23,7 +22,6 @@ public class ResumeContext : DbContext
     public string DbPath { get; }
 
 // The following configures EF to create a sqlite database file in the
-// special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite($"Data Source={DbPath}");
 }

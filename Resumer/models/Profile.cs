@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
@@ -34,7 +32,6 @@ public class Profile
 
     public string? MiddleName { get; set; }
 
-    [Key]
     public string LastName
     {
         get => _lastName;
