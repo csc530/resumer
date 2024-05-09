@@ -11,6 +11,11 @@ namespace resume_builder.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            //because all key, column type, etc. operations are performed at the end of a shared transaction
+            // so chainging this fk causes a "mismatch" because there's no way to add an index/pk on lastname before the temp table is added...
+            // (don't know a fk still exists after SPECIFICALLY DROPPING IT but wtv
+            migrationBuilder.Sql("PRAGMA foreign_keys=off;", true); // could done my owwn table create, insert, rearrange, spaghetti bolgnese, but this will work
+
             migrationBuilder.DropForeignKey(
                 name: "FK_Certificate_Profiles_ProfileFirstName_ProfileLastName_ProfileEmailAddress_ProfilePhoneNumber",
                 table: "Certificate");

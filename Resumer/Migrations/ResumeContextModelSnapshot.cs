@@ -42,7 +42,7 @@ namespace resume_builder.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileLastName")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
@@ -50,7 +50,7 @@ namespace resume_builder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileLastName");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Certificate");
                 });
@@ -80,7 +80,7 @@ namespace resume_builder.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileLastName")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("School")
@@ -92,7 +92,7 @@ namespace resume_builder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileLastName");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Education");
                 });
@@ -132,7 +132,8 @@ namespace resume_builder.Migrations
 
             modelBuilder.Entity("Resumer.models.Profile", b =>
                 {
-                    b.Property<string>("LastName")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmailAddress")
@@ -143,14 +144,15 @@ namespace resume_builder.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Interests")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -170,7 +172,7 @@ namespace resume_builder.Migrations
                     b.Property<string>("Website")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("LastName");
+                    b.HasKey("Id");
 
                     b.ToTable("Profiles");
                 });
@@ -226,14 +228,14 @@ namespace resume_builder.Migrations
                 {
                     b.HasOne("Resumer.models.Profile", null)
                         .WithMany("Certifications")
-                        .HasForeignKey("ProfileLastName");
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Resumer.models.Education", b =>
                 {
                     b.HasOne("Resumer.models.Profile", null)
                         .WithMany("Education")
-                        .HasForeignKey("ProfileLastName");
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Resumer.models.Profile", b =>
