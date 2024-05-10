@@ -1,0 +1,72 @@
+
+# good ref:https://github.com/ruby/ruby-dev-builder/blob/b0bf59a17c17985d4692243d4689c273f6348fa5/.github/workflows/build.yml#L40
+name: .NET
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: platform to publish
+        required: false
+        type: string
+        default: 'linux-x64'
+        options:
+          - win-x64
+          - win-x86
+          - win-arm64
+          - linux-x64
+          - linux-musl-x64
+          - linux-musl-arm64
+          - linux-arm
+          - linux-arm64
+          - linux-bionic-arm64
+          - osx-x64
+          - osx-arm64
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+          os: [ ubuntu-latest, windows-latest, macOS-latest ]
+
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh
+
+
+      - name: Publish
+        if: github.event.inputs.version != ''
+
+        run: dotnet publish -c Release -r ${{ github.event.inputs.version }} --no-self-contained
+        working-directory: ./Resumer
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+
+        with:
+          name: Resumer
+          path: Resumer/bin/Release/net6.0/${{ github.event.inputs.version }}/publish/
+
+    - name: Publish GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release eedit ${{ }}
