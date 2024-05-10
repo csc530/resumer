@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,7 +8,7 @@ namespace Resumer.cli.commands.add;
 
 internal sealed class AddJobCommand : Command<AddJobSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddJobSettings settings)
+    public override int Execute(CommandContext context, AddJobSettings settings)
     {
         var jobTitle = AnsiConsole.Ask<string>("Job Title:");
         var jobDescription = new List<string>();

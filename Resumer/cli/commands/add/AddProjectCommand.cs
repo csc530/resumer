@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -7,7 +7,7 @@ namespace Resumer.cli.commands.add;
 
 internal sealed class AddProjectCommand : Command<AddProjectSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddProjectSettings settings)
+    public override int Execute(CommandContext context, AddProjectSettings settings)
     {
         var projectName = AnsiConsole.Ask<string>("Project Name:");
         var projectType = AnsiConsole.Prompt(new SimplePrompt<string>("Project Type:"));
@@ -18,7 +18,7 @@ internal sealed class AddProjectCommand : Command<AddProjectSettings>
         var projectStartDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("Start Date:"));
         var projectEndDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("End Date:"));
 
-        var project = new Project()
+        var project = new Project
         {
             Title = projectName,
             Type = projectType,

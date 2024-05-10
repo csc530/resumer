@@ -1,5 +1,5 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,7 +9,7 @@ namespace Resumer.cli.commands.add;
 
 public sealed partial class AddProfileCommand : Command<AddProfileSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] AddProfileSettings settings)
+    public override int Execute(CommandContext context, AddProfileSettings settings)
     {
         var emailAddressPrompt = new TextPrompt<string>("Email address:")
             .ValidationErrorMessage("Invalid email address: email should contain '@' and a domain (e.g. @example.ca).")
@@ -35,8 +35,13 @@ public sealed partial class AddProfileCommand : Command<AddProfileSettings>
         var objective = AnsiConsole.Prompt(new SimplePrompt<string>("Summary:"));
 
 
-        var profile = new Profile(firstName, lastName, phoneNumber, emailAddress)
+        var profile = new Profile
         {
+            FirstName = firstName,
+            LastName = lastName,
+            EmailAddress = emailAddress,
+            PhoneNumber = phoneNumber,
+
             Objective = objective,
             MiddleName = middleName,
             Languages = languages,

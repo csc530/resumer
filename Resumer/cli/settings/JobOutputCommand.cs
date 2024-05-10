@@ -14,17 +14,17 @@ public abstract class JobOutputCommand<T>: Command<T> where T : JobOutputSetting
         {
             var row = new List<string>();
             if(settings.Id)
-                row.Add((tblId.ToString()));
+                row.Add(tblId.ToString());
             if(settings.JobTitle)
-                row.Add((job.Title));
+                row.Add(job.Title);
             if(settings.Company)
-                row.Add((job.Company));
+                row.Add(job.Company);
             if(settings.StartDate)
-                row.Add((job.StartDate.ToString()));
+                row.Add(job.StartDate.ToString());
             if(settings.EndDate)
-                row.Add((job.EndDate.ToString() ?? "Present"));
+                row.Add(job.EndDate.ToString() ?? "Present");
             if(settings.Description)
-                row.Add((job.Description.Print()));
+                row.Add(job.Description.Print());
             if(settings.Experience)
                 row.Add(job.Experience.Print());
             var expandColumns = (settings.Expand && !settings.Minimize) || (!settings.Minimize && !settings.Expand);

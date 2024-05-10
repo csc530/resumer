@@ -1,5 +1,3 @@
-using Resumer.cli.settings;
-
-namespace Resumer.cli.commands.add;
+namespace Resumer.cli.settings;
 
 public class AddCommandSettings: CliSettings;

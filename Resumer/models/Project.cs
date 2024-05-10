@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Resumer.models;
 
@@ -20,6 +21,7 @@ public class Project
     public required string Title
     {
         get => _title;
+        [MemberNotNull(nameof(_title))]
         set
         {
             if(string.IsNullOrWhiteSpace(value))

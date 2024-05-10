@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using Resumer.models;
 using Spectre.Console;
 
 namespace Resumer;
@@ -12,7 +13,7 @@ public static partial class Utility
         startDate == null ? string.Empty : $"{startDate:MMM yyyy} - {endDate?.ToString("MMM yyyy") ?? "present"}";
 }
 
-public static partial class Extensions
+public static class Extensions
 {
     // todo: inquire about default value being a property - spectre console pr/iss
     // .DefaultValue(textPrompt);
@@ -161,6 +162,18 @@ public static partial class Extensions
             }
         } while(i < count || !string.IsNullOrWhiteSpace(input));
     }
+
+    public static string GetMessage(this SqlResultCode code) => code switch
+    {
+        SqlResultCode.Success => "Success",
+        SqlResultCode.Error => "Error",
+        SqlResultCode.Readonly => "Database is readonly",
+        SqlResultCode.IoErr => "disk I/O error occurred",
+        SqlResultCode.NotNull => "not null constraint violated",
+        SqlResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
+        SqlResultCode.Constraint => "constraint violation",
+        _ => "Unknown error"
+    };
 }
 
 /// <summary>

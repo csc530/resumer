@@ -31,5 +31,6 @@ public class GetConfigCommand: Command<GetConfigCommandSettings>
 
 public class GetConfigCommandSettings: CommandSettings
 {
-    [CommandArgument(0, "[settings]")] public string[] Settings { get; set; }
+    [CommandArgument(0, "[settings]")]
+    public required string[] Settings { get; set; }
 }

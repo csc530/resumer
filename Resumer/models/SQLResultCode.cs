@@ -166,19 +166,3 @@ public enum SqlResultCode
 	///</summary>
 	Done = 101,
 }
-
-public  static partial class Extensions
-{
-
-	public static string GetMessage(this SqlResultCode code) => code switch
-	{
-		SqlResultCode.Success => "Success",
-		SqlResultCode.Error => "Error",
-		SqlResultCode.Readonly => "Database is readonly",
-		SqlResultCode.IoErr => "disk I/O error occurred",
-		SqlResultCode.NotNull => "not null constraint violated",
-		SqlResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
-		SqlResultCode.Constraint => "constraint violation",
-		_ => "Unknown error"
-	};
-}

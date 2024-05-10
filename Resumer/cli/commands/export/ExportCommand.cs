@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -9,7 +8,7 @@ namespace Resumer.cli.commands.export;
 
 public class ExportCommand : Command<ExportCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] ExportCommandSettings settings)
+    public override int Execute(CommandContext context, ExportCommandSettings settings)
     {
         var db = new ResumeContext();
         if(!db.Profiles.Any())
@@ -96,13 +95,13 @@ public class ExportCommandSettings : CommandSettings
     [CommandOption("-f|--format <FORMAT>")]
     [Description("Export format")]
     [DefaultValue("txt")]
-    public string Format { get; set; }
+    public required string Format { get; set; }
 
     [CommandOption("-o|--output <OUTPUT>")]
     [Description("Output file")]
-    public string Output { get; set; }
+    public required string Output { get; set; }
 
     [CommandOption("-t|--template <TEMPLATE>")]
     [Description("Template file")]
-    public string Template { get; set; }
+    public required string Template { get; set; }
 }

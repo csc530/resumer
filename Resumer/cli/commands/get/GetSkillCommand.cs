@@ -13,7 +13,7 @@ public class GetSkillCommand: Command<OutputCommandSettings>
         var skills = database.Skills;
 
         if(!skills.Any())
-            return CommandOutput.Success(("No skills found"));
+            return CommandOutput.Success("No skills found");
         else
         {
             var table = settings.GetTable();

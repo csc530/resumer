@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -8,7 +7,7 @@ namespace Resumer.cli.commands.get;
 
 public class GetCompanyCommand : Command<OutputCommandSettings>
 {
-    public override int Execute([NotNull] CommandContext context, [NotNull] OutputCommandSettings settings)
+    public override int Execute(CommandContext context, OutputCommandSettings settings)
     {
         ResumeContext database = new();
         var companies = database.Jobs.Select(job => job.Company).Distinct();

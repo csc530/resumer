@@ -63,7 +63,7 @@ public class OutputCommandSettings : CliSettings
         Plain switch
         {
             true when !Table => null,
-            true when Table => new Table()
+            true when Table => new Table
             {
                 Expand = (Expand && !Minimize) || (!Minimize && !Expand),
                 ShowFooters = false,
@@ -75,7 +75,7 @@ public class OutputCommandSettings : CliSettings
             },
             false => new Table
             {
-                Expand = (Expand && !Minimize),
+                Expand = Expand && !Minimize,
                 Border = Border,
                 ShowFooters = Footer,
                 ShowHeaders = true,

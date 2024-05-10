@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using Spectre.Console.Cli;
 
-namespace Resumer.cli.commands.delete;
+namespace Resumer.cli.settings;
 
 public class DeleteCommandSettings:CommandSettings
 {

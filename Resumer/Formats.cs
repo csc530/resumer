@@ -25,5 +25,5 @@ public static partial class Utility
     public static IEnumerable<string> TextFormatNames => Formats.Where(x => x.HasFlag(Resumer.Formats.Txt)).Select(x=>x.ToString());
 
     public static IEnumerable<Formats> BinaryFormats => Formats.Where(x => x.HasFlag(Resumer.Formats.Binary) && x != Resumer.Formats.Binary);
-    public static IEnumerable<string> BinaryFormatNames => Formats.Where(x => x.HasFlag(Resumer.Formats.Binary)&&x!=Resumer.Formats.Binary).Select(x=>x.ToString())!;
+    public static IEnumerable<string> BinaryFormatNames => Formats.Where(x => x.HasFlag(Resumer.Formats.Binary)&&x!=Resumer.Formats.Binary).Select(x=>x.ToString());
 }

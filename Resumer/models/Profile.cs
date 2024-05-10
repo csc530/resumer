@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Resumer.models;
 
@@ -9,19 +10,13 @@ public class Profile
     private string _lastName;
     private string _phoneNumber;
 
-    public Profile(string firstName, string lastName, string phoneNumber, string emailAddress)
-    {
-        FirstName = firstName;
-        LastName = lastName;
-        PhoneNumber = phoneNumber;
-        EmailAddress = emailAddress;
-    }
 
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public string FirstName
+    public required string FirstName
     {
         get => _firstName;
+        [MemberNotNull(nameof(_firstName))]
         set
         {
             if(string.IsNullOrWhiteSpace(value))
@@ -32,9 +27,10 @@ public class Profile
 
     public string? MiddleName { get; set; }
 
-    public string LastName
+    public required string LastName
     {
         get => _lastName;
+        [MemberNotNull(nameof(_lastName))]
         set
         {
             if(string.IsNullOrWhiteSpace(value))
@@ -43,10 +39,10 @@ public class Profile
         }
     }
 
-    public string PhoneNumber
-
+    public required string PhoneNumber
     {
         get => _phoneNumber;
+        [MemberNotNull(nameof(_phoneNumber))]
         set
         {
             if(string.IsNullOrWhiteSpace(value))
@@ -55,10 +51,10 @@ public class Profile
         }
     }
 
-    public string EmailAddress
-
+    public required string EmailAddress
     {
         get => _emailAddress;
+        [MemberNotNull(nameof(_emailAddress))]
         set
         {
             if(string.IsNullOrWhiteSpace(value))
