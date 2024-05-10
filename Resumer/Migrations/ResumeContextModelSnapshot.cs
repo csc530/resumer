@@ -7,7 +7,7 @@ using Resumer.models;
 
 #nullable disable
 
-namespace resume_builder.Migrations
+namespace Resumer.Migrations
 {
     [DbContext(typeof(ResumeContext))]
     partial class ResumeContextModelSnapshot : ModelSnapshot

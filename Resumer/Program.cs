@@ -15,9 +15,12 @@ public static class Program
 {
     private static int Main(string[] args)
     {
-        var database = new ResumeContext().Database;
-        if(database.GetPendingMigrations().Any())
-            database.Migrate();
+        using(var ctx = new ResumeContext())
+        {
+            var database = ctx.Database;
+            if(database.GetPendingMigrations().Any())
+                database.Migrate();
+        }
 
         var app = new CommandApp();
         app.Configure(AppConfiguration);

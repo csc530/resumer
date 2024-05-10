@@ -8,11 +8,11 @@ using Resumer.models;
 
 #nullable disable
 
-namespace resume_builder.Migrations
+namespace Resumer.Migrations
 {
     [DbContext(typeof(ResumeContext))]
-    [Migration("20240408231311_addGuidToJobAndAddCreatedColumnOnResume")]
-    partial class addGuidToJobAndAddCreatedColumnOnResume
+    [Migration("20240510185230_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,16 +45,7 @@ namespace resume_builder.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileEmailAddress")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileFirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfileLastName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ProfilePhoneNumber")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
@@ -62,23 +53,22 @@ namespace resume_builder.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Certificate");
                 });
 
             modelBuilder.Entity("Resumer.models.Education", b =>
                 {
-                    b.Property<string>("School")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Degree")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateOnly>("StartDate")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AdditionalInformation")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Degree")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
@@ -93,21 +83,19 @@ namespace resume_builder.Migrations
                     b.Property<string>("Location")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileEmailAddress")
+                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileFirstName")
+                    b.Property<string>("School")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfileLastName")
+                    b.Property<DateOnly>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("ProfilePhoneNumber")
-                        .HasColumnType("TEXT");
+                    b.HasKey("Id");
 
-                    b.HasKey("School", "Degree", "StartDate");
-
-                    b.HasIndex("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Education");
                 });
@@ -123,12 +111,14 @@ namespace resume_builder.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Experience")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("StartDate")
@@ -145,16 +135,16 @@ namespace resume_builder.Migrations
 
             modelBuilder.Entity("Resumer.models.Profile", b =>
                 {
-                    b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("EmailAddress")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Interests")
@@ -162,6 +152,10 @@ namespace resume_builder.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -174,10 +168,14 @@ namespace resume_builder.Migrations
                     b.Property<string>("Objective")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Website")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("FirstName", "LastName", "EmailAddress", "PhoneNumber");
+                    b.HasKey("Id");
 
                     b.ToTable("Profiles");
                 });
@@ -191,17 +189,21 @@ namespace resume_builder.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Link")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
+                    b.Property<DateOnly?>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateOnly?>("StartDate")
+                    b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Type")
@@ -229,14 +231,14 @@ namespace resume_builder.Migrations
                 {
                     b.HasOne("Resumer.models.Profile", null)
                         .WithMany("Certifications")
-                        .HasForeignKey("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Resumer.models.Education", b =>
                 {
                     b.HasOne("Resumer.models.Profile", null)
                         .WithMany("Education")
-                        .HasForeignKey("ProfileFirstName", "ProfileLastName", "ProfileEmailAddress", "ProfilePhoneNumber");
+                        .HasForeignKey("ProfileId");
                 });
 
             modelBuilder.Entity("Resumer.models.Profile", b =>
