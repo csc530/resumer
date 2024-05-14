@@ -1,8 +1,10 @@
-
 # good ref:https://github.com/ruby/ruby-dev-builder/blob/b0bf59a17c17985d4692243d4689c273f6348fa5/.github/workflows/build.yml#L40
 name: .NET
 
 on:
+  push:
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
   workflow_dispatch:
     inputs:
@@ -25,44 +27,35 @@ on:
           - osx-arm64
 
 jobs:
-  build:
-
+  publish:
     runs-on: ${{ matrix.os }}
     strategy:
-        matrix:
-          os: [ ubuntu-latest, windows-latest, macOS-latest ]
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
 
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: Restore dependencies
-        run: dotnet restore
-      - name: Build
-        run: dotnet build --no-restore
+
+      - name: Publish
+        run: dotnet publish Resumer/ --output ./publish
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: publish
+          path: ./publish/
+
+      - name: zip
+        run: bash zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
+        working-directory: ./publish
 
       - name: Create GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh
-
-
-      - name: Publish
-        if: github.event.inputs.version != ''
-
-        run: dotnet publish -c Release -r ${{ github.event.inputs.version }} --no-self-contained
-        working-directory: ./Resumer
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-
-        with:
-          name: Resumer
-          path: Resumer/bin/Release/net6.0/${{ github.event.inputs.version }}/publish/
-
-    - name: Publish GitHub Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release eedit ${{ }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: gh release create ${{ github.ref_name }} ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip --draft
