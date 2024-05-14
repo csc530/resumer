@@ -5,16 +5,27 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.add;
 
-internal sealed class AddProjectCommand : Command<AddProjectSettings>
+internal sealed class AddProjectCommand: Command
 {
-    public override int Execute(CommandContext context, AddProjectSettings settings)
+    public override int Execute(CommandContext context)
     {
         var projectName = AnsiConsole.Ask<string>("Project Name:");
         var projectType = AnsiConsole.Prompt(new SimplePrompt<string>("Project Type:"));
         var projectDescription = AnsiConsole.Prompt(new SimplePrompt<string>("Project Description:"));
         var projectDetails = new List<string>();
         projectDetails.AddFromPrompt("Project Details (point form):");
-        var projectUrl = AnsiConsole.Prompt(new SimplePrompt<string>("Project URL:"));
+
+        Uri? projectUri = null;
+        string? projectUrl;
+        bool isValidUri = false;
+        do
+        {
+            projectUrl = AnsiConsole.Prompt(new SimplePrompt<string?>("Project URL:"));
+            isValidUri = Uri.TryCreate(projectUrl, UriKind.Absolute, out projectUri);
+            if(!isValidUri && projectUrl != null)
+                AnsiConsole.MarkupLine("[red]Invalid URL. Please enter a valid URL.[/]");
+        } while(projectUrl != null && !isValidUri);
+
         var projectStartDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("Start Date:"));
         var projectEndDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("End Date:"));
 
@@ -24,9 +35,9 @@ internal sealed class AddProjectCommand : Command<AddProjectSettings>
             Type = projectType,
             Description = projectDescription,
             Details = projectDetails,
-            Link = string.IsNullOrWhiteSpace(projectUrl) ? null : new Uri(projectUrl),
+            Link = projectUri,
             StartDate = projectStartDate,
-            EndDate = projectEndDate
+            EndDate = projectEndDate,
         };
 
         var db = new ResumeContext();
@@ -35,5 +46,3 @@ internal sealed class AddProjectCommand : Command<AddProjectSettings>
         return CommandOutput.Success($"✅ Added project {projectName}");
     }
 }
-
-public class AddProjectSettings : AddCommandSettings;

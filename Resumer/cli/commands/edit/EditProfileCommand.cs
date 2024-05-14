@@ -29,8 +29,8 @@ public class EditProfileCommand : Command
         profile.Objective = AnsiConsole.Prompt(new TextPrompt<string?>("Objective:").DefaultValue(profile.Objective));
         profile.Location = AnsiConsole.Prompt(new TextPrompt<string?>("Location:").DefaultValue(profile.Location));
         profile.Website = AnsiConsole.Prompt(new TextPrompt<string?>("Website:").DefaultValue(profile.Website));
-        profile.Languages.EditFromPrompt("Languages (enter '-' to delete the entry):");
-        profile.Interests.EditFromPrompt("Interests (enter '-' to delete the entry):");
+        profile.Languages.EditFromPrompt("Languages:");
+        profile.Interests.EditFromPrompt("Interests:");
 
         ctx.SaveChanges();
         return CommandOutput.Success("Changes saved");

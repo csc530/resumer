@@ -92,7 +92,7 @@ public static class Extensions
         {
             if(i < count)
             {
-                input = AnsiConsole.Prompt(new TextPrompt<string>(prompt).DefaultValue(description[i]).AllowEmpty());
+                input = AnsiConsole.Prompt(new TextPrompt<string>(prompt + " (enter '-' to delete the entry)").DefaultValue(description[i]).AllowEmpty());
                 if(string.IsNullOrWhiteSpace(input) || input == "-")
                 {
                     description.RemoveAt(i);

@@ -25,7 +25,7 @@ public class AddSkillCommand : Command<AddSkillSettings>
     }
 }
 
-public class AddSkillSettings : AddCommandSettings
+public class AddSkillSettings : CommandSettings
 {
     [CommandArgument(0, "[skill]")]
     [Description("The name, abbreviation, or short description of the skill")]

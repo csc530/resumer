@@ -51,7 +51,7 @@ public static class Program
                 .WithAlias("g");
         });
 
-        config.AddBranch<AddCommandSettings>("add", add =>
+        config.AddBranch("add", add =>
         {
             add.SetDescription("add new information to job database/bank");
             add.AddCommand<AddJobCommand>("job")
@@ -86,6 +86,9 @@ public static class Program
                 .WithAlias("users")
                 .WithAlias("p")
                 .WithAlias("profiles");
+            edit.AddCommand<EditProjectCommand>("project")
+                .WithDescription("edit a project")
+                .WithAlias("projects");
         });
 
         config.AddBranch("delete", delete =>
@@ -103,6 +106,9 @@ public static class Program
                 delete.AddCommand<DeleteSkillCommand>("skill")
                     .WithAlias("s")
                     .WithAlias("skills");
+                delete.AddCommand<DeleteProjectCommand>("project")
+                    .WithDescription("delete a project")
+                    .WithAlias("projects");
             })
             .WithAlias("d")
             .WithAlias("del")
@@ -132,7 +138,6 @@ public static class Program
                 .WithDescription("list projects")
                 .WithAlias("p")
                 .WithAlias("projects");
-
         });
     }
 }

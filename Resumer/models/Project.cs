@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using Spectre.Console;
 
 namespace Resumer.models;
@@ -48,6 +49,26 @@ public class Project
     public Uri? Link { get; set; }
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
+
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        var sb = new StringBuilder($"{Title}");
+        if(Type != null)
+            sb.Append($": {Type}");
+        if(StartDate.HasValue || EndDate.HasValue)
+        {
+            sb.Append(' ');
+            if(StartDate.HasValue && EndDate.HasValue)
+                sb.Append($"({StartDate} - {EndDate})");
+            else if(StartDate.HasValue)
+                sb.Append($"({StartDate} - Present)");
+            else
+                sb.Append($"({EndDate})");
+        }
+
+        return sb.ToString();
+    }
 
     /// <summary>
     /// creates a table from a list of projects

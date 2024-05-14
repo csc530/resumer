@@ -6,9 +6,9 @@ using static Resumer.Utility;
 
 namespace Resumer.cli.commands.add;
 
-internal sealed class AddJobCommand : Command<AddJobSettings>
+internal sealed class AddJobCommand: Command
 {
-    public override int Execute(CommandContext context, AddJobSettings settings)
+    public override int Execute(CommandContext context)
     {
         var jobTitle = AnsiConsole.Ask<string>("Job Title:");
         var jobDescription = new List<string>();
@@ -44,5 +44,3 @@ internal sealed class AddJobCommand : Command<AddJobSettings>
         return CommandOutput.Success($"✅ Job \"[bold]{job.Title}[/]\" added");
     }
 }
-
-public class AddJobSettings : AddCommandSettings;
