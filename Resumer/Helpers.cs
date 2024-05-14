@@ -21,27 +21,13 @@ public static class Extensions
     public static IEnumerable<T> Clone<T>(this IEnumerable<T> list) where T : ICloneable =>
         list.Select(item => (T)item.Clone()).ToList();
 
-    public static void AddObj<T>(this Table table, T obj)
-    {
-        if(obj == null)
-            return;
-
-        var row = obj.GetType().GetProperties()
-            .Where(prop => prop.CanRead && prop.MemberType == MemberTypes.Property)
-            .Select(prop => Markup.Escape(prop.GetValue(obj).Print()))
-            .ToArray();
-        table.AddRow(row);
-    }
-
     public static string Print(this object? value)
     {
-        if(value == null)
-            return string.Empty;
+        if(value == null || value is string || value.GetType().GetInterface(nameof(IEnumerable)) == null) //? check if value is a string or not a collection
+            return value?.ToString() ?? string.Empty;
 
-        if(value is not string && value.GetType().GetInterface(nameof(IEnumerable)) != null)
-            return string.Join("\n+ ", (IEnumerable<object?>)value);
-
-        return value.ToString() ?? string.Empty;
+        var list = new List<object?>((IEnumerable<object?>)value);
+        return list.Count == 0 ? string.Empty : string.Join("\n", list.Select(obj => $"+ {obj.Print()}"));
     }
 
 
@@ -64,42 +50,6 @@ public static class Extensions
     /// <returns> A list of strings with the parameter txt surrounding each string in the original list.</returns>
     public static List<string> Surround(this IEnumerable<string> strings, string txt) =>
         strings.Select(s => s.Surround(txt)).ToList();
-
-    #endregion
-
-    #region Table
-
-    /// <summary>
-    /// add column values to the table based on conditions
-    /// </summary>
-    /// <param name="table">the table to append column values</param>
-    /// <param name="columns">a key-value pair of column condition and column values; if the column condition is true, the column value will be added to the table.
-    /// if the column condition is false, the column (value) will be skipped</param>
-    public static Table AddTableRow(this Table table, params KeyValuePair<bool, object?>[] columns)
-    {
-        var row = columns.Where(col => col.Key)
-            .Select(col => col.Value?.ToString() ?? string.Empty) //todo: handle null values; i.e. print overload
-            .ToArray();
-        table.AddRow(row);
-        return table;
-    }
-
-    public static Table AddTableColumn(this Table table, string name, bool nowrap = false) =>
-        table.AddColumn(name, c => c.NoWrap = nowrap);
-
-    public static Table AddTableColumn(this Table table, bool nowrap = false, params string[] columns)
-    {
-        foreach(var column in columns)
-            table.AddTableColumn(column, nowrap);
-        return table;
-    }
-
-    public static Table AddTableColumn(this Table table, params string[] columns)
-    {
-        foreach(var column in columns)
-            table.AddTableColumn(column);
-        return table;
-    }
 
     #endregion
 
@@ -148,10 +98,10 @@ public static class Extensions
                     description.RemoveAt(i);
                     count--;
                     i--;
-
                 }
                 else
                     description[i] = input;
+
                 i++;
             }
             else

@@ -66,8 +66,6 @@ public static class Program
                 .WithAlias("profiles");
             add.AddCommand<AddSkillCommand>("skill")
                 .WithDescription("add a new skill")
-                .WithExample("add", "skill", "Teamwork", "soft")
-                .WithExample("add", "skill", "'Psychoanalytic therapy'", "hard")
                 .WithAlias("s")
                 .WithAlias("skills");
             add.AddCommand<AddProjectCommand>("project")

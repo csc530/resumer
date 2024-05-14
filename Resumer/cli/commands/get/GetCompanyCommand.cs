@@ -22,7 +22,7 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
                     AnsiConsole.WriteLine(company);
             else
             {
-                table.AddTableColumn("Company Name");
+                table.AddColumn("Company Name");
                 foreach(var company in companies)
                     table.AddRow(company);
                 AnsiConsole.Write(table);

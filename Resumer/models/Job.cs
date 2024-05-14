@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Spectre.Console;
 
 namespace Resumer.models;
 
@@ -67,6 +68,66 @@ public class Job
         if(!string.IsNullOrWhiteSpace(Company))
             stringBuilder.Append($" @ {Company}");
         return stringBuilder.ToString();
+    }
+
+    /// <summary>
+    /// creates a spectre console renderable table to display Job objects
+    /// </summary>
+    /// <returns> a table to display Job objects</returns>
+    private static Table CreateTable()
+    {
+        var table = new Table()
+        {
+            Title = new TableTitle("Jobs"),
+            Border = TableBorder.Rounded,
+            Expand = true,
+            ShowRowSeparators = true,
+            ShowHeaders = true,
+            UseSafeBorder = true,
+        };
+
+        table.AddColumn("Title");
+        table.AddColumn("Company");
+        table.AddColumn("Start Date");
+        table.AddColumn("End Date");
+        table.AddColumn("Description");
+        table.AddColumn("Experience");
+        return table;
+    }
+
+    /// <inheritdoc cref="CreateTable()" />
+    /// <param name="jobs">jobs to populate within the table</param>
+    /// <returns>Spectre console table filled with the given jobs</returns>
+    public static Table CreateTable(List<Job> jobs)
+    {
+        var table = CreateTable();
+
+        foreach(var job in jobs)
+            table.AddRow(new Text(job.Title),
+                new Text(job.Company),
+                new Text(job.Description.Print()),
+                new Text(job.Experience.Print()),
+                new Text(job.StartDate.ToString()),
+                new Text(job.EndDate?.ToString() ?? "present")
+            );
+        return table;
+    }
+
+    /// <inheritdoc cref="CreateTable()" />
+    /// <param name="job">job to populate within the table</param>
+    /// <returns>Spectre console table filled with the given job</returns>
+    public static Table CreateTable(Job job)
+    {
+        var table = CreateTable();
+        var columns = new Columns(new Text(job.Title),
+            new Text(job.Company),
+            new Text(job.Description.Print()),
+            new Text(job.Experience.Print()),
+            new Text(job.StartDate.ToString()),
+            new Text(job.EndDate?.ToString() ?? "present")
+        );
+        table.AddRow(columns);
+        return table;
     }
 
 }

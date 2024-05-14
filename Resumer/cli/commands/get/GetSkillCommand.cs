@@ -22,7 +22,8 @@ public class GetSkillCommand: Command<OutputCommandSettings>
                     AnsiConsole.WriteLine(skill.ToString());
             else
             {
-                table.AddTableColumn("Skill Name", "Type");
+                table.AddColumn("Skill Name")
+                    .AddColumn("Type");
                 foreach(var skill in skills)
                     table.AddRow(skill.Name, skill.Type.ToString());
                 AnsiConsole.Write(table);
