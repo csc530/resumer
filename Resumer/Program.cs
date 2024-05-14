@@ -119,7 +119,7 @@ public static class Program
             get.AddCommand<GetCompanyCommand>("company")
                 .WithAlias("c")
                 .WithAlias("companies")
-                .WithDescription("get company information you've worked for");
+                .WithDescription("list companies you've worked for");
             get.AddCommand<GetJobCommand>("job")
                 .WithAlias("jobs")
                 .WithAlias("j");
@@ -128,6 +128,11 @@ public static class Program
                 .WithAlias("u")
                 .WithAlias("users")
                 .WithAlias("profiles");
+            get.AddCommand<GetProjectCommand>("project")
+                .WithDescription("list projects")
+                .WithAlias("p")
+                .WithAlias("projects");
+
         });
     }
 }

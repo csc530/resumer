@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using Spectre.Console;
 
 namespace Resumer.models;
 
@@ -47,4 +48,46 @@ public class Project
     public Uri? Link { get; set; }
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }
+
+    /// <summary>
+    /// creates a table from a list of projects
+    /// </summary>
+    /// <param name="projects">projects to display</param>
+    /// <returns>table of projects</returns>
+    public static Table CreateTable(IEnumerable<Project> projects)
+    {
+        var table = CreateTable();
+
+        foreach(var project in projects)
+        {
+            table.AddRow(
+                project.Title,
+                project.Type.Print(),
+                project.Description.Print(),
+                project.Details.Print(),
+                project.Link.Print(),
+                project.StartDate.Print(),
+                project.EndDate.Print()
+            );
+        }
+
+        return table;
+    }
+
+    /// <summary>
+    /// creates a table for displaying projects
+    /// </summary>
+    /// <returns>empty table</returns>
+    private static Table CreateTable()
+    {
+        var table = new Table();
+        table.AddColumn("Title");
+        table.AddColumn("Type");
+        table.AddColumn("Description");
+        table.AddColumn("Details");
+        table.AddColumn("Link");
+        table.AddColumn("Start Date");
+        table.AddColumn("End Date");
+        return table;
+    }
 }

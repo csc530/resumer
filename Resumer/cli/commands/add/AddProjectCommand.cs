@@ -32,7 +32,7 @@ internal sealed class AddProjectCommand : Command<AddProjectSettings>
         var db = new ResumeContext();
         db.Projects.Add(project);
         db.SaveChanges();
-        return CommandOutput.Success($"[green]Added project {projectName}[/]");
+        return CommandOutput.Success($"✅ Added project {projectName}");
     }
 }
 
