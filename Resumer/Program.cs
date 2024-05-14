@@ -43,13 +43,6 @@ public static class Program
             .WithDescription("export resume to various formats")
             .WithAlias("e");
 
-        config.AddBranch("config", configurator =>
-        {
-            configurator.SetDescription("configure resume builder settings");
-            configurator.AddCommand<GetConfigCommand>("get")
-                .WithDescription("get configuration settings")
-                .WithAlias("g");
-        });
 
         config.AddBranch("add", add =>
         {
@@ -119,6 +112,11 @@ public static class Program
         config.AddBranch<OutputCommandSettings>("get", get =>
         {
             get.SetDescription("get job information from database/bank");
+            get.AddCommand<GetConfigCommand>("config")
+                .WithAlias("configuration")
+                .WithAlias("conf")
+                .WithAlias("setting")
+                .WithAlias("settings");
             get.AddCommand<GetSkillCommand>("skill")
                 .WithAlias("s")
                 .WithAlias("skills");
