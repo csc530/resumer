@@ -2,16 +2,18 @@ using System.ComponentModel;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using Spectre.Console.Json;
 using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.export;
 
-public class ExportCommand : Command<ExportCommandSettings>
+public class ExportCommand: Command<ExportCommandSettings>
 {
     public override int Execute(CommandContext context, ExportCommandSettings settings)
     {
         var db = new ResumeContext();
-        if(!db.Profiles.Any())
+        var dbProfiles = db.Profiles;
+        if(!dbProfiles.Any())
             return CommandOutput.Error(ExitCode.NoData, "No profiles found",
                 "Please add a profile before exporting (resumer add profile)");
 
@@ -32,7 +34,7 @@ public class ExportCommand : Command<ExportCommandSettings>
 
         var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>()
             .Title("Select profile")
-            .AddChoices(db.Profiles.OrderBy(profile => profile.WholeName)));
+            .AddChoices(dbProfiles.AsEnumerable().OrderBy(profile => profile.WholeName)));
 
         if(!db.Jobs.Any())
             CommandOutput.Warn("No jobs found");
@@ -72,8 +74,10 @@ public class ExportCommand : Command<ExportCommandSettings>
         var output = format switch
         {
             Formats.Txt => resume.ExportToTxt(),
+            Formats.Md => resume.ExportToMarkdown(),
+            Formats.Json => resume.ExportToJson(),
             // Formats.Binary => resume.ExportToBinary(),
-            _ => throw new NotSupportedException("Unsupported format")
+            _ => throw new NotSupportedException("Unsupported format"),
         };
 
         if(exportToFile)
@@ -85,23 +89,29 @@ public class ExportCommand : Command<ExportCommandSettings>
             File.WriteAllText(fileName, output);
             return CommandOutput.Success($"Exported to [bold]{fileName}[/]");
         }
+        else if(settings.Raw)
+            return CommandOutput.Success(output.EscapeMarkup());
         else
-            return CommandOutput.Success(output);
+            return CommandOutput.Success(format == Formats.Json ? new JsonText(output) : new Text(output));
     }
 }
 
-public class ExportCommandSettings : CommandSettings
+public class ExportCommandSettings: CommandSettings
 {
     [CommandOption("-f|--format <FORMAT>")]
     [Description("Export format")]
     [DefaultValue("txt")]
-    public required string Format { get; set; }
+    public required string? Format { get; set; }
 
     [CommandOption("-o|--output <OUTPUT>")]
     [Description("Output file")]
-    public required string Output { get; set; }
+    public required string? Output { get; set; }
 
     [CommandOption("-t|--template <TEMPLATE>")]
     [Description("Template file")]
-    public required string Template { get; set; }
+    public required string? Template { get; set; }
+
+    [CommandOption("-r|--raw")]
+    [Description("Raw output")]
+    public bool Raw { get; set; }
 }
