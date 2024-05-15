@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="add job" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="add skill" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Release/net8.0/win-x64/Resumer.exe" />
-    <option name="PROGRAM_PARAMETERS" value="add job --start 2023.12.10 --title freelance -c walmart" />
+    <option name="PROGRAM_PARAMETERS" value="add skill" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Release/net8.0/win-x64" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
