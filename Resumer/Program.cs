@@ -46,7 +46,7 @@ public static class Program
 
         config.AddBranch("add", add =>
         {
-            add.SetDescription("add new information to job database/bank");
+            add.SetDescription("add new information to database");
             add.AddCommand<AddJobCommand>("job")
                 .WithDescription("add a new job")
                 .WithAlias("j")
@@ -65,11 +65,14 @@ public static class Program
                 .WithDescription("add a new project")
                 .WithAlias("p")
                 .WithAlias("projects");
+            add.AddCommand<AddPdfTemplateCommand>("template")
+                .WithAlias("t")
+                .WithDescription("add a typst file template to export resume in pdf format");
         });
 
         config.AddBranch("edit", edit =>
         {
-            edit.SetDescription("edit job information in database/bank");
+            edit.SetDescription("edit job information in database");
             edit.AddCommand<EditJobCommand>("job")
                 .WithAlias("j")
                 .WithAlias("jobs");
@@ -86,7 +89,7 @@ public static class Program
 
         config.AddBranch("delete", delete =>
             {
-                delete.SetDescription("delete job information from database/bank");
+                delete.SetDescription("delete job information from database");
                 delete.AddCommand<DeleteJobCommand>("job")
                     .WithAlias("j")
                     .WithAlias("jobs");
@@ -111,7 +114,7 @@ public static class Program
 
         config.AddBranch<OutputCommandSettings>("get", get =>
         {
-            get.SetDescription("get job information from database/bank");
+            get.SetDescription("get job information from database");
             get.AddCommand<GetConfigCommand>("config")
                 .WithAlias("configuration")
                 .WithAlias("conf")
