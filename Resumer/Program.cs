@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Resumer.cli.commands;
 using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
 using Resumer.cli.commands.delete;
@@ -15,6 +16,7 @@ public static class Program
 {
     private static int Main(string[] args)
     {
+        Directory.CreateDirectory(TempPath);
         using(var ctx = new ResumeContext())
         {
             var database = ctx.Database;
@@ -22,6 +24,8 @@ public static class Program
                 database.Migrate();
         }
 
+
+        // var app = new CommandApp<TestCommand>();
         var app = new CommandApp();
         app.Configure(AppConfiguration);
         return app.Run(args);
@@ -43,6 +47,10 @@ public static class Program
             .WithDescription("export resume to various formats")
             .WithAlias("e");
 
+        config.AddCommand<GenerateExampleTypstTemplate>("generate")
+            .WithDescription("generate example typst resume template")
+            .WithAlias("gen")
+            .WithAlias("g");
 
         config.AddBranch("add", add =>
         {
@@ -141,4 +149,6 @@ public static class Program
                 .WithAlias("projects");
         });
     }
+
+    public static string TempPath { get; } = Path.GetTempPath() + "resumer" + Path.DirectorySeparatorChar;
 }

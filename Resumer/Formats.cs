@@ -22,14 +22,11 @@ public static partial class Utility
 {
     public static IEnumerable<string> FormatNames => Enum.GetNames<Formats>();
     public static IEnumerable<Formats> Formats => Enum.GetValues<Formats>();
-    public static IEnumerable<Formats> TextFormats => Formats.Where(x => x.HasFlag(Resumer.Formats.Text));
+    public static IEnumerable<Formats> TextFormats => Formats.Where(x => x.HasFlag(Resumer.Formats.Text) && x != Resumer.Formats.Text);
 
-    public static IEnumerable<string> TextFormatNames =>
-        Formats.Where(x => x.HasFlag(Resumer.Formats.Txt)).Select(x => x.ToString());
+    public static IEnumerable<string> TextFormatNames => TextFormats.Select(x => x.ToString());
 
-    public static IEnumerable<Formats> BinaryFormats =>
-        Formats.Where(x => x.HasFlag(Resumer.Formats.Binary) && x != Resumer.Formats.Binary);
+    public static IEnumerable<Formats> BinaryFormats => Formats.Where(x => x.HasFlag(Resumer.Formats.Binary) && x != Resumer.Formats.Binary);
 
-    public static IEnumerable<string> BinaryFormatNames => Formats
-        .Where(x => x.HasFlag(Resumer.Formats.Binary) && x != Resumer.Formats.Binary).Select(x => x.ToString());
+    public static IEnumerable<string> BinaryFormatNames => BinaryFormats.Select(x => x.ToString());
 }
