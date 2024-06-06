@@ -10,8 +10,8 @@ internal sealed class AddProjectCommand: Command
     public override int Execute(CommandContext context)
     {
         var projectName = AnsiConsole.Ask<string>("Project Name:");
-        var projectType = AnsiConsole.Prompt(new SimplePrompt<string>("Project Type:"));
-        var projectDescription = AnsiConsole.Prompt(new SimplePrompt<string>("Project Description:"));
+        var projectType = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Project Type:"));
+        var projectDescription = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Project Description:"));
         var projectDetails = new List<string>();
         projectDetails.AddFromPrompt("Project Details (point form):");
 
@@ -20,14 +20,14 @@ internal sealed class AddProjectCommand: Command
         bool isValidUri = false;
         do
         {
-            projectUrl = AnsiConsole.Prompt(new SimplePrompt<string?>("Project URL:"));
+            projectUrl = AnsiConsole.Prompt(Utility.SimplePrompt<string?>("Project URL:"));
             isValidUri = Uri.TryCreate(projectUrl, UriKind.Absolute, out projectUri);
             if(!isValidUri && projectUrl != null)
                 AnsiConsole.MarkupLine("[red]Invalid URL. Please enter a valid URL.[/]");
         } while(projectUrl != null && !isValidUri);
 
-        var projectStartDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("Start Date:"));
-        var projectEndDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("End Date:"));
+        var projectStartDate = AnsiConsole.Prompt(Utility.SimplePrompt<DateOnly?>("Start Date:"));
+        var projectEndDate = AnsiConsole.Prompt(Utility.SimplePrompt<DateOnly?>("End Date:"));
 
         var project = new Project(projectName)
         {

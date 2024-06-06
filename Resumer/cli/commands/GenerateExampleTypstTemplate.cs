@@ -23,7 +23,7 @@ public class GenerateExampleTypstTemplate: Command<GenerateExampleTypstTemplateS
         template.AppendLine("// example resume information");
         template.AppendLine("// used to illustrate injected variables names and structure");
         template.AppendLine(Utility.PrintAsTypstVariables(resume));
-        template.AppendLine(new ResumeContext().Templates.First(tmp => tmp.Id == Guid.Empty).Content);
+        template.AppendLine(TypstTemplate.Default.Content);
 
         if(settings.Raw)
             return CommandOutput.Success(template.ToString().EscapeMarkup());

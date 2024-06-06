@@ -7,6 +7,18 @@ namespace Resumer;
 
 public static partial class Utility
 {
+
+    /// <summary>
+    /// a <see cref="TextPrompt{T}"/> wrapper to create a prompt that allows for empty input and does not display the default value which is set to null (default).
+    /// </summary>
+    /// <typeparam name="T">the type of the prompt input</typeparam>
+    /// <param name="message">the prompt message</param>
+    public static TextPrompt<T?> SimplePrompt<T>(string message) => new TextPrompt<T?>(message).AllowEmpty().HideDefaultValue().DefaultValue(default);
+
+    /// <inheritdoc cref="SimplePrompt{T}(string)"/>
+    /// <param name="defaultValue">the default value</param>
+    public static TextPrompt<T> SimplePrompt<T>(string message, T defaultValue) => new TextPrompt<T>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
+
     public static string ToCamelCase(this string value) =>
         value.Length switch
         {
@@ -166,7 +178,7 @@ public static class Extensions
 
     public static void AddFromPrompt<T>(this List<T> list, string prompt)
     {
-        var textPrompt = new SimplePrompt<T>(prompt);
+        var textPrompt = Utility.SimplePrompt<T>(prompt);
         T input;
 
         do
@@ -218,7 +230,7 @@ public static class Extensions
             }
             else
             {
-                input = AnsiConsole.Prompt(new SimplePrompt<string>(prompt));
+                input = AnsiConsole.Prompt(Utility.SimplePrompt<string>(prompt));
                 if(!string.IsNullOrWhiteSpace(input))
                     description.Add(input);
             }
@@ -236,24 +248,4 @@ public static class Extensions
         SqlResultCode.Constraint => "constraint violation",
         _ => "Unknown error"
     };
-}
-
-/// <summary>
-/// a <see cref="TextPrompt{T}"/> wrapper to create a prompt that allows for empty input and does not display the default value which is set to null (default).
-/// </summary>
-/// <typeparam name="T">the type of the prompt input</typeparam>
-public class SimplePrompt<T>: IPrompt<T?>
-{
-    private readonly TextPrompt<T?> _textPrompt;
-
-    public SimplePrompt(string message, T? defaultValue = default)
-    {
-        _textPrompt = new TextPrompt<T?>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
-    }
-
-
-    public T? Show(IAnsiConsole console) => _textPrompt.Show(console);
-
-    public Task<T?> ShowAsync(IAnsiConsole console, CancellationToken cancellationToken) =>
-        _textPrompt.ShowAsync(console, cancellationToken);
 }

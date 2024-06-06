@@ -53,5 +53,5 @@ public enum ExitCode
     /// <summary>
     /// No or insufficient data found within the application
     /// </summary>
-    NoData
+    NoData,
 }

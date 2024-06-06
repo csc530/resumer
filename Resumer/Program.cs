@@ -49,8 +49,7 @@ public static class Program
 
         config.AddCommand<GenerateExampleTypstTemplate>("generate")
             .WithDescription("generate example typst resume template")
-            .WithAlias("gen")
-            .WithAlias("g");
+            .WithAlias("gen");
 
         config.AddBranch("add", add =>
         {
@@ -95,7 +94,7 @@ public static class Program
                 .WithAlias("projects");
         });
 
-        config.AddBranch("delete", delete =>
+        config.AddBranch<DeleteCommandSettings>("delete", delete =>
             {
                 delete.SetDescription("delete job information from database");
                 delete.AddCommand<DeleteJobCommand>("job")
@@ -113,6 +112,10 @@ public static class Program
                 delete.AddCommand<DeleteProjectCommand>("project")
                     .WithDescription("delete a project")
                     .WithAlias("projects");
+                delete.AddCommand<DeleteTypstTemplateCommand>("template")
+                    .WithDescription("delete a typst file template")
+                    .WithAlias("t")
+                    .WithAlias("templates");
             })
             .WithAlias("d")
             .WithAlias("del")
@@ -147,7 +150,14 @@ public static class Program
                 .WithDescription("list projects")
                 .WithAlias("p")
                 .WithAlias("projects");
-        });
+            get.AddCommand<GetTypstTemplateCommand>("template")
+                .WithAlias("t")
+                .WithAlias("templates")
+                .WithDescription("list typst templates");
+        })
+        .WithAlias("g")
+        .WithAlias("list")
+        .WithAlias("ls");
     }
 
     public static string TempPath { get; } = Path.GetTempPath() + "resumer" + Path.DirectorySeparatorChar;

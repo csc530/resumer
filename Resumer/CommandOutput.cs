@@ -71,4 +71,18 @@ public static partial class CommandOutput
 
     [GeneratedRegex("[A-Z]")]
     private static partial Regex CapitalLettersRegex();
+
+    public static void Verbose(string label, string text)
+    {
+        var txtLabel = new Text(label, new Style(Color.Aqua))
+        {
+            Justification = Justify.Left,
+            Overflow = Overflow.Fold,
+        };
+        var txtText = new Text(text) { Justification = Justify.Left, Overflow = Overflow.Fold };
+        AnsiConsole.Write(txtLabel);
+        AnsiConsole.Markup("[aqua]:[/] ");
+        AnsiConsole.Write(txtText);
+        AnsiConsole.WriteLine();
+    }
 }

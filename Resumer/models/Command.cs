@@ -300,6 +300,8 @@ internal partial class Command //: IDisposable, IAsyncDisposable
             return this;
         }
 
+        public int? ExitCode => !Process.HasExited ? null : Process.ExitCode;
+
         protected internal event DataReceivedEventHandler OnStandardOutput
         {
             add
@@ -334,6 +336,7 @@ internal partial class Command //: IDisposable, IAsyncDisposable
             }
         }
     }
+
 }
 
 public interface ICommandProcess
@@ -362,6 +365,10 @@ public interface ICommandProcess
     /// <param name="timeout">the maximum time to wait for the process to exit</param>
     /// <inheritdoc cref="Complete()"/>
     public ICommandProcess Complete(TimeSpan timeout);
+    /// <summary>
+    /// Gets the value that the associated process specified when it terminated; null if the process has not terminated or started yet
+    /// </summary>
+    public int? ExitCode { get; }
 }
 
 public enum ProcessState

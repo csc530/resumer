@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="get job" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="get job" type="DotNetProject" factoryName=".NET Project" folderName="get">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0/Resumer.exe" />
     <option name="PROGRAM_PARAMETERS" value="get jobs" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0" />

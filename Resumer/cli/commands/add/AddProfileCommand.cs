@@ -20,14 +20,14 @@ public sealed partial class AddProfileCommand : Command
 
         var firstName = AnsiConsole.Ask<string>("First name:");
         var lastName = AnsiConsole.Ask<string>("Last name:");
-        var middleName = AnsiConsole.Prompt(new SimplePrompt<string>("Middle name: "));
+        var middleName = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Middle name: "));
 
         var phoneNumber = AnsiConsole.Ask<string>("Phone number:");
         var emailAddress = AnsiConsole.Prompt(emailAddressPrompt);
 
-        var location = AnsiConsole.Prompt(new SimplePrompt<string>("Location:"));
-        var website = AnsiConsole.Prompt(new SimplePrompt<string>("Website:"));
-        var objective = AnsiConsole.Prompt(new SimplePrompt<string>("Summary:"));
+        var location = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Location:"));
+        var website = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Website:"));
+        var objective = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Summary:"));
 
         AnsiConsole.MarkupLine("Add your interests and languages. Press [bold]Enter[/] to skip.");
 

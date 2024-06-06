@@ -176,10 +176,12 @@ public class Resume
         var typstDoc = ExportToTypst(template);
 
         var tempFileName = $"{Name}.pdf";
-        new Command("typst") { WorkingDirectory = Program.TempPath, RedirectStandardInput = true }
+        var process = new Command("typst") { WorkingDirectory = Program.TempPath, RedirectStandardInput = true }
             .Start("compile", "-", "--format=pdf", tempFileName)
             .Input(typstDoc)
             .Complete();
+        if(process.ExitCode != 0 && process.ExitCode != null)
+            throw new InvalidDataException("Typst compilation error"); //ValidationException()// SyntaxErrorException($"Typst exited with code {process.ExitCode}");
 
         var path = Path.Combine(Program.TempPath, tempFileName);
         var bytes = File.ReadAllBytes(path);

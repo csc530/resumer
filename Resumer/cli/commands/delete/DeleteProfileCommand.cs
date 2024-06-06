@@ -32,7 +32,7 @@ public class DeleteProfileCommand : Command<DeleteCommandSettings>
             var prompt = selected.Count == 1
                 ? $"Are you sure you want to delete {selected[0]}?"
                 : $"Are you sure you want to delete these {selected.Count} profiles?";
-            if(!settings.NoConfirm && !AnsiConsole.Confirm(prompt))
+            if(!settings.NoConfirm && !AnsiConsole.Confirm(prompt,false))
                 return CommandOutput.Error(ExitCode.Canceled);
             profiles.RemoveRange(selected);
         }

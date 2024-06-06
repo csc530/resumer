@@ -15,7 +15,7 @@ public class DeleteSkillCommand : Command<DeleteCommandSettings>
             return CommandOutput.Success("No skills found");
         else if(settings.DeleteAll)
         {
-            if(!settings.NoConfirm && !AnsiConsole.Confirm($"Are you sure you want to delete all {skills.Count()} skills?"))
+            if(!settings.NoConfirm && !AnsiConsole.Confirm($"Are you sure you want to delete all {skills.Count()} skills?", false))
                 return CommandOutput.Error(ExitCode.Canceled);
             skills.ToList().RemoveAll(_ => true);
         }

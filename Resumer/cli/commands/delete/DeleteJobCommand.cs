@@ -5,24 +5,25 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.delete;
 
-public class DeleteJobCommand:Command<DeleteCommandSettings>
+public class DeleteJobCommand: Command<DeleteCommandSettings>
 {
     public override int Execute(CommandContext context, DeleteCommandSettings settings)
     {
         var db = new ResumeContext();
         var jobs = db.Jobs;
 
-        if (!jobs.Any())
+        if(!jobs.Any())
             return CommandOutput.Success("No jobs found.");
-        else if (settings.DeleteAll)
+        else if(settings.DeleteAll)
         {
-            if(!settings.NoConfirm && !AnsiConsole.Confirm("Are you sure you want to delete all jobs?"))
+            if(!settings.NoConfirm && !AnsiConsole.Confirm("Are you sure you want to delete all jobs?", false))
                 return CommandOutput.Error(ExitCode.Canceled);
             jobs.ToList().RemoveAll(_ => true);
         }
         else
         {
-            var selected = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select job(s) to delete").AddChoices(jobs));
+            var selected =
+                AnsiConsole.Prompt(new MultiSelectionPrompt<Job>().Title("Select job(s) to delete").AddChoices(jobs));
 
             AnsiConsole.WriteLine($"Deleting {selected.Count} jobs...");
             selected.ForEach(job => AnsiConsole.MarkupLine($"- {job}"));

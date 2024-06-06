@@ -74,7 +74,7 @@ public class Job
     /// creates a spectre console renderable table to display Job objects
     /// </summary>
     /// <returns> a table to display Job objects</returns>
-    private static Table CreateTable()
+    public static Table CreateTable()
     {
         var table = new Table()
         {
