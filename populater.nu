@@ -30,7 +30,7 @@ def "random profile" [] {
 def "random skill" [] {
     {
         Name: (fakedata noun --limit 1)
-        Type: (fakedata 'enum:Hard,Soft,Technical' --limit 1)
+        Type: (fakedata enum:0,1 --limit 1)
     }
 }
 

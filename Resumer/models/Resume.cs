@@ -11,7 +11,7 @@ public class Resume
     private string _name;
     public Guid Id { get; set; } = Guid.NewGuid();
 
-    public required string Name
+    public string Name
     {
         get => _name;
         [MemberNotNull(nameof(_name))] set => _name = value.Trim();
@@ -26,6 +26,80 @@ public class Resume
     public List<Job> Jobs { get; set; } = [];
     public List<Skill> Skills { get; set; } = [];
     public List<Project> Projects { get; set; } = [];
+
+    public Resume(string name)
+    {
+        Name = name;
+    }
+
+    public static Resume ExampleResume()
+    {
+        var faker = new Faker();
+
+        var profileFaker = new Faker<models.Profile>()
+            .RuleFor(p => p.FirstName, f => f.Name.FirstName())
+            .RuleFor(p => p.LastName, f => f.Name.LastName())
+            .RuleFor(p => p.EmailAddress, (f, p) => f.Internet.Email(p.FirstName, p.LastName))
+            .RuleFor(p => p.PhoneNumber, f => f.Phone.PhoneNumber())
+            .RuleFor(p => p.Location, f => f.Address.FullAddress())
+            .RuleFor(p => p.Objective, f => f.WaffleText(includeHeading: false))
+            .RuleFor(p => p.Languages, f => f.Make(f.Random.Int(1, 10), () => RandomLanguage()))
+            .RuleFor(p => p.Interests, f => f.Make(f.Random.Int(1, 10), () => f.Random.Words()))
+            .RuleFor(p => p.Certifications, f => f.Make(f.Random.Int(1, 10),
+                () => new Certificate()
+                {
+                    Name = f.WaffleTitle(),
+                    Description = f.WaffleText(includeHeading: false),
+                    CredentialId = f.Random.Bool() ? f.Random.Guid().ToString() : f.Random.Int().ToString("G9"),
+                    IssueDate = f.Date.PastDateOnly(f.Random.Number(10)),
+                    ExpirationDate = f.Date.FutureDateOnly(f.Random.Number(10)),
+                    Issuer = f.Company.CompanyName(),
+                    Url = new Uri(f.Internet.Url()),
+                })
+            )
+            .RuleFor(p => p.Education, f => f.Make(f.Random.Int(1, 10), () => new Education()
+            {
+                School = f.Company.CompanyName() + (f.Random.Bool() ? " University" : " College"),
+                Degree = f.PickRandom("Associate", "Bachelor", "Master", "Doctorate"),
+                StartDate = f.Date.PastDateOnly(f.Random.Number(10)),
+                EndDate = f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)),
+                FieldOfStudy = f.WaffleTitle(),
+                GradePointAverage = f.Random.Double(0d, 4d),
+                Location = f.Address.City() + ", " + f.Address.Country(),
+                AdditionalInformation = f.Random.Bool() ? f.WaffleText(includeHeading: false) : null,
+            }));
+
+        var jobFaker = new Faker<Job>()
+            .CustomInstantiator(f => new Job(f.Name.JobTitle(), f.Company.CompanyName(f.Random.Number(0, 2).OrNull(f))))
+            .RuleFor(j => j.StartDate, f => f.Date.PastDateOnly(f.Random.Number(10)))
+            .RuleFor(j => j.EndDate, f => f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)))
+            .RuleFor(j => j.Description, f => f.Make(f.Random.Int(1, 5), () => f.WaffleText(includeHeading: false)));
+
+        var projectFaker = new Faker<Project>()
+            .CustomInstantiator(f => new Project(f.WaffleTitle()))
+            .RuleFor(p => p.StartDate, f => f.Date.PastDateOnly(f.Random.Number(10)))
+            .RuleFor(p => p.EndDate, f => f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)))
+            .RuleFor(p => p.Type, f => f.WaffleTitle())
+            .RuleFor(p => p.Description, f => f.WaffleText(includeHeading: false))
+            .RuleFor(p => p.Details, f => f.Make(f.Random.Int(1, 3), () => f.WaffleText(includeHeading: false)))
+            .RuleFor(p => p.Link, f => new Uri(f.Internet.Url()));
+
+        var skillFaker = new Faker<Skill>().CustomInstantiator(f =>
+            new Skill(f.Random.Bool() ? f.Name.JobArea() : f.WaffleTitle(), f.PickRandom<SkillType>()));
+
+        var resume = new Resume(@"test")
+        {
+            Profile = profileFaker.Generate(),
+            Jobs = jobFaker.Generate(3),
+            Skills = skillFaker.Generate(faker.Random.Int(1, 20)),
+            Projects = projectFaker.Generate(3),
+        };
+
+        return resume;
+
+        string RandomLanguage() => faker.PickRandom(CultureInfo.GetCultures(CultureTypes.AllCultures)
+            .Select(c => c.DisplayName.Split("[")[0].Trim()));
+    }
 
     /// <summary>
     /// Export resume to text format
@@ -90,10 +164,9 @@ public class Resume
     {
         // https://jsonresume.org/schema
         var obj = new JsonResume(Profile, Jobs, Skills, Projects);
-        JsonTypeInfo<JsonResume> typeInfo = SourceGenerationContext.Default.JsonResume;
+        var typeInfo = SourceGenerationContext.Default.JsonResume;
 
-        var json = JsonSerializer.Serialize(obj, typeInfo);
-        return json;
+        return JsonSerializer.Serialize(obj, typeInfo);
     }
 
     public string? ExportToMarkdown()

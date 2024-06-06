@@ -18,6 +18,8 @@ public sealed class ResumeContext : DbContext
     public DbSet<Project> Projects { get; set; }
     public DbSet<Profile> Profiles { get; set; }
     public DbSet<Skill> Skills { get; set; }
+    public DbSet<TypstTemplate> Templates { get; set; }
+
 
     public string DbPath { get; }
 
