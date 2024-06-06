@@ -82,7 +82,19 @@ public class Profile
     /// </value>
     /// 
     [NotMapped]
-    public string WholeName => $"{FirstName} {(MiddleName == null ? "" : $"{MiddleName} ")}{LastName}";
+    public string WholeName
+    {
+        get => $"{FirstName} {(MiddleName == null ? "" : $"{MiddleName} ")}{LastName}";
+        set
+        {
+            var names = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            FirstName = names[0];
+            LastName = names[^1];
+            if(names.Length > 2)
+                MiddleName = string.Join(' ', names[1..^1]);
+
+        }
+    }
 
     /// <summary>
     /// Gets the full name - first and last names
@@ -91,7 +103,18 @@ public class Profile
     /// Their full name.
     /// </value>
     [NotMapped]
-    public string FullName => $"{FirstName} {LastName}";
+    public string FullName
+    {
+        get => $"{FirstName} {LastName}";
+        [MemberNotNull(nameof(_firstName))]
+        [MemberNotNull(nameof(_lastName))]
+        set
+        {
+            var names = value.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            FirstName = names[0];
+            LastName = names[^1];
+        }
+    }
 
     /// <summary>
     /// Gets the initials - first, middle and last name initials (initial letter/character)

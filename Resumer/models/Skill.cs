@@ -7,7 +7,6 @@ public class Skill
 {
     private string _name;
 
-
     public Skill(string name, SkillType type)
     {
         Name = name;
@@ -31,12 +30,12 @@ public class Skill
 
     public SkillType Type { get; set; }
 
-    public override string ToString() => $"{Type} Skill - {Name}";
+    public override string ToString() => $"{Name} - {Type} Skill";
 }
 
 public enum SkillType
 {
     Hard,
     Soft,
-    Technical,
+    // Technical,
 }

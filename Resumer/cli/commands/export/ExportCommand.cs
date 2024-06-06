@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Text;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -13,6 +14,7 @@ public class ExportCommand: Command<ExportCommandSettings>
     {
         var db = new ResumeContext();
         var dbProfiles = db.Profiles;
+
         if(!dbProfiles.Any())
             return CommandOutput.Error(ExitCode.NoData, "No profiles found",
                 "Please add a profile before exporting (resumer add profile)");
@@ -28,9 +30,10 @@ public class ExportCommand: Command<ExportCommandSettings>
             .AddChoiceGroup(Formats.Text, Utility.TextFormats)
             .AddChoiceGroup(Formats.Binary, Utility.BinaryFormats)
             .WrapAround();
-
         var format = AnsiConsole.Prompt(formatPrompt);
-        var exportToFile = AnsiConsole.Confirm("Export to file?");
+
+
+        var exportToFile = format.HasFlag(Formats.Binary) || AnsiConsole.Confirm("Export to file?");
 
         var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>()
             .Title("Select profile")
@@ -60,23 +63,29 @@ public class ExportCommand: Command<ExportCommandSettings>
                 .AddChoices(db.Projects)
                 .NotRequired());
 
+        TypstTemplate? template = null;
+        if(format == Formats.Pdf)
+            template = AnsiConsole.Prompt(new SelectionPrompt<TypstTemplate>()
+                .Title("Select template")
+                .AddChoices(db.Templates)
+                .WrapAround());
 
-        var resume = new Resume
+        var resume = new Resume(name)
         {
             Profile = profile,
             Jobs = jobs,
             Skills = skills,
             Projects = projects,
-            Name = name,
         };
 
 
-        var output = format switch
+        var bytes = format switch
         {
-            Formats.Txt => resume.ExportToTxt(),
-            Formats.Md => resume.ExportToMarkdown(),
-            Formats.Json => resume.ExportToJson(),
-            // Formats.Binary => resume.ExportToBinary(),
+            Formats.Txt => Encoding.UTF8.GetBytes(resume.ExportToTxt()),
+            Formats.Md => Encoding.UTF8.GetBytes(resume.ExportToMarkdown()),
+            Formats.Json => Encoding.UTF8.GetBytes(resume.ExportToJson()),
+            Formats.Pdf when settings.Raw && template != null => Encoding.UTF8.GetBytes(resume.ExportToTypst(template.Content)),
+            Formats.Pdf when template != null => resume.ExportToPdf(template.Content),
             _ => throw new NotSupportedException("Unsupported format"),
         };
 
@@ -86,13 +95,17 @@ public class ExportCommand: Command<ExportCommandSettings>
                 $"{resume.Name}_{resume.DateCreated:yyyy-MM-dd_HH-mm-ss}.{format.ToString().ToLower()}";
             var fileName = AnsiConsole.Prompt(new TextPrompt<string>("file name:").DefaultValue(defaultFileName));
 
-            File.WriteAllText(fileName, output);
+            File.WriteAllBytes(fileName, bytes);
             return CommandOutput.Success($"Exported to [bold]{fileName}[/]");
         }
-        else if(settings.Raw)
-            return CommandOutput.Success(output.EscapeMarkup());
         else
-            return CommandOutput.Success(format == Formats.Json ? new JsonText(output) : new Text(output));
+        {
+            var output = Encoding.UTF8.GetString(bytes);
+            if(settings.Raw)
+                return CommandOutput.Success(output.EscapeMarkup());
+            else
+                return CommandOutput.Success(format == Formats.Json ? new JsonText(output) : new Text(output));
+        }
     }
 }
 

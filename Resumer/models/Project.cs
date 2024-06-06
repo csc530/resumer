@@ -11,16 +11,17 @@ public class Project
     private string? _type;
     private string? _description;
 
-    public Project()
+    public Project(string title)
     {
         Id = Guid.NewGuid();
+        Title = title;
         Details = new List<string>();
     }
 
     public Guid Id { get; init; }
 
     [MinLength(1, ErrorMessage = "Project name cannot be empty")]
-    public required string Title
+    public string Title
     {
         get => _title;
         [MemberNotNull(nameof(_title))]

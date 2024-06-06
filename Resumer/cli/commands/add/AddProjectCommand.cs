@@ -1,6 +1,7 @@
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using Command = Spectre.Console.Cli.Command;
 
 namespace Resumer.cli.commands.add;
 
@@ -28,9 +29,8 @@ internal sealed class AddProjectCommand: Command
         var projectStartDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("Start Date:"));
         var projectEndDate = AnsiConsole.Prompt(new SimplePrompt<DateOnly?>("End Date:"));
 
-        var project = new Project
+        var project = new Project(projectName)
         {
-            Title = projectName,
             Type = projectType,
             Description = projectDescription,
             Details = projectDetails,

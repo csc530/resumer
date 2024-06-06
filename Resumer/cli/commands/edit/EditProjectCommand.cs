@@ -1,6 +1,7 @@
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using Command = Spectre.Console.Cli.Command;
 
 namespace Resumer.cli.commands.edit;
 

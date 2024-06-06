@@ -1,8 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
+using Bogus;
 
 namespace Resumer.models;
 
@@ -169,7 +170,24 @@ public class Resume
         return JsonSerializer.Serialize(obj, typeInfo);
     }
 
-    public string? ExportToMarkdown()
+
+    public byte[] ExportToPdf(string template, TimeSpan? timeout = null)
+    {
+        var typstDoc = ExportToTypst(template);
+
+        var tempFileName = $"{Name}.pdf";
+        new Command("typst") { WorkingDirectory = Program.TempPath, RedirectStandardInput = true }
+            .Start("compile", "-", "--format=pdf", tempFileName)
+            .Input(typstDoc)
+            .Complete();
+
+        var path = Path.Combine(Program.TempPath, tempFileName);
+        var bytes = File.ReadAllBytes(path);
+        File.Delete(path);
+        return bytes;
+    }
+
+    public string ExportToMarkdown()
     {
         var sb = new StringBuilder();
         sb.AppendLine($"# {Profile.FullName}");
@@ -226,6 +244,20 @@ public class Resume
 
         return sb.ToString();
     }
+
+    public  string ExportToTypst(string template)
+    {
+        var env = Utility.PrintAsTypstVariables(this);
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"// created on {DateTime.Now} by Resumer");
+        sb.AppendLine();
+        sb.AppendLine(env);
+        sb.AppendLine();
+        sb.AppendLine(template);
+
+        return sb.ToString();
+    }
 }
 
 [JsonSerializable(typeof(JsonResume))]
@@ -259,7 +291,6 @@ internal class JsonResume
             summary = profile.Objective,
             location = new JsonBasics.JsonLocation { address = profile.Location },
         };
-
         work = jobs.Select(job => new JsonWork
         {
             name = job.Company,
