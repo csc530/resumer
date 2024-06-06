@@ -155,12 +155,6 @@ public class Resume
         return sb.ToString();
     }
 
-    public string ExportToCsv()
-    {
-        var sb = new StringBuilder();
-        throw new NotImplementedException("Export to CSV not implemented yet🤷🏿‍♂️");
-    }
-
     public string ExportToJson()
     {
         // https://jsonresume.org/schema
@@ -171,28 +165,11 @@ public class Resume
     }
 
 
-    public byte[] ExportToPdf(string template, TimeSpan? timeout = null)
-    {
-        var typstDoc = ExportToTypst(template);
-
-        var tempFileName = $"{Name}.pdf";
-        var process = new Command("typst") { WorkingDirectory = Program.TempPath, RedirectStandardInput = true }
-            .Start("compile", "-", "--format=pdf", tempFileName)
-            .Input(typstDoc)
-            .Complete();
-        if(process.ExitCode != 0 && process.ExitCode != null)
-            throw new InvalidDataException("Typst compilation error"); //ValidationException()// SyntaxErrorException($"Typst exited with code {process.ExitCode}");
-
-        var path = Path.Combine(Program.TempPath, tempFileName);
-        var bytes = File.ReadAllBytes(path);
-        File.Delete(path);
-        return bytes;
-    }
-
     public string ExportToMarkdown()
     {
         var sb = new StringBuilder();
         sb.AppendLine($"# {Profile.FullName}");
+        sb.AppendLine();
         sb.AppendLine(Profile.EmailAddress);
         sb.AppendLine(Profile.PhoneNumber);
         if(Profile.Location != null)
@@ -247,7 +224,9 @@ public class Resume
         return sb.ToString();
     }
 
-    public  string ExportToTypst(string template)
+    public byte[] ExportToPdf(TypstTemplate template) => CompileTypst(template, Formats.Pdf);
+
+    public string ExportToTypst(TypstTemplate template)
     {
         var env = Utility.PrintAsTypstVariables(this);
 
@@ -256,9 +235,41 @@ public class Resume
         sb.AppendLine();
         sb.AppendLine(env);
         sb.AppendLine();
-        sb.AppendLine(template);
+        sb.AppendLine(template.Content);
 
         return sb.ToString();
+    }
+
+    private byte[] CompileTypst(TypstTemplate template, Formats format)
+    {
+        if(format != Formats.Png && format != Formats.Pdf && format != Formats.Svg)
+            throw new ArgumentException("typst format not supported: format must be png, pdf or svg", nameof(format));
+
+        var typstDoc = ExportToTypst(template);
+        var path = Path.Combine(Program.TempPath, Path.GetRandomFileName());
+        var process = new Command("typst")
+            {
+                WorkingDirectory = Program.TempPath, RedirectStandardInput = true,
+                CommandDisplay = CommandDisplay.Hidden,
+            }
+            .Start("compile", "-", path, "--format", format.ToString().ToLower())
+            .Input(typstDoc)
+            .Complete();
+
+        if(process.ExitCode != 0 && process.ExitCode != null)
+            throw new InvalidDataException("Typst compilation error");
+
+        var bytes = File.ReadAllBytes(path);
+        File.Delete(path);
+        return bytes;
+    }
+
+    public byte[] ExportToPng(TypstTemplate template) => CompileTypst(template, Formats.Png);
+
+    public string ExportToSvg(TypstTemplate template)
+    {
+        var bytes = CompileTypst(template, Formats.Svg);
+        return Encoding.UTF8.GetString(bytes);
     }
 }
 

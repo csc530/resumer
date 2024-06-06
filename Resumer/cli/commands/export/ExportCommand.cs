@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using Resumer.models;
 using Spectre.Console;
@@ -29,7 +30,8 @@ public class ExportCommand: Command<ExportCommandSettings>
             .Title("Select export format")
             .AddChoiceGroup(Formats.Text, Utility.TextFormats)
             .AddChoiceGroup(Formats.Binary, Utility.BinaryFormats)
-            .WrapAround();
+            .UseConverter(format => format.ToString().ToLower())
+            .EnableSearch();
         var format = AnsiConsole.Prompt(formatPrompt);
 
 
@@ -63,8 +65,9 @@ public class ExportCommand: Command<ExportCommandSettings>
                 .AddChoices(db.Projects)
                 .NotRequired());
 
-        TypstTemplate? template = null;
-        if(format == Formats.Pdf)
+        var template = TypstTemplate.Default;
+
+        if(format == Formats.Pdf && db.Templates.Any())
             template = AnsiConsole.Prompt(new SelectionPrompt<TypstTemplate>()
                 .Title("Select template")
                 .AddChoices(db.Templates)
@@ -78,14 +81,16 @@ public class ExportCommand: Command<ExportCommandSettings>
             Projects = projects,
         };
 
-
         var bytes = format switch
         {
             Formats.Txt => Encoding.UTF8.GetBytes(resume.ExportToTxt()),
             Formats.Md => Encoding.UTF8.GetBytes(resume.ExportToMarkdown()),
             Formats.Json => Encoding.UTF8.GetBytes(resume.ExportToJson()),
-            Formats.Pdf when settings.Raw && template != null => Encoding.UTF8.GetBytes(resume.ExportToTypst(template.Content)),
-            Formats.Pdf when template != null => resume.ExportToPdf(template.Content),
+            Formats.Typ => Encoding.UTF8.GetBytes(resume.ExportToTypst(template)),
+            Formats.Svg => Encoding.UTF8.GetBytes(resume.ExportToSvg(template)),
+
+            Formats.Pdf => resume.ExportToPdf(template),
+            Formats.Png => resume.ExportToPng(template),
             _ => throw new NotSupportedException("Unsupported format"),
         };
 
@@ -98,32 +103,16 @@ public class ExportCommand: Command<ExportCommandSettings>
             File.WriteAllBytes(fileName, bytes);
             return CommandOutput.Success($"Exported to [bold]{fileName}[/]");
         }
-        else
-        {
-            var output = Encoding.UTF8.GetString(bytes);
-            if(settings.Raw)
-                return CommandOutput.Success(output.EscapeMarkup());
-            else
-                return CommandOutput.Success(format == Formats.Json ? new JsonText(output) : new Text(output));
-        }
+
+        var output = Encoding.UTF8.GetString(bytes);
+        return settings.Raw
+            ? CommandOutput.Success(output.EscapeMarkup())
+            : CommandOutput.Success(format == Formats.Json ? new JsonText(output) : new Text(output));
     }
 }
 
 public class ExportCommandSettings: CommandSettings
 {
-    [CommandOption("-f|--format <FORMAT>")]
-    [Description("Export format")]
-    [DefaultValue("txt")]
-    public required string? Format { get; set; }
-
-    [CommandOption("-o|--output <OUTPUT>")]
-    [Description("Output file")]
-    public required string? Output { get; set; }
-
-    [CommandOption("-t|--template <TEMPLATE>")]
-    [Description("Template file")]
-    public required string? Template { get; set; }
-
     [CommandOption("-r|--raw")]
     [Description("Raw output")]
     public bool Raw { get; set; }

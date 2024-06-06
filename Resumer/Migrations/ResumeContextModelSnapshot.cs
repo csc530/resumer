@@ -226,8 +226,7 @@ namespace Resumer.Migrations
 
             modelBuilder.Entity("Resumer.models.TypstTemplate", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Content")
@@ -238,11 +237,7 @@ namespace Resumer.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
+                    b.HasKey("Name");
 
                     b.ToTable("Templates");
                 });
