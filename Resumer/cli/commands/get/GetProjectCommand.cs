@@ -1,5 +1,7 @@
+using Microsoft.EntityFrameworkCore;
 using Resumer.cli.settings;
 using Resumer.models;
+using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
@@ -13,8 +15,12 @@ public class GetProjectCommand: Command<GetProjectSettings>
         if(!projects.Any())
             return CommandOutput.Success("No projects found");
 
-        var projectsTable = Project.CreateTable(projects);
-        return CommandOutput.Success(projectsTable);
+        var table = settings.CreateTable<Project>("Projects")?.AddObjects(db.Projects);
+        if(table == null)
+            projects.ForEachAsync(project => AnsiConsole.WriteLine(project.ToString())).Wait();
+        else
+            AnsiConsole.Write(table);
+        return CommandOutput.Success();
     }
 }
 

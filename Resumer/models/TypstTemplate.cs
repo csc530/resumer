@@ -57,28 +57,5 @@ public class TypstTemplate
         return true;
     }
 
-    public static Table CreateTable()
-    {
-        var table = new Table
-        {
-            Title = new TableTitle("Templates"),
-            Border = TableBorder.Rounded,
-            Expand = true,
-            ShowRowSeparators = true,
-            ShowHeaders = true,
-            UseSafeBorder = true,
-        };
-        table.AddColumn("Name");
-        table.AddColumn("Description");
-        table.AddColumn("Content");
-        return table;
-    }
 
-    public static Table CreateTable(IEnumerable<TypstTemplate> templates)
-    {
-        var table = CreateTable();
-        foreach(var template in templates)
-            table.AddRow(template.Name.EscapeMarkup(), template.Description.EscapeMarkup(), template.Content.EscapeMarkup());
-        return table;
-    }
 }

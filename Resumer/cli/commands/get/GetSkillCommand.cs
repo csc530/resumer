@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -5,9 +6,9 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class GetSkillCommand: Command<OutputCommandSettings>
+public class GetSkillCommand: Command<GetSkillCommandSettings>
 {
-    public override int Execute(CommandContext context, OutputCommandSettings settings)
+    public override int Execute(CommandContext context, GetSkillCommandSettings settings)
     {
         ResumeContext database = new();
         var skills = database.Skills;
@@ -16,20 +17,15 @@ public class GetSkillCommand: Command<OutputCommandSettings>
             return CommandOutput.Success("No skills found");
         else
         {
-            var table = settings.GetTable();
+            var table = settings.CreateTable<Skill>("Skills")?.AddObjects(database.Skills);
             if(table == null)
-                foreach(var skill in skills)
-                    AnsiConsole.WriteLine(skill.ToString());
+                skills.ForEachAsync(skill => AnsiConsole.WriteLine(skill.ToString())).Wait();
             else
-            {
-                table.AddColumn("Skill Name")
-                    .AddColumn("Type");
-                foreach(var skill in skills)
-                    table.AddRow(skill.Name, skill.Type.ToString());
                 AnsiConsole.Write(table);
-            }
 
             return CommandOutput.Success();
         }
     }
 }
+
+public class GetSkillCommandSettings : OutputCommandSettings;

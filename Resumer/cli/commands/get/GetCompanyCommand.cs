@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
@@ -5,9 +6,9 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class GetCompanyCommand : Command<OutputCommandSettings>
+public class GetCompanyCommand : Command<GetCompanyCommandSettings>
 {
-    public override int Execute(CommandContext context, OutputCommandSettings settings)
+    public override int Execute(CommandContext context, GetCompanyCommandSettings settings)
     {
         ResumeContext database = new();
         var companies = database.Jobs.Select(job => job.Company).Distinct();
@@ -16,13 +17,12 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
             AnsiConsole.MarkupLine("No companies found");
         else
         {
-            var table = settings.GetTable();
+            var table = settings.CreateTable("Companies");
             if(table == null)
-                foreach(var company in companies)
-                    AnsiConsole.WriteLine(company);
+                companies.ForEachAsync(AnsiConsole.WriteLine).Wait();
             else
             {
-                table.AddColumn("Company Name");
+                table.AddColumn("Name");
                 foreach(var company in companies)
                     table.AddRow(company);
                 AnsiConsole.Write(table);
@@ -32,3 +32,5 @@ public class GetCompanyCommand : Command<OutputCommandSettings>
         return CommandOutput.Success();
     }
 }
+
+public class GetCompanyCommandSettings : OutputCommandSettings;

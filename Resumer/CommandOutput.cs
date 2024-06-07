@@ -1,9 +1,11 @@
 using System.Data.Common;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Rendering;
+using Profile = Resumer.models.Profile;
 
 namespace Resumer;
 
@@ -84,5 +86,74 @@ public static partial class CommandOutput
         AnsiConsole.Markup("[aqua]:[/] ");
         AnsiConsole.Write(txtText);
         AnsiConsole.WriteLine();
+    }
+
+        public static Table AddObject<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(
+        this Table table, T obj)
+    {
+        if(obj is null)
+            return table;
+
+        switch(obj)
+        {
+            case Job job:
+                table.AddRow(
+                    job.Title,
+                    job.Company,
+                    job.Description.Print(),
+                    job.Experience.Print(),
+                    job.StartDate.ToString(),
+                    job.EndDate?.ToString() ?? "present"
+                );
+                break;
+            case Project project:
+                table.AddRow(
+                    project.Title,
+                    project.Type.Print(),
+                    project.Description.Print(),
+                    project.Details.Print(),
+                    project.Link.Print(),
+                    project.StartDate.Print(),
+                    project.EndDate.Print()
+                );
+                break;
+            case Profile profile:
+                table.AddRow(profile.WholeName,
+                    profile.EmailAddress,
+                    profile.PhoneNumber,
+                    profile.Location.Print(),
+                    profile.Interests.Print(),
+                    profile.Objective.Print(),
+                    profile.Languages.Print(),
+                    profile.Website.Print());
+                break;
+            case Skill skill:
+                table.AddRow(
+                    skill.Name,
+                    skill.Type.Print()
+                );
+                break;
+            case TypstTemplate template:
+                table.AddRow(template.Name.EscapeMarkup(), template.Description.EscapeMarkup(), template.Content.EscapeMarkup());
+                break;
+
+            default:
+                var values = typeof(T).GetProperties()
+                    .Where(prop => prop.CanRead)
+                    .Select(prop => prop.GetValue(obj).Print())
+                    .ToArray();
+
+                table.AddRow(values);
+                break;
+        }
+
+        return table;
+    }
+
+    public static Table AddObjects<T>(this Table table, IEnumerable<T> objs) where T : class
+    {
+        foreach(var item in objs)
+            AddObject(table, item);
+        return table;
     }
 }

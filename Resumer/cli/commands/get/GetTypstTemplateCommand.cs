@@ -30,7 +30,7 @@ public class GetTypstTemplateCommand: Command<GetTypstTemplateCommandSettings>
             }
         }
 
-        var table = TypstTemplate.CreateTable(templates);
+        var table = settings.CreateTable<TypstTemplate>();
         if(!settings.Full)
         {
             table = new Table().AddColumn("Name").AddColumn("Description");
