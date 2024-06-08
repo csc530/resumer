@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Resumer.models;
 using Spectre.Console;
@@ -7,17 +8,23 @@ namespace Resumer;
 
 public static partial class Utility
 {
+    /// <summary>
+    /// simple string of dashes (100)
+    /// </summary>
+    public const string DashSeparator = "-----------------------------------------------------------------------------------------------------";
 
     /// <summary>
     /// a <see cref="TextPrompt{T}"/> wrapper to create a prompt that allows for empty input and does not display the default value which is set to null (default).
     /// </summary>
     /// <typeparam name="T">the type of the prompt input</typeparam>
     /// <param name="message">the prompt message</param>
-    public static TextPrompt<T?> SimplePrompt<T>(string message) => new TextPrompt<T?>(message).AllowEmpty().HideDefaultValue().DefaultValue(default);
+    public static TextPrompt<T?> SimplePrompt<T>(string message) =>
+        new TextPrompt<T?>(message).AllowEmpty().HideDefaultValue().DefaultValue(default);
 
     /// <inheritdoc cref="SimplePrompt{T}(string)"/>
     /// <param name="defaultValue">the default value</param>
-    public static TextPrompt<T> SimplePrompt<T>(string message, T defaultValue) => new TextPrompt<T>(message).AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
+    public static TextPrompt<T> SimplePrompt<T>(string message, T defaultValue) => new TextPrompt<T>(message)
+        .AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
 
     public static string ToCamelCase(this string value) =>
         value.Length switch

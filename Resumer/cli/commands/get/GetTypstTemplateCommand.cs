@@ -10,8 +10,7 @@ public class GetTypstTemplateCommand: Command<GetTypstTemplateCommandSettings>
 {
     public override int Execute(CommandContext context, GetTypstTemplateCommandSettings settings)
     {
-        var db = new ResumeContext();
-        var templates = db.Templates.ToList();
+        var templates = new ResumeContext().Templates.ToList();
 
         if(templates.Count == 0)
             return CommandOutput.Success("no templates found");
@@ -19,26 +18,44 @@ public class GetTypstTemplateCommand: Command<GetTypstTemplateCommandSettings>
         if(settings.Name != null)
         {
             var template = templates.Find(t => t.Name.Equals(settings.Name, StringComparison.OrdinalIgnoreCase));
-            if(template == null)
-                return CommandOutput.Error(ExitCode.NotFound, $"template [bold]{settings.Name}[/] not found");
-            else
-            {
-                //verbose tings
-                // AnsiConsole.MarkupLineInterpolated($"[bold]{template.Name}[/]");
-                // AnsiConsole.MarkupLine(template.Description.EscapeMarkup());
-                return CommandOutput.Success(template.Content.EscapeMarkup());
-            }
+            return template == null
+                ? CommandOutput.Error(ExitCode.NotFound, $"template [bold]{settings.Name}[/] not found")
+                : CommandOutput.Success(template.Content.EscapeMarkup());
         }
 
         var table = settings.CreateTable<TypstTemplate>();
-        if(!settings.Full)
+        if(table == null)
+            return PlainPrintTemplates(settings, templates);
+        else if(!settings.Full)
         {
-            table = new Table().AddColumn("Name").AddColumn("Description");
-            templates.ForEach(t => table.AddRow(t.Name.EscapeMarkup(), t.Description.EscapeMarkup()));
-            return CommandOutput.Success(table);
+            table = settings.CreateTable("Templates");
+            if(table == null)
+                return PlainPrintTemplates(settings, templates);
+            else
+            {
+                table.AddColumn("Name").AddColumn("Description");
+                templates.ForEach(t => table.AddRow(t.Name.EscapeMarkup(), t.Description.EscapeMarkup()));
+            }
         }
         else
-            return CommandOutput.Success(table);
+            table.AddObjects(templates);
+
+        return CommandOutput.Success(table);
+    }
+
+    private static int PlainPrintTemplates(GetTypstTemplateCommandSettings settings, List<TypstTemplate> templates)
+    {
+        if(settings.Full)
+            templates.ForEach(template =>
+            {
+                AnsiConsole.MarkupLineInterpolated($"[bold]{template}[/]");
+                AnsiConsole.WriteLine(Utility.DashSeparator);
+                AnsiConsole.WriteLine(template.Content);
+                AnsiConsole.WriteLine();
+            });
+        else
+            templates.ForEach(template => AnsiConsole.WriteLine(template.ToString()));
+        return CommandOutput.Success();
     }
 }
 

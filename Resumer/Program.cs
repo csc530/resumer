@@ -39,9 +39,8 @@ public static class Program
         config.ValidateExamples();
     #endif
 
-        config.SetApplicationName("resume builder");
-        config.SetApplicationVersion("1.0.0");
         config.CaseSensitivity(CaseSensitivity.None);
+        config.UseStrictParsing();
 
         config.AddCommand<ExportCommand>("export")
             .WithDescription("export resume to various formats")
@@ -82,32 +81,38 @@ public static class Program
             edit.SetDescription("edit job information in database");
             edit.AddCommand<EditJobCommand>("job")
                 .WithAlias("j")
-                .WithAlias("jobs");
+                .WithAlias("jobs")
+                .WithDescription("edit a job's details");
             edit.AddCommand<EditProfileCommand>("profile")
                 .WithAlias("user")
                 .WithAlias("u")
                 .WithAlias("users")
-                .WithAlias("p")
-                .WithAlias("profiles");
+                .WithAlias("profiles")
+                .WithAlias("pro")
+                .WithDescription("change a profile's information");
             edit.AddCommand<EditProjectCommand>("project")
-                .WithDescription("edit a project")
-                .WithAlias("projects");
+                .WithDescription("edit a project's details")
+                .WithAlias("projects")
+                .WithAlias("proj");
         });
 
         config.AddBranch<DeleteCommandSettings>("delete", delete =>
             {
-                delete.SetDescription("delete job information from database");
+                delete.SetDescription("remove data from resumer database");
                 delete.AddCommand<DeleteJobCommand>("job")
+                    .WithDescription("delete a job")
                     .WithAlias("j")
                     .WithAlias("jobs");
                 delete.AddCommand<DeleteProfileCommand>("profile")
                     .WithAlias("user")
                     .WithAlias("u")
                     .WithAlias("users")
+                    .WithDescription("delete a profile")
                     .WithAlias("p")
                     .WithAlias("profiles");
                 delete.AddCommand<DeleteSkillCommand>("skill")
                     .WithAlias("s")
+                    .WithDescription("delete a skill")
                     .WithAlias("skills");
                 delete.AddCommand<DeleteProjectCommand>("project")
                     .WithDescription("delete a project")
