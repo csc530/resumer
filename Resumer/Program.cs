@@ -4,7 +4,6 @@ using Resumer.cli.commands.add;
 using Resumer.cli.commands.config;
 using Resumer.cli.commands.delete;
 using Resumer.cli.commands.edit;
-using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
 using Resumer.models;
 using Spectre.Console.Cli;

@@ -6,7 +6,7 @@ using Spectre.Console.Cli;
 using Spectre.Console.Json;
 using Profile = Resumer.models.Profile;
 
-namespace Resumer.cli.commands.export;
+namespace Resumer.cli.commands;
 
 public class ExportCommand: Command<ExportCommandSettings>
 {

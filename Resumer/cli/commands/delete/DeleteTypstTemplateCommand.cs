@@ -16,7 +16,7 @@ public class DeleteTypstTemplateCommand: Command<DeleteCommandSettings>
         var selectedTypstTemplates = AnsiConsole.Prompt(new MultiSelectionPrompt<TypstTemplate>()
             .Title("Select templates to delete")
             .PageSize(10)
-            .AddChoices(typstTemplates.Where(template => template != TypstTemplate.Default)));
+            .AddChoices(typstTemplates.OrderBy(template=>template.Name)));
 
         var prompt = selectedTypstTemplates.Count == 1
             ? $"Are you sure you want to delete this typst template - {selectedTypstTemplates[0].Name}?"

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="generate template" type="DotNetProject" factoryName=".NET Project" folderName="add">
+  <configuration default="false" name="generate template" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0/Resumer.exe" />
     <option name="PROGRAM_PARAMETERS" value="generate" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0" />

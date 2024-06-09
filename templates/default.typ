@@ -1,4 +1,5 @@
-#let dateFormat = "[month repr:short]. [year repr:full sign:automatic] "
+#let dateFormat = "[month repr:short]. [year repr:full sign:automatic]"
+
 
 = #fullName
 == #phoneNumber

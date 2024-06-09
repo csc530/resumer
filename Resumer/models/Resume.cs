@@ -37,20 +37,20 @@ public class Resume
     {
         var faker = new Faker();
 
-        var profileFaker = new Faker<models.Profile>()
+        var profileFaker = new Faker<Profile>()
             .RuleFor(p => p.FirstName, f => f.Name.FirstName())
             .RuleFor(p => p.LastName, f => f.Name.LastName())
             .RuleFor(p => p.EmailAddress, (f, p) => f.Internet.Email(p.FirstName, p.LastName))
             .RuleFor(p => p.PhoneNumber, f => f.Phone.PhoneNumber())
             .RuleFor(p => p.Location, f => f.Address.FullAddress())
-            .RuleFor(p => p.Objective, f => f.WaffleText(includeHeading: false))
+            .RuleFor(p => p.Objective, f => f.WaffleText(includeHeading: false).Trim())
             .RuleFor(p => p.Languages, f => f.Make(f.Random.Int(1, 10), () => RandomLanguage()))
             .RuleFor(p => p.Interests, f => f.Make(f.Random.Int(1, 10), () => f.Random.Words()))
             .RuleFor(p => p.Certifications, f => f.Make(f.Random.Int(1, 10),
                 () => new Certificate()
                 {
-                    Name = f.WaffleTitle(),
-                    Description = f.WaffleText(includeHeading: false),
+                    Name = f.WaffleTitle().Trim(),
+                    Description = f.WaffleText(includeHeading: false).Trim(),
                     CredentialId = f.Random.Bool() ? f.Random.Guid().ToString() : f.Random.Int().ToString("G9"),
                     IssueDate = f.Date.PastDateOnly(f.Random.Number(10)),
                     ExpirationDate = f.Date.FutureDateOnly(f.Random.Number(10)),
@@ -64,31 +64,31 @@ public class Resume
                 Degree = f.PickRandom("Associate", "Bachelor", "Master", "Doctorate"),
                 StartDate = f.Date.PastDateOnly(f.Random.Number(10)),
                 EndDate = f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)),
-                FieldOfStudy = f.WaffleTitle(),
+                FieldOfStudy = f.WaffleTitle().Trim(),
                 GradePointAverage = f.Random.Double(0d, 4d),
                 Location = f.Address.City() + ", " + f.Address.Country(),
-                AdditionalInformation = f.Random.Bool() ? f.WaffleText(includeHeading: false) : null,
+                AdditionalInformation = f.Random.Bool() ? f.WaffleText(includeHeading: false).Trim() : null,
             }));
 
         var jobFaker = new Faker<Job>()
             .CustomInstantiator(f => new Job(f.Name.JobTitle(), f.Company.CompanyName(f.Random.Number(0, 2).OrNull(f))))
             .RuleFor(j => j.StartDate, f => f.Date.PastDateOnly(f.Random.Number(10)))
             .RuleFor(j => j.EndDate, f => f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)))
-            .RuleFor(j => j.Description, f => f.Make(f.Random.Int(1, 5), () => f.WaffleText(includeHeading: false)));
+            .RuleFor(j => j.Description, f => f.Make(f.Random.Int(1, 5), () => f.WaffleText(includeHeading: false).Trim()));
 
         var projectFaker = new Faker<Project>()
-            .CustomInstantiator(f => new Project(f.WaffleTitle()))
+            .CustomInstantiator(f => new Project(f.WaffleTitle().Trim()))
             .RuleFor(p => p.StartDate, f => f.Date.PastDateOnly(f.Random.Number(10)))
             .RuleFor(p => p.EndDate, f => f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)))
-            .RuleFor(p => p.Type, f => f.WaffleTitle())
-            .RuleFor(p => p.Description, f => f.WaffleText(includeHeading: false))
-            .RuleFor(p => p.Details, f => f.Make(f.Random.Int(1, 3), () => f.WaffleText(includeHeading: false)))
+            .RuleFor(p => p.Type, f => f.WaffleTitle().Trim())
+            .RuleFor(p => p.Description, f => f.WaffleText(includeHeading: false).Trim())
+            .RuleFor(p => p.Details, f => f.Make(f.Random.Int(1, 3), () => f.WaffleText(includeHeading: false).Trim()))
             .RuleFor(p => p.Link, f => new Uri(f.Internet.Url()));
 
         var skillFaker = new Faker<Skill>().CustomInstantiator(f =>
-            new Skill(f.Random.Bool() ? f.Name.JobArea() : f.WaffleTitle(), f.PickRandom<SkillType>()));
-
-        var resume = new Resume(@"test")
+            new Skill(f.Random.Bool() ? f.Name.JobArea() : f.WaffleTitle().Trim(), f.PickRandom<SkillType>()));
+            
+        var resume = new Resume("test")
         {
             Profile = profileFaker.Generate(),
             Jobs = jobFaker.Generate(3),
@@ -226,14 +226,42 @@ public class Resume
 
     public byte[] ExportToPdf(TypstTemplate template) => CompileTypst(template, Formats.Pdf);
 
-    public string ExportToTypst(TypstTemplate template)
+    private string PrintAsTypstVariables(bool prettyPrint)
     {
-        var env = Utility.PrintAsTypstVariables(this);
+        var builder = new StringBuilder();
+        builder.AppendLine(TypVarDeclr(nameof(Profile.FirstName), Profile.FirstName));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.MiddleName), Profile.MiddleName));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.LastName), Profile.LastName));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.FullName), Profile.FullName));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.WholeName), Profile.WholeName));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.EmailAddress), Profile.EmailAddress));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.PhoneNumber), Profile.PhoneNumber));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Location), Profile.Location));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Website), Profile.Website));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Objective), Profile.Objective));
 
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Education), Profile.Education));
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Languages), Profile.Languages));
+
+        builder.AppendLine(TypVarDeclr(nameof(Profile.Interests), Profile.Interests));
+
+        builder.AppendLine(TypVarDeclr(nameof(Jobs), Jobs));
+        builder.AppendLine(TypVarDeclr(nameof(Skills), Skills));
+        builder.AppendLine(TypVarDeclr(nameof(Projects), Projects));
+
+        return builder.ToString();
+        string TypVarDeclr(string name, object? value) => TypstVariableDeclaration(name, value, prettyPrint);
+    }
+
+    private static string TypstVariableDeclaration(string name, object? value, bool prettyPrint) =>
+        $"#let {name.ToCamelCase()}={value.ToTypstString(prettyPrint ? 0 : -1)};";
+
+    public string ExportToTypst(TypstTemplate template, bool prettyPrint = false)
+    {
         var sb = new StringBuilder();
         sb.AppendLine($"// created on {DateTime.Now} by Resumer");
         sb.AppendLine();
-        sb.AppendLine(env);
+        sb.AppendLine(PrintAsTypstVariables(prettyPrint));
         sb.AppendLine();
         sb.AppendLine(template.Content);
 

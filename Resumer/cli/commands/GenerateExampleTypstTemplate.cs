@@ -10,10 +10,6 @@ public class GenerateExampleTypstTemplate: Command<GenerateExampleTypstTemplateS
 {
     public override int Execute(CommandContext context, GenerateExampleTypstTemplateSettings settings)
     {
-        var path = $"{settings.Name}.typ";
-        if(!settings.Raw && !settings.Force && File.Exists(path))
-            return CommandOutput.Error(ExitCode.Fail, $"file already exists - [italic]{path}[/]");
-
         var resume = Resume.ExampleResume();
         var template = new StringBuilder();
         template.Append("// generated on ");
@@ -22,32 +18,17 @@ public class GenerateExampleTypstTemplate: Command<GenerateExampleTypstTemplateS
         template.AppendLine();
         template.AppendLine("// example resume information");
         template.AppendLine("// used to illustrate injected variables names and structure");
-        template.AppendLine(Utility.PrintAsTypstVariables(resume));
-        template.AppendLine(TypstTemplate.Default.Content);
-
-        if(settings.Raw)
-            return CommandOutput.Success(template.ToString().EscapeMarkup());
-        else
-            File.WriteAllText(path, template.ToString());
+        template.AppendLine(resume.ExportToTypst(TypstTemplate.Default,settings.Pretty));
+        //* because ansi console adds newlines at terminal widths
+        Console.WriteLine(template.ToString());
         return CommandOutput.Success();
     }
 }
 
-public class GenerateExampleTypstTemplateSettings: CommandSettings
-{
-    [CommandOption("-n|--name")]
-    [Description("Name of the template file to be created")]
-    public string Name { get; set; } = "template";
+public class GenerateExampleTypstTemplateSettings: CommandSettings{
+    [CommandOption("-p|--pretty")]
+    [DefaultValue(false)]
+    [Description("Prints the output in pretty format")]
+    public bool Pretty { get; set; }
 
-    [CommandOption("-f|--force")]
-    [Description("Overwrite existing file")]
-    public bool Force { get; set; }
-
-    [CommandOption("--raw|-r")]
-    [Description("Print template to stdout")]
-    public bool Raw { get; set; }
-
-    public override ValidationResult Validate() => string.IsNullOrEmpty(Name)
-        ? ValidationResult.Error("Name is required")
-        : ValidationResult.Success();
 }
