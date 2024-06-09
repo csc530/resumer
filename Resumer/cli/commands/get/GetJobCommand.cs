@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;

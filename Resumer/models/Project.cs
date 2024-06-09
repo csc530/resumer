@@ -1,7 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Spectre.Console;
 
 namespace Resumer.models;
 

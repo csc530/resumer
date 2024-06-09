@@ -6,7 +6,6 @@ using Resumer.cli.commands.delete;
 using Resumer.cli.commands.edit;
 using Resumer.cli.commands.export;
 using Resumer.cli.commands.get;
-using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console.Cli;
 
@@ -24,8 +23,6 @@ public static class Program
                 database.Migrate();
         }
 
-
-        // var app = new CommandApp<TestCommand>();
         var app = new CommandApp();
         app.Configure(AppConfiguration);
         return app.Run(args);

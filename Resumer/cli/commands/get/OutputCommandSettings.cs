@@ -7,9 +7,9 @@ using Spectre.Console;
 using Spectre.Console.Cli;
 using Profile = Resumer.models.Profile;
 
-namespace Resumer.cli.settings;
+namespace Resumer.cli.commands.get;
 
-public class OutputCommandSettings: CliSettings
+public class OutputCommandSettings: CommandSettings
 {
     [CommandOption("-b|--border")]
     [Description("table border style")]

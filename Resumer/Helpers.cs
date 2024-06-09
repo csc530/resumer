@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Resumer.models;
 using Spectre.Console;
@@ -183,6 +182,8 @@ public static class Extensions
         return typstObj;
     }
 
+
+
     public static void AddFromPrompt<T>(this List<T> list, string prompt)
     {
         var textPrompt = Utility.SimplePrompt<T>(prompt);
@@ -243,16 +244,4 @@ public static class Extensions
             }
         } while(i < count || !string.IsNullOrWhiteSpace(input));
     }
-
-    public static string GetMessage(this SqlResultCode code) => code switch
-    {
-        SqlResultCode.Success => "Success",
-        SqlResultCode.Error => "Error",
-        SqlResultCode.Readonly => "Database is readonly",
-        SqlResultCode.IoErr => "disk I/O error occurred",
-        SqlResultCode.NotNull => "not null constraint violated",
-        SqlResultCode.Abort => "Operation terminated by interrupt (sqlite3_interrupt)",
-        SqlResultCode.Constraint => "constraint violation",
-        _ => "Unknown error"
-    };
 }

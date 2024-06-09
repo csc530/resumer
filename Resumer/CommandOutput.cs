@@ -1,9 +1,9 @@
 using System.Data.Common;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
-using Resumer.cli.settings;
 using Resumer.models;
 using Spectre.Console;
+using Spectre.Console.Cli;
 using Spectre.Console.Rendering;
 using Profile = Resumer.models.Profile;
 
@@ -11,7 +11,7 @@ namespace Resumer;
 
 public static partial class CommandOutput
 {
-    public static int Error(Exception exception, CliSettings settings)
+    public static int Error(Exception exception, CommandSettings settings)
     {
         var error = exception switch
         {
