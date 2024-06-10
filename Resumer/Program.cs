@@ -131,21 +131,26 @@ public static class Program
                 .WithAlias("configuration")
                 .WithAlias("conf")
                 .WithAlias("setting")
+                .WithDescription("get app's current configuration settings")
                 .WithAlias("settings");
             get.AddCommand<GetSkillCommand>("skill")
                 .WithAlias("s")
+                .WithDescription("list skills")
                 .WithAlias("skills");
             get.AddCommand<GetCompanyCommand>("company")
                 .WithAlias("c")
+                .WithDescription("list companies")
                 .WithAlias("companies")
                 .WithDescription("list companies you've worked for");
             get.AddCommand<GetJobCommand>("job")
                 .WithAlias("jobs")
+                .WithDescription("list jobs")
                 .WithAlias("j");
             get.AddCommand<GetProfileCommand>("profile")
                 .WithAlias("user")
                 .WithAlias("u")
                 .WithAlias("users")
+                .WithDescription("list user profiles")
                 .WithAlias("profiles");
             get.AddCommand<GetProjectCommand>("project")
                 .WithDescription("list projects")
