@@ -17,7 +17,7 @@ public class DeleteJobCommand: Command<DeleteCommandSettings>
         {
             if(!settings.NoConfirm && !AnsiConsole.Confirm("Are you sure you want to delete all jobs?", false))
                 return CommandOutput.Error(ExitCode.Canceled);
-            jobs.ToList().RemoveAll(_ => true);
+            jobs.RemoveRange(jobs);
         }
         else
         {

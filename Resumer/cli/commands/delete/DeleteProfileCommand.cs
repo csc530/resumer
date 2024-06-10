@@ -17,7 +17,7 @@ public class DeleteProfileCommand : Command<DeleteCommandSettings>
         {
             if(!settings.NoConfirm && !AnsiConsole.Confirm("Are you sure you want to delete all profiles?"))
                 return CommandOutput.Error(ExitCode.Canceled);
-            profiles.ToList().RemoveAll(_=>true);
+            profiles.RemoveRange(profiles);
         }
         else
         {

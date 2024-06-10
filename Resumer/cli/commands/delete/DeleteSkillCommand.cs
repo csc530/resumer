@@ -4,7 +4,7 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.delete;
 
-public class DeleteSkillCommand : Command<DeleteCommandSettings>
+public class DeleteSkillCommand: Command<DeleteCommandSettings>
 {
     public override int Execute(CommandContext context, DeleteCommandSettings settings)
     {
@@ -16,7 +16,7 @@ public class DeleteSkillCommand : Command<DeleteCommandSettings>
         {
             if(!settings.NoConfirm && !AnsiConsole.Confirm($"Are you sure you want to delete all {skills.Count()} skills?", false))
                 return CommandOutput.Error(ExitCode.Canceled);
-            skills.ToList().RemoveAll(_ => true);
+            skills.RemoveRange(skills);
         }
         else
         {

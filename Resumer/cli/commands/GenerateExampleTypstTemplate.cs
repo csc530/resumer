@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using System.Text;
 using Resumer.models;
-using Spectre.Console;
 using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands;
