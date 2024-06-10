@@ -44,7 +44,7 @@ jobs:
               7z a ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
             }
             else {
-              zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
+              zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip -i ../publish
             }
 
       - name: Create GitHub Release
