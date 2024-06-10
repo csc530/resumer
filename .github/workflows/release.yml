@@ -38,14 +38,7 @@ jobs:
 #        working-directory: ./publish
 
       - name: zip files
-        shell: pwsh
-        run: |
-            if ($env:RUNNER_OS -eq "Windows") {
-              7z a ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
-            }
-            else {
-              zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip -i ./publish
-            }
+        run: 7z a ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish
 
       - name: Create GitHub Release
         env:
