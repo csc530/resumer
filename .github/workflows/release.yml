@@ -47,7 +47,14 @@ jobs:
           path: ./publish/
 
       - name: Zip Files
-        run: 7z a ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip '.\publish\*'
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_OS -eq "Windows") {
+            7z a ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip '.\publish\*'
+          }
+          else {
+            zip ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish/*
+          }
 
       - name: Upload Release Asset
         run: gh release upload ${{ github.ref_name }} ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip
