@@ -12,14 +12,6 @@ env:
   GH_TOKEN: ${{ github.token }}
 
 jobs:
-  setup-release:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create Release
-        run: gh release create ${{ github.ref_name }} --draft
-
   publish:
     runs-on: ${{ matrix.os }}
     needs: setup-release
