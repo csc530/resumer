@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Create Release
-        run: gh release create ${{ github.ref_name }} --draft
+        run: gh release create ${{ github.ref_name }} --draft --generate-notes
 
   publish:
     runs-on: ${{ matrix.os }}
