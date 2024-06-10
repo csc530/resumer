@@ -5,7 +5,7 @@ namespace Resumer.cli.commands.delete;
 
 public class DeleteCommandSettings:CommandSettings
 {
-    [CommandOption("-c|--no-confirm")]
+    [CommandOption("-n|--no-confirm")]
     [Description("Do not ask for confirmation before deleting")]
     public bool NoConfirm { get; set; }
 

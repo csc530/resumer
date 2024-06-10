@@ -55,6 +55,16 @@ jobs:
         run: bash zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
         working-directory: ./publish
 
+      - name: zip files
+        shell: pwsh
+        run: |
+            if ($env:RUNNER_OS -eq "Windows") {
+              7z a ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
+            }
+            else {
+              zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
+            }
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
