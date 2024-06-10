@@ -8,9 +8,21 @@ on:
 
   workflow_dispatch:
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
+  setup-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create Release
+        run: gh release create ${{ github.ref_name }} --draft
+
   publish:
     runs-on: ${{ matrix.os }}
+    needs: setup-release
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
@@ -33,14 +45,8 @@ jobs:
           name: publish
           path: ./publish/
 
-#      - name: zip
-#        run: bash zip -r ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ../publish
-#        working-directory: ./publish
-
-      - name: zip files
+      - name: Zip Files
         run: 7z a ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish
 
-      - name: Create GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release create ${{ github.ref_name }} ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip --draft
+      - name: Upload Release Asset
+        run: gh release upload ${{ github.ref_name }} ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip
