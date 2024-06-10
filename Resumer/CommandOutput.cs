@@ -74,8 +74,16 @@ public static partial class CommandOutput
     [GeneratedRegex("[A-Z]")]
     private static partial Regex CapitalLettersRegex();
 
-    public static void Verbose(string label, string text)
+    /// <summary>
+    /// print a verbose message
+    /// </summary>
+    /// <param name="label">message label/header</param>
+    /// <param name="text">message</param>
+    /// <param name="settingsVerbose">helper to determine if verbose output should be printed</param>
+    public static void Verbose(string label, string text, bool settingsVerbose = true)
     {
+        if(!settingsVerbose)
+            return;
         var txtLabel = new Text(label, new Style(Color.Aqua))
         {
             Justification = Justify.Left,

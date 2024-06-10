@@ -33,6 +33,7 @@ public class TypstTemplate
     public bool isValid(out string error, out string output)
     {
         var tempFile = Path.GetRandomFileName();
+        var testTyp = Resume.ExampleResume().ExportToTypst(this).Trim();
         var typst = new Command("typst")
         {
             WorkingDirectory = Program.TempPath,
@@ -44,7 +45,7 @@ public class TypstTemplate
         typst.OnStandardError += (s, e) => errorBuilder.AppendLine(e.Data);
         typst.OnStandardOutput += (s, e) => outputBuilder.AppendLine(e.Data);
         var result = typst.Start("compile", "-", tempFile, "--format=pdf")
-            .Input(Content)
+            .Input(testTyp)
             .Complete();
 
         error = errorBuilder.ToString();

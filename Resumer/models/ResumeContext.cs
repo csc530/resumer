@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Resumer.models;
 
-public sealed class ResumeContext : DbContext
+public sealed class ResumeContext: DbContext
 {
     public ResumeContext()
     {
@@ -26,5 +26,10 @@ public sealed class ResumeContext : DbContext
 
 // The following configures EF to create a sqlite database file in the
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlite($"Data Source={DbPath}").UseExceptionProcessor();
+    {
+        optionsBuilder.UseSqlite($"Data Source={DbPath}").UseExceptionProcessor();
+    #if DEBUG
+        optionsBuilder.EnableSensitiveDataLogging();
+    #endif
+    }
 }

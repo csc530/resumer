@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="add template" type="DotNetProject" factoryName=".NET Project" folderName="add">
+  <configuration default="false" name="import template (all)" type="DotNetProject" factoryName=".NET Project" folderName="add">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0/Resumer.exe" />
-    <option name="PROGRAM_PARAMETERS" value="add template d:\resumer\templates\default.typ" />
+    <option name="PROGRAM_PARAMETERS" value="add template --all --verbose" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
