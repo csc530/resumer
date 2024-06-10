@@ -13,7 +13,7 @@ and sometimes I want to curate the jobs on the resume or just the look without a
 
 honestly, you probably should use *x* 🤷🏿‍♂️ (the other tool/app)
 whatever is best and easiest for you😽
-(but if you love being in you command line then this could be for you??)
+(but if you love being in your command line then this could be for you??)
 
 ## installation
 
@@ -21,7 +21,7 @@ whatever is best and easiest for you😽
 
 - [typst](https://github.com/typst/typst?tab=readme-ov-file#installation) for pdf, svg, and png formats
 
-download [latest release](https://github.com/csc530/resumer/releases/latest) from github and add it to your PATH
+download [latest release](https://github.com/csc530/resumer/releases/latest) from GitHub and add it to your PATH
 :)
 
 ### from source
@@ -33,6 +33,11 @@ git clone https://github.com/csc530/resumer.git
 cd resumer
 dotnet publish -c Release -o ./path/to/publish/ideally/in/your/PATH
 ```
+
+## add templates
+
+open a pull request to contribute a template to the `templates folder`.
+if the first line is a comment it will be used as the template's description and the file name as the template's name when importing with the `--all` flag
 
 ## todo ✅
 
