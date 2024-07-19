@@ -6,15 +6,17 @@ using Command = Spectre.Console.Cli.Command;
 
 namespace Resumer.cli.commands.add;
 
-internal sealed class AddJobCommand: Command
+internal sealed class AddJobCommand: AddCommand
 {
-    public override int Execute(CommandContext context)
+    protected override string ContinuePrompt => "Add another job?";
+    protected override int AddItem(CommandContext context, AddCommandSettings settings)
     {
         var jobTitle = AnsiConsole.Ask<string>("Job Title:");
 
         var company = AnsiConsole.Ask<string>("Company:");
 
         var startDate = AnsiConsole.Prompt(new TextPrompt<DateOnly>("Start Date:").DefaultValue(Today));
+
         var endDatePrompt = new TextPrompt<DateOnly?>("End date:")
             .DefaultValue(null)
             .HideDefaultValue()
@@ -36,7 +38,7 @@ internal sealed class AddJobCommand: Command
             Description = jobDescription,
             Experience = experience,
             StartDate = startDate,
-            EndDate = endDate
+            EndDate = endDate,
         };
 
         var db = new ResumeContext();

@@ -7,9 +7,9 @@ using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.add;
 
-public sealed partial class AddProfileCommand : Command
+public sealed partial class AddProfileCommand : AddCommand
 {
-    public override int Execute(CommandContext context)
+    protected override int AddItem(CommandContext context, AddCommandSettings settings)
     {
         var emailAddressPrompt = new TextPrompt<string>("Email address:")
             .ValidationErrorMessage("Invalid email address: email should contain '@' and a domain (e.g. @example.ca).")

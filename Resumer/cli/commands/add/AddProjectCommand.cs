@@ -5,9 +5,9 @@ using Command = Spectre.Console.Cli.Command;
 
 namespace Resumer.cli.commands.add;
 
-internal sealed class AddProjectCommand: Command
+internal sealed class AddProjectCommand: AddCommand
 {
-    public override int Execute(CommandContext context)
+    protected override int AddItem(CommandContext context, AddCommandSettings settings)
     {
         var projectName = AnsiConsole.Ask<string>("Project Name:");
         var projectType = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Project Type:"));

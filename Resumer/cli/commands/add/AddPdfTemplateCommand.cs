@@ -8,9 +8,11 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.add;
 
-public class AddPdfTemplateCommand: Command<AddPdfTemplateCommandSettings>
+public class AddPdfTemplateCommand: AddCommand<AddPdfTemplateCommandSettings>
 {
-    public override int Execute(CommandContext context, AddPdfTemplateCommandSettings settings)
+    protected override string ContinuePrompt { get; } = "add another template?";
+
+    protected override int AddItem(CommandContext context, AddPdfTemplateCommandSettings settings)
     {
         using var db = new ResumeContext();
         var dbTemplates = db.Templates;
@@ -117,7 +119,7 @@ public class AddPdfTemplateCommand: Command<AddPdfTemplateCommandSettings>
     }
 }
 
-public class AddPdfTemplateCommandSettings: CommandSettings
+public class AddPdfTemplateCommandSettings: AddCommandSettings
 {
     [CommandArgument(0, "[PATH|URL]")]
     [Description("typst resume template file")]

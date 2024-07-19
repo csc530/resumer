@@ -5,9 +5,9 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.add;
 
-public class AddSkillCommand: Command<AddSkillSettings>
+public class AddSkillCommand: AddCommand<AddSkillSettings>
 {
-    public override int Execute(CommandContext context, AddSkillSettings settings)
+    protected override int AddItem(CommandContext context, AddSkillSettings settings)
     {
         ResumeContext database = new();
         var skillName = settings.Skill;
@@ -32,7 +32,7 @@ public class AddSkillCommand: Command<AddSkillSettings>
     }
 }
 
-public class AddSkillSettings: CommandSettings
+public class AddSkillSettings: AddCommandSettings
 {
     [CommandArgument(0, "[skill]")]
     [Description("The name, abbreviation, or short description of the skill")]
