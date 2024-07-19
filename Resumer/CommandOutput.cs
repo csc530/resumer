@@ -108,10 +108,10 @@ public static partial class CommandOutput
                 table.AddRow(
                     job.Title,
                     job.Company,
-                    job.Description.Print(),
-                    job.Experience.Print(),
                     job.StartDate.ToString(),
-                    job.EndDate?.ToString() ?? "present"
+                    job.EndDate?.ToString() ?? "present",
+                    job.Description.Print(),
+                    job.Experience.Print()
                 );
                 break;
             case Project project:
@@ -158,7 +158,7 @@ public static partial class CommandOutput
         return table;
     }
 
-    public static Table AddObjects<T>(this Table table, IEnumerable<T> objs) where T : class
+    public static Table AddObjects<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(this Table table, IEnumerable<T> objs) where T : class
     {
         foreach(var item in objs)
             AddObject(table, item);
