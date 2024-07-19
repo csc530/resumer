@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="edit project" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="edit project" type="DotNetProject" factoryName=".NET Project" folderName="edit">
     <option name="EXE_PATH" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0/Resumer.exe" />
     <option name="PROGRAM_PARAMETERS" value="edit project" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Resumer/bin/Debug/net8.0" />
