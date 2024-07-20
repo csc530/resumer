@@ -49,6 +49,9 @@ public class TestData
     public static DateOnly RandomDate() => Faker.Date.BetweenDateOnly(RandomPastDate(), RandomFutureDate());
     public static string? RandomTextOrNull() => Faker.Lorem.Paragraph().OrNull(Faker);
 
+    public static List<string> RandomListOfText() => Enumerable.Range(1, 7)
+                       .Select(_ => Faker.Random.Word()).ToList();
+
     public static string Waffle() => WaffleEngine.Text(Random.Next(TestRepetition), Faker.Random.Bool());
     public static string? WaffleOrNull() => Waffle().OrNull(Faker);
 

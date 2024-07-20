@@ -7,8 +7,8 @@ internal class JobTestData: TestData
 {
     private static Faker<Job> BogusJob { get; set; } = new Faker<Job>()
                                                       .RuleFor(job => job.Title, RandomJobTitle)
-                                                      .RuleFor(job => job.Description, RandomTextOrNull)
-                                                      .RuleFor(job => job.Experience, RandomTextOrNull)
+                                                      .RuleFor(job => job.Description, RandomListOfText)
+                                                      .RuleFor(job => job.Experience, RandomListOfText)
                                                       .RuleFor(job => job.Company, RandomCompany)
                                                       .RuleFor(job => job.StartDate, RandomPastDate)
                                                       .RuleFor(job => job.EndDate, RandomEndDate);
