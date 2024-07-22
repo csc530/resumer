@@ -43,7 +43,6 @@ public class OutputCommandSettings: CommandSettings
             table.AddColumn("Start Date");
             table.AddColumn("End Date");
             table.AddColumn("Description");
-            table.AddColumn("Experience");
             table.Title = new TableTitle("Jobs");
         }
         else if(type == typeof(Project))

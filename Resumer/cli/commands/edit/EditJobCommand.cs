@@ -21,10 +21,8 @@ public class EditJobCommand : Command<EditJobSettings>
         job.StartDate = AnsiConsole.Prompt(new TextPrompt<DateOnly>("Start date:").DefaultValue(job.StartDate));
         job.EndDate = AnsiConsole.Prompt(new TextPrompt<DateOnly?>("End date:").DefaultValue(job.EndDate));
         job.Description.EditFromPrompt("Description (enter '-' to delete the entry):");
-        job.Experience.EditFromPrompt("Experience (enter '-' to delete the entry):");
 
         db.SaveChanges();
-
         return CommandOutput.Success("Changes saved");
     }
 }

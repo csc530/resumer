@@ -18,7 +18,7 @@ public static partial class CommandOutput
             //todo: verbose detailed exception output
             DbException => ExitCode.DbError,
             InvalidOperationException => ExitCode.NoData,
-            _ => ExitCode.Unknown
+            _ => ExitCode.Unknown,
         };
         return Error(error, exception.Message);
     }
@@ -110,8 +110,7 @@ public static partial class CommandOutput
                     job.Company,
                     job.StartDate.ToString(),
                     job.EndDate?.ToString() ?? "present",
-                    job.Description.Print(),
-                    job.Experience.Print()
+                    job.Description.Print()
                 );
                 break;
             case Project project:

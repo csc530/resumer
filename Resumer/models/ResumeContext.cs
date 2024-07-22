@@ -1,5 +1,6 @@
 using EntityFramework.Exceptions.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Resumer.models;
 
@@ -24,12 +25,15 @@ public sealed class ResumeContext: DbContext
 
     public string DbPath { get; }
 
-// The following configures EF to create a sqlite database file in the
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite($"Data Source={DbPath}").UseExceptionProcessor();
+        optionsBuilder.ConfigureWarnings(builder =>
+            builder.Log(CoreEventId.QueryExecutionPlanned, CoreEventId.PropertyChangeDetected, CoreEventId.QueryCanceled));
     #if DEBUG
+        optionsBuilder.ConfigureWarnings(builder => builder.Throw());
         optionsBuilder.EnableSensitiveDataLogging();
+        optionsBuilder.EnableDetailedErrors();
     #endif
     }
 }

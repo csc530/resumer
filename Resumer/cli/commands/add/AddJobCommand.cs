@@ -9,6 +9,7 @@ namespace Resumer.cli.commands.add;
 internal sealed class AddJobCommand: AddCommand
 {
     protected override string ContinuePrompt => "Add another job?";
+
     protected override int AddItem(CommandContext context, AddCommandSettings settings)
     {
         var jobTitle = AnsiConsole.Ask<string>("Job Title:");
@@ -27,16 +28,13 @@ internal sealed class AddJobCommand: AddCommand
         var endDate = AnsiConsole.Prompt(endDatePrompt);
 
         var jobDescription = new List<string>();
+        AnsiConsole.WriteLine("Enter job description(s), experience(s), or task(s)");
         jobDescription.AddFromPrompt("Job Description (point form):");
-
-        var experience = new List<string>();
-        experience.AddFromPrompt("Experience (point form):");
 
 
         var job = new Job(jobTitle, company)
         {
             Description = jobDescription,
-            Experience = experience,
             StartDate = startDate,
             EndDate = endDate,
         };

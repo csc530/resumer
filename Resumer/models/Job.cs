@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
@@ -44,9 +45,8 @@ public class Job
     public DateOnly StartDate { get; set; } = Utility.Today;
     public DateOnly? EndDate { get; set; }
 
+    [Description("Job description or experience")]
     public List<string> Description { get; set; } = [];
-
-    public List<string> Experience { get; set; } = [];
 
     [return: NotNullIfNotNull(nameof(value))]
     private static string? Trim(string? value) =>
