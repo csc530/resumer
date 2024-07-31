@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Immutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using Spectre.Console;
 
 namespace Resumer;
@@ -21,13 +22,14 @@ public static partial class Utility
     /// </summary>
     /// <typeparam name="T">the type of the prompt input</typeparam>
     /// <param name="message">the prompt message</param>
+    /// <returns>a <see cref="TextPrompt{T}"/> of nullable <typeparamref name="T"/></returns>
     public static TextPrompt<T?> SimplePrompt<T>(string message) =>
-        new TextPrompt<T?>(message).AllowEmpty().HideDefaultValue().DefaultValue(default);
+        new TextPrompt<T?>(message).AllowEmpty().HideDefaultValue().DefaultValue(default(T?));
 
     /// <inheritdoc cref="SimplePrompt{T}(string)"/>
     /// <param name="defaultValue">the default value</param>
-    public static TextPrompt<T> SimplePrompt<T>(string message, T defaultValue) => new TextPrompt<T>(message)
-        .AllowEmpty().DefaultValue(defaultValue).HideDefaultValue();
+    public static TextPrompt<T?> SimplePrompt<T>(string message, T? defaultValue) =>
+        SimplePrompt<T?>(message).DefaultValue(defaultValue);
 
     /// <summary>
     /// converts a string to camel case
@@ -56,7 +58,7 @@ public static partial class Utility
         startDate == null ? string.Empty : $"{startDate:MMM yyyy} - {endDate?.ToString("MMM yyyy") ?? "present"}";
 }
 
-public static class Extensions
+public static partial class Extensions
 {
     // todo: inquire about default value being a property - spectre console pr/iss
     // .DefaultValue(textPrompt);
@@ -75,6 +77,7 @@ public static class Extensions
             null => string.Empty,
             bool bit => bit ? "true" : "false",
             string txt => txt,
+            Enum @enum => NextToUppercaseRegex().Replace(@enum.ToString(), "$1 $2").Replace('_', '-'),
             DictionaryEntry pair => $"{pair.Key.Print()}: {pair.Value.Print()}",
             IDictionary dictionary => string.Join("\n", dictionary.Cast<object>().Select(obj => $"- {obj.Print()}")),
             IEnumerable enumerable => string.Join("\n", enumerable.Cast<object>().Select(obj => $"+ {obj.Print()}")),
@@ -278,4 +281,7 @@ public static class Extensions
             }
         } while(i < count || !string.IsNullOrWhiteSpace(input));
     }
+
+    [GeneratedRegex(@"(\w)([A-Z])")]
+    private static partial Regex NextToUppercaseRegex();
 }

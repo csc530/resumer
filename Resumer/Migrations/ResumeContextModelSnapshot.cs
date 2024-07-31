@@ -64,23 +64,24 @@ namespace Resumer.Migrations
                     b.Property<string>("AdditionalInformation")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Degree")
+                    b.Property<string>("Courses")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Degree")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateOnly?>("EndDate")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FieldOfStudy")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double?>("GradePointAverage")
                         .HasColumnType("REAL");
 
                     b.Property<string>("Location")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("ProfileId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("School")
@@ -91,8 +92,6 @@ namespace Resumer.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileId");
 
                     b.ToTable("Education");
                 });
@@ -230,7 +229,6 @@ namespace Resumer.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Name");
@@ -245,18 +243,9 @@ namespace Resumer.Migrations
                         .HasForeignKey("ProfileId");
                 });
 
-            modelBuilder.Entity("Resumer.models.Education", b =>
-                {
-                    b.HasOne("Resumer.models.Profile", null)
-                        .WithMany("Education")
-                        .HasForeignKey("ProfileId");
-                });
-
             modelBuilder.Entity("Resumer.models.Profile", b =>
                 {
                     b.Navigation("Certifications");
-
-                    b.Navigation("Education");
                 });
 #pragma warning restore 612, 618
         }

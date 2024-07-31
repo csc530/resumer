@@ -27,6 +27,7 @@ public class Resume
     public List<Job> Jobs { get; set; } = [];
     public List<Skill> Skills { get; set; } = [];
     public List<Project> Projects { get; set; } = [];
+    public List<Education> Education { get; set; } = [];
 
     public Resume(string name)
     {
@@ -57,24 +58,14 @@ public class Resume
                     Issuer = f.Company.CompanyName(),
                     Url = new Uri(f.Internet.Url()),
                 })
-            )
-            .RuleFor(p => p.Education, f => f.Make(f.Random.Int(1, 10), () => new Education()
-            {
-                School = f.Company.CompanyName() + (f.Random.Bool() ? " University" : " College"),
-                Degree = f.PickRandom("Associate", "Bachelor", "Master", "Doctorate"),
-                StartDate = f.Date.PastDateOnly(f.Random.Number(10)),
-                EndDate = f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)),
-                FieldOfStudy = f.WaffleTitle().Trim(),
-                GradePointAverage = f.Random.Double(0d, 4d),
-                Location = f.Address.City() + ", " + f.Address.Country(),
-                AdditionalInformation = f.Random.Bool() ? f.WaffleText(includeHeading: false).Trim() : null,
-            }));
+            );
 
         var jobFaker = new Faker<Job>()
             .CustomInstantiator(f => new Job(f.Name.JobTitle(), f.Company.CompanyName(f.Random.Number(0, 2).OrNull(f))))
             .RuleFor(j => j.StartDate, f => f.Date.PastDateOnly(f.Random.Number(10)))
             .RuleFor(j => j.EndDate, f => f.Random.Bool() ? null : f.Date.FutureDateOnly(f.Random.Number(10)))
-            .RuleFor(j => j.Description, f => f.Make(f.Random.Int(1, 5), () => f.WaffleText(includeHeading: false).Trim()));
+            .RuleFor(j => j.Description,
+                f => f.Make(f.Random.Int(1, 5), () => f.WaffleText(includeHeading: false).Trim()));
 
         var projectFaker = new Faker<Project>()
             .CustomInstantiator(f => new Project(f.WaffleTitle().Trim()))
@@ -87,7 +78,7 @@ public class Resume
 
         var skillFaker = new Faker<Skill>().CustomInstantiator(f =>
             new Skill(f.Random.Bool() ? f.Name.JobArea() : f.WaffleTitle().Trim(), f.PickRandom<SkillType>()));
-            
+
         var resume = new Resume("test")
         {
             Profile = profileFaker.Generate(),
@@ -122,31 +113,57 @@ public class Resume
                 .AppendLine(sectionBreak)
                 .AppendLine(Profile.Objective);
 
-        sb.AppendLine("WORK EXPERIENCE")
-            .AppendLine(sectionBreak);
-        foreach(var job in Jobs.OrderByDescending(j => j.StartDate))
+        if(Jobs.Count != 0)
         {
-            sb.AppendLine(job.Title)
-                .AppendLine(job.Company);
-            // if(job.Location != null)
-            //     sb.AppendLine($" - {job.Location}");
-            sb.AppendLine(Utility.PrintDuration(job.StartDate, job.EndDate));
-            foreach(var description in job.Description)
-                sb.AppendLine($"+ {description}");
+            sb.AppendLine("WORK EXPERIENCE")
+                .AppendLine(sectionBreak);
+            foreach(var job in Jobs.OrderByDescending(j => j.StartDate))
+            {
+                sb.AppendLine(job.Title)
+                    .AppendLine(job.Company);
+                // if(job.Location != null)
+                //     sb.AppendLine($" - {job.Location}");
+                sb.AppendLine(Utility.PrintDuration(job.StartDate, job.EndDate));
+                sb.Append(job.Description.Print());
+                sb.AppendLine();
+            }
+        }
+
+        if(Skills.Count != 0)
+        {
+            sb.AppendLine("SKILLS")
+                .AppendLine(sectionBreak);
+            sb.AppendLine(Skills.OrderBy(s => s.Name).Print());
             sb.AppendLine();
         }
 
-        sb.AppendLine("SKILLS")
-            .AppendLine(sectionBreak);
-        foreach(var skill in Skills.OrderBy(skill => skill.Name))
-            sb.AppendLine(skill.Name);
 
-        sb.AppendLine("PROJECTS")
-            .AppendLine(sectionBreak);
-        foreach(var project in Projects)
-            sb.AppendLine(project.Title)
-                .AppendLine(Utility.PrintDuration(project.StartDate, project.EndDate))
-                .AppendLine(project.Description);
+        if(Education.Count != 0)
+        {
+            sb.AppendLine("EDUCATION")
+                .AppendLine(sectionBreak);
+            foreach(var education in Education)
+                sb.AppendLine($"{education.School}, {education.FieldOfStudy} - {education.Degree}")
+                    .AppendLine(Utility.PrintDuration(education.StartDate, education.EndDate))
+                    .Append("Courses: ").AppendJoin(',', education.Courses)
+                    .AppendLine(education.AdditionalInformation)
+                    .AppendLine();
+        }
+
+
+        if(Projects.Count != 0)
+        {
+            sb.AppendLine("PROJECTS")
+                .AppendLine(sectionBreak);
+            foreach(var project in Projects)
+            {
+                sb.AppendLine(project.Title)
+                    .AppendLine(Utility.PrintDuration(project.StartDate, project.EndDate));
+                if(!string.IsNullOrWhiteSpace(project.Description))
+                    sb.AppendLine(project.Description);
+                sb.AppendLine();
+            }
+        }
 
         sb.AppendLine("REFERENCES")
             .AppendLine(sectionBreak)
@@ -158,7 +175,7 @@ public class Resume
     public string ExportToJson()
     {
         // https://jsonresume.org/schema
-        var obj = new JsonResume(Profile, Jobs, Skills, Projects);
+        var obj = new JsonResume(Profile, Education, Jobs, Skills, Projects);
         var typeInfo = SourceGenerationContext.Default.JsonResume;
 
         return JsonSerializer.Serialize(obj, typeInfo);
@@ -204,8 +221,7 @@ public class Resume
         {
             sb.AppendLine("## Skills")
                 .AppendLine();
-            foreach(var skill in Skills.OrderBy(skill => skill.Name))
-                sb.AppendLine($"- {skill.Name}");
+            sb.AppendLine(Skills.OrderBy(skill => skill.Name).Print());
             sb.AppendLine();
         }
 
@@ -220,6 +236,10 @@ public class Resume
                     .AppendLine(project.Description)
                     .AppendLine();
         }
+
+        sb.AppendLine("## REFERENCES")
+            .AppendLine()
+            .AppendLine("Available upon request");
 
         return sb.ToString();
     }
@@ -240,7 +260,7 @@ public class Resume
         builder.AppendLine(TypVarDeclr(nameof(Profile.Website), Profile.Website));
         builder.AppendLine(TypVarDeclr(nameof(Profile.Objective), Profile.Objective));
 
-        builder.AppendLine(TypVarDeclr(nameof(Profile.Education), Profile.Education));
+        builder.AppendLine(TypVarDeclr(nameof(Education), Education));
         builder.AppendLine(TypVarDeclr(nameof(Profile.Languages), Profile.Languages));
 
         builder.AppendLine(TypVarDeclr(nameof(Profile.Interests), Profile.Interests));
@@ -321,7 +341,8 @@ internal class JsonResume
 
     private const string DateFormat = "yyyy-MM-dd";
 
-    public JsonResume(Profile profile, IEnumerable<Job> jobs, IEnumerable<Skill> skills,
+    public JsonResume(Profile profile, IEnumerable<Education> education, IEnumerable<Job> jobs,
+        IEnumerable<Skill> skills,
         IEnumerable<Project> projects)
     {
         basics = new JsonBasics
@@ -357,11 +378,11 @@ internal class JsonResume
 
         languages = profile.Languages.Select(lang => new JsonLanguages { language = lang }).ToList();
 
-        education = profile.Education.Select(edu => new JsonEducation
+        this.education = education.Select(edu => new JsonEducation
         {
             institution = edu.School,
             area = edu.FieldOfStudy,
-            studyType = edu.Degree,
+            studyType = edu.Degree.Print(),
             startDate = edu.StartDate.ToString(DateFormat),
             endDate = edu.EndDate?.ToString(DateFormat),
             score = edu.GradePointAverage.ToString(),
@@ -446,7 +467,7 @@ internal class JsonResume
         /// <summary>
         /// area/field of study
         /// </summary>
-        public string? area { get; set; }
+        public string area { get; set; }
 
         /// <summary>
         /// what level of study was it
