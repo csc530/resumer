@@ -62,7 +62,7 @@ public class GetTypstTemplateCommandSettings: OutputCommandSettings
     [Description("template name")]
     public string? Name { get; init; }
 
-    public Table? CreateTable()
+    public override Table? CreateTable()
     {
         var table = base.CreateTable("Templates");
         if(table == null) return table;

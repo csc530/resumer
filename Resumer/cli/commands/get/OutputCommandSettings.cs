@@ -1,6 +1,4 @@
-using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Spectre.Console;
@@ -8,7 +6,7 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.get;
 
-public class OutputCommandSettings: CommandSettings
+public abstract class OutputCommandSettings: CommandSettings
 {
     [CommandOption("-o|--format")]
     [Description("output format")]
@@ -33,35 +31,13 @@ public class OutputCommandSettings: CommandSettings
     public bool Footer { get; set; }
 
 
-    public Table? CreateTable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(
-        string? title = null, string? caption = null) where T : notnull
-    {
-        var table = CreateTable(title, caption);
-
-        if(table == null)
-            return null;
-
-        var type = typeof(T);
-
-
-        type.GetProperties()
-            .Where(prop => prop.CanRead)
-            .Select(prop => prop.Name)
-            .ToImmutableList()
-            .ForEach(name => table.AddColumn(new TableColumn(name)));
-
-        table.Title = new TableTitle($"{type.Name}s");
-
-        return table;
-    }
-
     /// <summary>
     ///
     /// </summary>
     /// <param name="title"></param>
     /// <param name="caption"></param>
     /// <returns>if null raw/plain output was requested</returns>
-    public Table? CreateTable(string? title = null, string? caption = null)
+    public Table? CreateTable(string? title, string? caption = null)
     {
         if(Raw)
             return null;
@@ -79,6 +55,8 @@ public class OutputCommandSettings: CommandSettings
         };
         return table;
     }
+
+    public virtual Table? CreateTable() => throw new NotImplementedException("must be implemented in derived classes");
 
     public string Output(Table table)
     {

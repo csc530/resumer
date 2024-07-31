@@ -30,7 +30,7 @@ public class GetProjectSettings: OutputCommandSettings
 {
     public string ProjectName { get; set; }
 
-    public Table? CreateTable()
+    public override Table? CreateTable()
     {
         var table = CreateTable("Projects");
         if(table == null) return table;

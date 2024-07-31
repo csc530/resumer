@@ -30,7 +30,7 @@ public class GetProfileCommand: Command<GetProfileCommandSettings>
 
 public class GetProfileCommandSettings: OutputCommandSettings
 {
-    public  Table? CreateTable()
+    public override Table? CreateTable()
     {
         var table = this.CreateTable("Profile");
         if(table == null) return table;

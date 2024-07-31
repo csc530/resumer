@@ -32,7 +32,7 @@ public class GetJobCommand: Command<GetJobCommandSettings>
 
 public class GetJobCommandSettings: OutputCommandSettings
 {
-    public Table? CreateTable()
+    public override Table? CreateTable()
     {
         var table = CreateTable("Jobs");
         if(table == null) return table;

@@ -31,7 +31,7 @@ public class GetSkillCommand: Command<GetSkillCommandSettings>
 
 public class GetSkillCommandSettings: OutputCommandSettings
 {
-    public Table? CreateTable()
+    public override Table? CreateTable()
     {
         var table = CreateTable("Skills");
         if(table == null) return table;
