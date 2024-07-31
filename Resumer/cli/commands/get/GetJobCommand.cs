@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -12,18 +11,51 @@ public class GetJobCommand: Command<GetJobCommandSettings>
     {
         ResumeContext database = new();
 
-        if(!database.Jobs.Any())
+        var jobs = database.Jobs.ToList();
+        if(jobs.Count == 0)
             return CommandOutput.Success("No jobs found");
         else
         {
-            var table = settings.CreateTable<Job>("Jobs")?.AddObjects(database.Jobs);
+            var table = settings.CreateTable();
             if(table == null)
-                database.Jobs.ForEachAsync(job => AnsiConsole.WriteLine(job.ToString())).Wait();
+                jobs.ForEach(job => AnsiConsole.WriteLine(job.ToString()));
             else
+            {
+                jobs.ForEach(job => GetJobCommandSettings.AddJobToTable(table, job));
                 AnsiConsole.Write(table);
+            }
+
             return CommandOutput.Success();
         }
     }
 }
 
-public class GetJobCommandSettings: OutputCommandSettings { }
+public class GetJobCommandSettings: OutputCommandSettings
+{
+    public Table? CreateTable()
+    {
+        var table = CreateTable("Jobs");
+        if(table == null) return table;
+
+        table.AddColumn("Title");
+        table.AddColumn("Company");
+        table.AddColumn("Start Date");
+        table.AddColumn("End Date");
+        table.AddColumn("Description");
+        return table;
+    }
+
+    /// <summary>
+    /// adds a <see cref="Job"/> to <see cref="Table"/>
+    /// </summary>
+    /// <param name="table">table created by <see cref="CreateTable"/></param>
+    /// <returns>table with the newly added job</returns>
+    public static void AddJobToTable(Table table, Job job) =>
+        table.AddRow(
+            job.Title,
+            job.Company,
+            job.StartDate.ToString(),
+            job.EndDate?.ToString() ?? "present",
+            job.Description.Print()
+        );
+}

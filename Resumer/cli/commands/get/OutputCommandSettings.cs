@@ -2,18 +2,22 @@ using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using Resumer.models;
+using System.Text;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.get;
 
 public class OutputCommandSettings: CommandSettings
 {
+    [CommandOption("-o|--format")]
+    [Description("output format")]
+    [DefaultValue(OutputFormats.Table)]
+    public OutputFormats Format { get; set; } = OutputFormats.Table;
+
     [CommandOption("-b|--border")]
     [Description("table border style")]
-    [TypeConverter(typeof(EnumConverter))]
+    [TypeConverter(typeof(TableBorderEnumConverter))]
     public TableBorder Border { get; set; } = TableBorder.Rounded;
 
     [CommandOption("-r|--raw")]
@@ -28,59 +32,25 @@ public class OutputCommandSettings: CommandSettings
     [Description("show table footer")]
     public bool Footer { get; set; }
 
+
     public Table? CreateTable<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] T>(
         string? title = null, string? caption = null) where T : notnull
     {
         var table = CreateTable(title, caption);
+
         if(table == null)
             return null;
 
         var type = typeof(T);
-        if(type == typeof(Job))
-        {
-            table.AddColumn("Title");
-            table.AddColumn("Company");
-            table.AddColumn("Start Date");
-            table.AddColumn("End Date");
-            table.AddColumn("Description");
-            table.Title = new TableTitle("Jobs");
-        }
-        else if(type == typeof(Project))
-        {
-            table.AddColumn("Title");
-            table.AddColumn("Type");
-            table.AddColumn("Description");
-            table.AddColumn("Details");
-            table.AddColumn("Link");
-            table.AddColumn("Start Date");
-            table.AddColumn("End Date");
-            table.Title = new TableTitle("Projects");
-        }
-        else if(type == typeof(Skill))
-        {
-            table.AddColumns("Name", "Type");
-            table.Title = new TableTitle("Skills");
-        }
-        else if(type == typeof(Profile))
-        {
-            table.AddColumns("Name", "Email", "Phone", "Location", "Interests", "Objective", "Languages", "Website");
-            table.Title = new TableTitle("Profiles");
-        }
-        else if(type == typeof(TypstTemplate))
-        {
-            table.AddColumns("Name", "Description", "Content");
-            table.Title = new TableTitle("Templates");
-        }
-        else
-        {
-            typeof(T).GetProperties()
-                .Where(prop => prop.CanRead)
-                .Select(prop => prop.Name)
-                .ToImmutableList()
-                .ForEach(name => table.AddColumn(new TableColumn(name)));
 
-            table.Title = new TableTitle($"{type.Name}s");
-        }
+
+        type.GetProperties()
+            .Where(prop => prop.CanRead)
+            .Select(prop => prop.Name)
+            .ToImmutableList()
+            .ForEach(name => table.AddColumn(new TableColumn(name)));
+
+        table.Title = new TableTitle($"{type.Name}s");
 
         return table;
     }
@@ -109,9 +79,57 @@ public class OutputCommandSettings: CommandSettings
         };
         return table;
     }
+
+    public string Output(Table table)
+    {
+        var output = string.Empty;
+        switch(Format)
+        {
+            case OutputFormats.Table:
+                AnsiConsole.Decoration = Decoration.Conceal;
+                AnsiConsole.Record();
+                AnsiConsole.Write(table);
+                output = AnsiConsole.ExportText();
+                AnsiConsole.ResetDecoration();
+                break;
+            case OutputFormats.json:
+                // JsonSerializer.SerializeToDocument();
+                break;
+            case OutputFormats.csv:
+                break;
+            case OutputFormats.yml:
+                break;
+            case OutputFormats.yaml:
+                break;
+            case OutputFormats.xml:
+                break;
+            default:
+                throw new InvalidEnumArgumentException(nameof(Format), (int)Format, typeof(OutputFormats));
+        }
+
+        return output;
+    }
+
+    public string Output<T>(IEnumerable<T> objs) where T : notnull
+    {
+        var sb = new StringBuilder();
+        foreach(var obj in objs)
+            sb.AppendLine(Output(CreateTable()));
+        return sb.ToString();
+    }
 }
 
-public class EnumConverter: TypeConverter
+public enum OutputFormats
+{
+    Table,
+    json,
+    csv,
+    yml,
+    yaml,
+    xml,
+}
+
+public class TableBorderEnumConverter: TypeConverter
 {
     public override bool CanConvertFrom(ITypeDescriptorContext? context, Type sourceType) =>
         sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
@@ -139,7 +157,6 @@ public class EnumConverter: TypeConverter
             TableBorder.SimpleHeavy,
             TableBorder.Square,
         ];
-        Console.WriteLine(TableBorder.Ascii.ToString());
         var tableBorderMap = tableBorders.Where(tb => tb.ToString() != null)
             // tostring of table border looks like "Spectre.Console.Rendering.AsciiTableBorder"; ^11 takes off the "tableborder" suffix
             .ToDictionary(key => key.ToString()!.Split(".")[^1].ToLower()[0..^11], tableBorder => tableBorder);

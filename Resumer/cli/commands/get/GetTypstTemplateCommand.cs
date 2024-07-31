@@ -22,22 +22,10 @@ public class GetTypstTemplateCommand: Command<GetTypstTemplateCommandSettings>
                 : CommandOutput.Success(template.Content.EscapeMarkup());
         }
 
-        var table = settings.CreateTable<TypstTemplate>();
+        var table = settings.CreateTable();
         if(table == null)
             return PlainPrintTemplates(settings, templates);
-        else if(!settings.Full)
-        {
-            table = settings.CreateTable("Templates");
-            if(table == null)
-                return PlainPrintTemplates(settings, templates);
-            else
-            {
-                table.AddColumn("Name").AddColumn("Description");
-                templates.ForEach(t => table.AddRow(t.Name.EscapeMarkup(), t.Description.EscapeMarkup()));
-            }
-        }
-        else
-            table.AddObjects(templates);
+        templates.ForEach(template => settings.AddTypstTemplateToTable(table, template));
 
         return CommandOutput.Success(table);
     }
@@ -73,4 +61,25 @@ public class GetTypstTemplateCommandSettings: OutputCommandSettings
     [CommandArgument(0, "[name]")]
     [Description("template name")]
     public string? Name { get; init; }
+
+    public Table? CreateTable()
+    {
+        var table = base.CreateTable("Templates");
+        if(table == null) return table;
+        table.AddColumns("Name", "Description");
+        if(Full)
+            table.AddColumn("Content");
+        return table;
+    }
+
+    public void AddTypstTemplateToTable(Table table, TypstTemplate template)
+    {
+        if(Full)
+            table.AddRow(
+                template.Name.EscapeMarkup(),
+                template.Description.EscapeMarkup(),
+                template.Content.EscapeMarkup());
+        else
+            table.AddRow(template.Name.EscapeMarkup(), template.Description.EscapeMarkup());
+    }
 }

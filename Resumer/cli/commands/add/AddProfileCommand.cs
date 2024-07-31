@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using Resumer.models;
 using Spectre.Console;
 using Spectre.Console.Cli;
-using Command = Spectre.Console.Cli.Command;
 using Profile = Resumer.models.Profile;
 
 namespace Resumer.cli.commands.add;

@@ -33,10 +33,10 @@ public static class Program
     #if DEBUG
         config.PropagateExceptions();
         config.ValidateExamples();
+        config.UseStrictParsing();
     #endif
 
         config.CaseSensitivity(CaseSensitivity.None);
-        config.UseStrictParsing();
 
         config.AddCommand<ExportCommand>("export")
             .WithDescription("export resume to various formats")
