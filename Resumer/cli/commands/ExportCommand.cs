@@ -24,6 +24,7 @@ public class ExportCommand: Command<ExportCommandSettings>
         List<Job> jobs = [];
         List<Skill> skills = [];
         List<Project> projects = [];
+        List<Education> education = [];
 
         var formatPrompt = new SelectionPrompt<Formats>()
             .Title("Select export format")
@@ -38,7 +39,9 @@ public class ExportCommand: Command<ExportCommandSettings>
 
         var profile = AnsiConsole.Prompt(new SelectionPrompt<Profile>()
             .Title("Select profile")
-            .AddChoices(dbProfiles.AsEnumerable().OrderBy(profile => profile.WholeName)));
+            .AddChoices(dbProfiles.AsEnumerable().OrderBy(profile => profile.WholeName))
+            .WrapAround()
+        );
 
         if(!db.Jobs.Any())
             CommandOutput.Warn("No jobs found");
@@ -46,7 +49,9 @@ public class ExportCommand: Command<ExportCommandSettings>
             jobs = AnsiConsole.Prompt(new MultiSelectionPrompt<Job>()
                 .Title("Select jobs")
                 .AddChoices(db.Jobs.OrderByDescending(job => job.StartDate))
-                .NotRequired());
+                .WrapAround()
+                .NotRequired()
+            );
 
         if(!db.Skills.Any())
             CommandOutput.Warn("No skills found");
@@ -54,7 +59,19 @@ public class ExportCommand: Command<ExportCommandSettings>
             skills = AnsiConsole.Prompt(new MultiSelectionPrompt<Skill>()
                 .Title("Select skills")
                 .AddChoices(db.Skills)
-                .NotRequired());
+                .WrapAround()
+                .NotRequired()
+            );
+
+        if(!db.Education.Any())
+            CommandOutput.Warn("No education found");
+        else
+            education = AnsiConsole.Prompt(new MultiSelectionPrompt<Education>()
+                .Title("Select education")
+                .AddChoices(db.Education)
+                .WrapAround()
+                .NotRequired()
+            );
 
         if(!db.Projects.Any())
             CommandOutput.Warn("No projects found");
@@ -62,7 +79,9 @@ public class ExportCommand: Command<ExportCommandSettings>
             projects = AnsiConsole.Prompt(new MultiSelectionPrompt<Project>()
                 .Title("Select projects")
                 .AddChoices(db.Projects)
-                .NotRequired());
+                .WrapAround()
+                .NotRequired()
+            );
 
         var template = TypstTemplate.Default;
 
@@ -70,7 +89,8 @@ public class ExportCommand: Command<ExportCommandSettings>
             template = AnsiConsole.Prompt(new SelectionPrompt<TypstTemplate>()
                 .Title("Select template")
                 .AddChoices(db.Templates)
-                .WrapAround());
+                .WrapAround()
+            );
 
         var resume = new Resume(name)
         {
@@ -78,6 +98,7 @@ public class ExportCommand: Command<ExportCommandSettings>
             Jobs = jobs,
             Skills = skills,
             Projects = projects,
+            Education = education,
         };
 
         var bytes = format switch

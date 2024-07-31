@@ -70,6 +70,14 @@ public static class Program
             add.AddCommand<AddPdfTemplateCommand>("template")
                 .WithAlias("t")
                 .WithDescription("add a typst file template to export resume in pdf format");
+            add.AddCommand<AddEducationCommand>("education")
+                .WithAlias("e")
+                .WithAlias("edu")
+                .WithAlias("educations")
+                .WithAlias("schools")
+                .WithAlias("school")
+                .WithAlias("degree")
+                .WithDescription("add a new education");
         });
 
         config.AddBranch("edit", edit =>
@@ -90,6 +98,13 @@ public static class Program
                 .WithDescription("edit a project's details")
                 .WithAlias("projects")
                 .WithAlias("proj");
+            edit.AddCommand<EditEducationCommand>("education")
+                .WithAlias("edu")
+                .WithAlias("educations")
+                .WithAlias("schools")
+                .WithAlias("school")
+                .WithAlias("degree")
+                .WithDescription("edit an education's details");
         });
 
         config.AddBranch<DeleteCommandSettings>("delete", delete =>
@@ -117,6 +132,13 @@ public static class Program
                     .WithDescription("delete a typst file template")
                     .WithAlias("t")
                     .WithAlias("templates");
+                delete.AddCommand<DeleteEducationCommand>("education")
+                    .WithAlias("edu")
+                    .WithAlias("educations")
+                    .WithAlias("schools")
+                    .WithAlias("school")
+                    .WithAlias("degree")
+                    .WithDescription("delete an education");
             })
             .WithAlias("d")
             .WithAlias("del")
@@ -160,6 +182,13 @@ public static class Program
                 .WithAlias("t")
                 .WithAlias("templates")
                 .WithDescription("list typst templates");
+            get.AddCommand<GetEducationCommand>("education")
+                .WithAlias("edu")
+                .WithAlias("educations")
+                .WithAlias("schools")
+                .WithAlias("school")
+                .WithAlias("degree")
+                .WithDescription("list education");
         })
         .WithAlias("g")
         .WithAlias("list")

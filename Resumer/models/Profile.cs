@@ -65,7 +65,6 @@ public class Profile
 
     public string? Location { get; set; }
 
-    public List<Education> Education { get; set; } = [];
     public List<string> Interests { get; set; } = [];
     public List<string> Languages { get; set; } = [];
     public List<Certificate> Certifications { get; set; } = [];
@@ -125,5 +124,5 @@ public class Profile
     [NotMapped]
     public string Initials => $"{FirstName[0]}{MiddleName?[0]}{LastName[0]}";
 
-    public override string ToString() => $"{WholeName} - {EmailAddress} - {PhoneNumber}";
+    public override string ToString() => $"{WholeName} - {EmailAddress} ({PhoneNumber})";
 }
