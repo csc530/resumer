@@ -27,6 +27,7 @@ on:
 jobs:
 
   setup-environment:
+    name: Setup Environment
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v4
@@ -42,6 +43,7 @@ jobs:
         tag: ${{ inputs.tag || github.ref_name }}
       needs: setup-environment
       strategy:
+        fail-fast: false
         matrix:
           os: [ ubuntu-latest, windows-latest, macOS-latest ]
       steps:
@@ -67,13 +69,13 @@ jobs:
         - name: Upload Artifact
           uses: actions/upload-artifact@v3
           with:
-              name: ${{ matrix.os }}_resumer_${{ github.ref_name }}
-              path: ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip
+              name: ${{ matrix.os }}_resumer_${{ env.tag }}
+              path: ${{ matrix.os }}_resumer_${{ env.tag }}.zip
 
         - name: Set Output
           id: set-output
           run: |
-            echo "assets+=(${{ github.workspace }}/${{ matrix.os }}_resumer_${{ github.ref_name }}.zip)" >> $GITHUB_OUTPUT
+            echo "assets=${{ matrix.os }}_resumer_${{ env.tag }}.zip" >> $GITHUB_OUTPUT
 
       outputs:
           assets: ${{ steps.set-output.outputs.assets }}
