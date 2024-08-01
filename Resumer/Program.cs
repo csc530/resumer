@@ -105,6 +105,9 @@ public static class Program
                 .WithAlias("school")
                 .WithAlias("degree")
                 .WithDescription("edit an education's details");
+            edit.AddCommand<EditSkillCommand>("skill")
+                .WithAlias("s")
+                .WithDescription("edit a skill's details");
         });
 
         config.AddBranch<DeleteCommandSettings>("delete", delete =>
@@ -147,52 +150,52 @@ public static class Program
 
 
         config.AddBranch<OutputCommandSettings>("get", get =>
-        {
-            get.SetDescription("get job information from database");
-            get.AddCommand<GetConfigCommand>("config")
-                .WithAlias("configuration")
-                .WithAlias("conf")
-                .WithAlias("setting")
-                .WithDescription("get app's current configuration settings")
-                .WithAlias("settings");
-            get.AddCommand<GetSkillCommand>("skill")
-                .WithAlias("s")
-                .WithDescription("list skills")
-                .WithAlias("skills");
-            get.AddCommand<GetCompanyCommand>("company")
-                .WithAlias("c")
-                .WithDescription("list companies")
-                .WithAlias("companies")
-                .WithDescription("list companies you've worked for");
-            get.AddCommand<GetJobCommand>("job")
-                .WithAlias("jobs")
-                .WithDescription("list jobs")
-                .WithAlias("j");
-            get.AddCommand<GetProfileCommand>("profile")
-                .WithAlias("user")
-                .WithAlias("u")
-                .WithAlias("users")
-                .WithDescription("list user profiles")
-                .WithAlias("profiles");
-            get.AddCommand<GetProjectCommand>("project")
-                .WithDescription("list projects")
-                .WithAlias("p")
-                .WithAlias("projects");
-            get.AddCommand<GetTypstTemplateCommand>("template")
-                .WithAlias("t")
-                .WithAlias("templates")
-                .WithDescription("list typst templates");
-            get.AddCommand<GetEducationCommand>("education")
-                .WithAlias("edu")
-                .WithAlias("educations")
-                .WithAlias("schools")
-                .WithAlias("school")
-                .WithAlias("degree")
-                .WithDescription("list education");
-        })
-        .WithAlias("g")
-        .WithAlias("list")
-        .WithAlias("ls");
+            {
+                get.SetDescription("get job information from database");
+                get.AddCommand<GetConfigCommand>("config")
+                    .WithAlias("configuration")
+                    .WithAlias("conf")
+                    .WithAlias("setting")
+                    .WithDescription("get app's current configuration settings")
+                    .WithAlias("settings");
+                get.AddCommand<GetSkillCommand>("skill")
+                    .WithAlias("s")
+                    .WithDescription("list skills")
+                    .WithAlias("skills");
+                get.AddCommand<GetCompanyCommand>("company")
+                    .WithAlias("c")
+                    .WithDescription("list companies")
+                    .WithAlias("companies")
+                    .WithDescription("list companies you've worked for");
+                get.AddCommand<GetJobCommand>("job")
+                    .WithAlias("jobs")
+                    .WithDescription("list jobs")
+                    .WithAlias("j");
+                get.AddCommand<GetProfileCommand>("profile")
+                    .WithAlias("user")
+                    .WithAlias("u")
+                    .WithAlias("users")
+                    .WithDescription("list user profiles")
+                    .WithAlias("profiles");
+                get.AddCommand<GetProjectCommand>("project")
+                    .WithDescription("list projects")
+                    .WithAlias("p")
+                    .WithAlias("projects");
+                get.AddCommand<GetTypstTemplateCommand>("template")
+                    .WithAlias("t")
+                    .WithAlias("templates")
+                    .WithDescription("list typst templates");
+                get.AddCommand<GetEducationCommand>("education")
+                    .WithAlias("edu")
+                    .WithAlias("educations")
+                    .WithAlias("schools")
+                    .WithAlias("school")
+                    .WithAlias("degree")
+                    .WithDescription("list education");
+            })
+            .WithAlias("g")
+            .WithAlias("list")
+            .WithAlias("ls");
     }
 
     public static string TempPath { get; } = Path.GetTempPath() + "resumer" + Path.DirectorySeparatorChar;
