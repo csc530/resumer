@@ -45,6 +45,7 @@ jobs:
         matrix:
           os: [ ubuntu-latest, windows-latest, macOS-latest ]
       steps:
+        - uses: actions/checkout@v4
         - name: Publish
           run: dotnet publish Resumer/ --output ./publish
 
