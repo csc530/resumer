@@ -50,11 +50,16 @@ jobs:
         shell: pwsh
         run: |
           if ($env:RUNNER_OS -eq "Windows") {
+            mv ./publish/Resumer.exe ./publish/resumer.exe
             7z a ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip '.\publish\*'
-          }
-          else {
-            zip ./${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish/*
-          }
+            }
+            else {
+              mv ./publish/Resumer ./publish/resumer
+              cd ./publish
+              zip -1g ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish/*
+              zip -u
+              cd ..
+            }
 
       - name: Upload Release Asset
         run: gh release upload ${{ github.ref_name }} ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip

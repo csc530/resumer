@@ -10,7 +10,7 @@
         <StartupObject>Resumer.Program</StartupObject>
         <AssemblyName>Resumer</AssemblyName>
         <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
-        
+
         <SuppressTrimAnalysisWarnings>false</SuppressTrimAnalysisWarnings>
         <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
     </PropertyGroup>
@@ -28,6 +28,7 @@
         <PublishReadyToRun>true</PublishReadyToRun>
         <DebugType>None</DebugType>
         <DebugSymbols>False</DebugSymbols>
+        <!-- <PublishAot>True</PublishAot> -->
     </PropertyGroup>
 
     <ItemGroup>
