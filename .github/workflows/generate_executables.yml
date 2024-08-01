@@ -54,16 +54,15 @@ jobs:
         - name: Zip Files
           shell: pwsh
           run: |
+              cd ./publish
               if ($env:RUNNER_OS -eq "Windows") {
-              mv ./publish/Resumer.exe ./publish/resumer.exe
-              7z a ./${{ matrix.os }}_resumer_${{ env.tag }}.zip '.\publish\*'
+                  mv Resumer.exe resumer.exe
               }
               else {
-                  mv ./publish/Resumer ./publish/resumer
-                  cd ./publish
-                  zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
-                  cd ..
+                  mv Resumer resumer
               }
+              zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
+              cd ..
 
 
         - name: Upload Artifact
