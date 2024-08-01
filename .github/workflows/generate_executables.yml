@@ -57,11 +57,12 @@ jobs:
               cd ./publish
               if ($env:RUNNER_OS -eq "Windows") {
                   mv Resumer.exe resumer.exe
+                  7z a ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
               }
               else {
                   mv Resumer resumer
+                  zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
               }
-              zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
               cd ..
 
 
