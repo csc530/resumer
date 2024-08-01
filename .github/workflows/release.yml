@@ -56,7 +56,7 @@ jobs:
             else {
               mv ./publish/Resumer ./publish/resumer
               cd ./publish
-              zip -1g ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip ./publish/*
+              zip -1g ../${{ matrix.os }}_resumer_${{ github.ref_name }}.zip *
               cd ..
             }
 
