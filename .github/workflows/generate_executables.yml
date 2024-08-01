@@ -64,13 +64,20 @@ jobs:
                   zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
               }
               cd ..
+              mv publish ${{ matrix.os }}_resumer_${{ env.tag }}
 
 
-        - name: Upload Artifact
+        - name: Upload Archive
           uses: actions/upload-artifact@v3
           with:
               name: ${{ matrix.os }}_resumer_${{ env.tag }}
               path: ${{ matrix.os }}_resumer_${{ env.tag }}.zip
+        - name: Upload Folder
+          uses: actions/upload-artifact@v3
+          with:
+              name: ${{ matrix.os }}_resumer_${{ env.tag }}
+              path: ${{ matrix.os }}_resumer_${{ env.tag }}
+              
 
         - name: Set Output
           id: set-output
