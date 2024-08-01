@@ -1,0 +1,78 @@
+name: Create Executables
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+        default: ${{ github.ref_name }}
+        description: The tag to use for the release
+    outputs:
+      assets:
+        description: The list of assets
+        value: ${{ jobs.publish-project.outputs.assets }}
+
+  workflow_run:
+    workflows: ["Draft Release"]
+
+  workflow_dispatch:
+      inputs:
+          suffix:
+              description: 'Suffix zip folder'
+              required: false
+              type: string
+              default: 'latest'
+
+jobs:
+
+  setup-environment:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v4
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v4
+          with:
+              dotnet-version: 8.0.x
+
+
+  publish-project:
+      runs-on: ${{ matrix.os }}
+      env:
+        tag: ${{ inputs.tag || github.ref_name }}
+      needs: setup-environment
+      strategy:
+        matrix:
+          os: [ ubuntu-latest, windows-latest, macOS-latest ]
+      steps:
+        - name: Publish
+          run: dotnet publish Resumer/ --output ./publish
+
+        - name: Zip Files
+          shell: pwsh
+          run: |
+              if ($env:RUNNER_OS -eq "Windows") {
+              mv ./publish/Resumer.exe ./publish/resumer.exe
+              7z a ./${{ matrix.os }}_resumer_${{ env.tag }}.zip '.\publish\*'
+              }
+              else {
+                  mv ./publish/Resumer ./publish/resumer
+                  cd ./publish
+                  zip -1g ../${{ matrix.os }}_resumer_${{ env.tag }}.zip *
+                  cd ..
+              }
+
+
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v3
+          with:
+              name: ${{ matrix.os }}_resumer_${{ github.ref_name }}
+              path: ${{ matrix.os }}_resumer_${{ github.ref_name }}.zip
+
+        - name: Set Output
+          id: set-output
+          run: |
+            echo "assets+=(${{ github.workspace }}/${{ matrix.os }}_resumer_${{ github.ref_name }}.zip)" >> $GITHUB_OUTPUT
+
+      outputs:
+          assets: ${{ steps.set-output.outputs.assets }}
