@@ -67,13 +67,8 @@ jobs:
               mv publish ${{ matrix.os }}_resumer_${{ env.tag }}
 
 
-        - name: Upload Archive
-          uses: actions/upload-artifact@v3
-          with:
-              name: ${{ matrix.os }}_resumer_${{ env.tag }}
-              path: ${{ matrix.os }}_resumer_${{ env.tag }}.zip
-        - name: Upload Folder
-          uses: actions/upload-artifact@v3
+        - name: Upload Artifacts
+          uses: actions/upload-artifact@v4
           with:
               name: ${{ matrix.os }}_resumer_${{ env.tag }}
               path: ${{ matrix.os }}_resumer_${{ env.tag }}
