@@ -18,7 +18,7 @@ on:
 
   workflow_dispatch:
       inputs:
-          suffix:
+          tag:
               description: 'Suffix zip folder'
               required: false
               type: string
