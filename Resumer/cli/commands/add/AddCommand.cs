@@ -4,12 +4,15 @@ using Spectre.Console.Cli;
 
 namespace Resumer.cli.commands.add;
 
-public abstract class AddCommand: Command<AddCommandSettings>
+public abstract class AddCommand: AddCommand<AddCommandSettings>;
+
+public abstract class AddCommand<T>: Command<T> where T :  notnull, AddCommandSettings
 {
     /** prompt displayed to continue adding items */
-    protected virtual string ContinuePrompt { get; } = "Add another item?";
 
-    public sealed override int Execute(CommandContext context, AddCommandSettings settings)
+    protected virtual string ContinuePrompt { get; } = "Add another item?";
+    protected abstract int AddItem(CommandContext context, T settings);
+    public sealed override int Execute(CommandContext context, T settings)
     {
         int result;
         do
@@ -19,14 +22,6 @@ public abstract class AddCommand: Command<AddCommandSettings>
 
         return result;
     }
-
-    protected abstract int AddItem(CommandContext context, AddCommandSettings settings);
-}
-
-public abstract class AddCommand<T>: AddCommand where T : AddCommandSettings
-{
-    protected abstract int AddItem(CommandContext context, T settings);
-    protected sealed override int AddItem(CommandContext context, AddCommandSettings settings) => AddItem(context, (T)settings);
 };
 
 public class AddCommandSettings: CommandSettings
