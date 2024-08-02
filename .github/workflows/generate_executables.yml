@@ -77,7 +77,7 @@ jobs:
         - name: Set Output
           id: set-output
           run: |
-            echo "assets=${{ matrix.os }}_resumer_${{ env.tag }}.zip" >> $GITHUB_OUTPUT
+            echo "assets=${{ matrix.os }}_resumer_${{ env.tag }}" >> $GITHUB_OUTPUT
 
       outputs:
           assets: ${{ steps.set-output.outputs.assets }}
