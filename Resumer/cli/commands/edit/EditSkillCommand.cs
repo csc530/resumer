@@ -26,7 +26,7 @@ public class EditSkillCommand: Command
 
         // because skill.name is the PK and it's not a [foreign key assoc.](https://stackoverflow.com/questions/5281974/code-first-independent-associations-vs-foreign-key-associations/5282275#5282275)
         // tl;dr remove and insert to update 🙄
-        if(!skill.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
+        if(!skill.Name.Equals(name, StringComparison.CurrentCulture))
         {
             db.Skills.Remove(skill);
             db.Skills.Add(new Skill(name, type));

@@ -52,7 +52,7 @@ public abstract class
 
         DbSet.RemoveRange(selected);
         var deleted = Db.SaveChanges();
-        return CommandOutput.Success(deleted == 1 ? "1 job deleted." : $"{deleted} jobs deleted.");
+        return CommandOutput.Success(deleted == 1 ? $"1 {TypeName} deleted." : $"{deleted} {TypeName} deleted.");
     }
 }
 

@@ -26,7 +26,7 @@ public sealed partial class AddProfileCommand : AddCommand
 
         var location = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Location:"));
         var website = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Website:"));
-        var objective = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Summary:"));
+        var objective = AnsiConsole.Prompt(Utility.SimplePrompt<string>("Objective:"));
 
         AnsiConsole.MarkupLine("Add your interests and languages. Press [bold]Enter[/] to skip.");
 
