@@ -1,5 +1,6 @@
-#let dateFormat = "[month repr:short]. [year repr:full sign:automatic]"
+// resumer's default template
 
+#let dateFormat = "[month repr:short]. [year repr:full sign:automatic]"
 
 = #fullName
 == #phoneNumber
@@ -7,45 +8,54 @@
 
 #location,
 
-#website
+#if website != none {
+  underline(link(website))
+}
+#line(length: 100%)
 
 #objective
 
 #if jobs != none {
   [== Work Experience
 
-  #for job in jobs {
-    [=== #job.title -- #job.company]
+    #for job in jobs {
+      [=== #job.title -- #job.company]
 
-    job.startDate.display(dateFormat)
-    " - "
-    if job.endDate != none {
+      job.startDate.display(dateFormat)
+      " - "
+      if job.endDate != none {
         job.endDate.display(dateFormat)
       } else { "Present" }
 
-    linebreak()
+      linebreak()
 
-
-    for desc in job.description {
-      [- #desc]
+      for desc in job.description {
+        [- #desc]
+      }
     }
-  }
-]}
-
+  ]
+}
+\
 #if projects != none {
   [= Projects
 
     #for proj in projects {
-      [=== #proj.title #if proj.type != none {[-- #proj.type]}]
+      link(
+        proj.link.absoluteUri,
+      )[=== #proj.title #if proj.type != none { [-- #proj.type] }]
+      if proj.link.absoluteUri != none {
+        underline(link(proj.link.absoluteUri))
+        linebreak()
+      }
 
-      if proj.startDate != none { proj.startDate.display(dateFormat)
-      " - "
+      if proj.startDate != none {
+        proj.startDate.display(dateFormat)
+        " - "
         if proj.endDate != none {
           proj.endDate.display(dateFormat)
         } else { "Present" }
+        linebreak()
       }
-
-      linebreak()
 
       proj.description
 
@@ -58,44 +68,45 @@
 #if skills != none {
   [= Skills
 
-  #for skill in skills {
-    [- #skill.name]
-  }]
+    #box(height: 15%, width: 100%, outset: 25%)[
+      #columns(calc.ceil(skills.len() / 8))[
+        #for skill in skills {
+          [- #skill.name]
+        }
+      ]
+    ]
+  ]
 }
 
 #if education != none {
   [= Education
 
-  #for edu in education {
-    [=== #edu.school -- #edu.fieldOfStudy]
+    #for edu in education {
+      [=== #edu.school -- #edu.fieldOfStudy]
 
-    if edu.startDate != none { edu.startDate.display(dateFormat)
-    " - "
-      if edu.endDate != none {
-        edu.endDate.display(dateFormat)
-      } else { "Present" }
-    }
+      edu.degree
+      linebreak()
 
-    linebreak()
-    edu.location
-    linebreak()
+      if edu.startDate != none {
+        edu.startDate.display(dateFormat)
+        " - "
+        if edu.endDate != none {
+          edu.endDate.display(dateFormat)
+        } else { "Present" }
+      }
 
-    edu.additionalInformation
-  }]
+      linebreak()
+      edu.location
+      linebreak()
+
+      edu.additionalInformation
+    }]
 }
 
 #if languages != none {
   [= Languages
 
-  #for lang in languages {
-    [- #lang]
-  }]
-}
-
-#if interests != none {
-  [= Interests
-
-  #for interest in interests {
-    [- #interest]
-  }]
+    #for lang in languages {
+      [- #lang]
+    }]
 }

@@ -80,7 +80,7 @@ public class AddPdfTemplateCommand: AddCommand<AddPdfTemplateCommandSettings>
             var template = new TypstTemplate(Path.GetFileNameWithoutExtension(templatePath), templateContent);
 
 
-            if(template.isValid(out var error, out var output))
+            if(template.IsValid(out var error, out var output))
             {
                 if(settings.Verbose)
                 {

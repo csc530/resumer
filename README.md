@@ -42,3 +42,6 @@ if the first line is a comment it will be used as the template's description and
 ## todo ✅
 
 [idek](https://github.com/csc530/resumer/issues)
+
+- [ ] add input template file: colours, layout, etc.
+- [ ]
