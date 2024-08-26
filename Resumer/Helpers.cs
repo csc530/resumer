@@ -77,14 +77,14 @@ public static partial class Extensions
             null => string.Empty,
             bool bit => bit ? "true" : "false",
             string txt => txt,
-            Enum @enum => NextToUppercaseRegex().Replace(@enum.ToString(), "$1 $2").Replace('_', '-'),
+            Enum @enum => NextWordToUppercaseRegex().Replace(@enum.ToString(), "$1 $2").Replace('_', '-'),
             DictionaryEntry pair => $"{pair.Key.Print()}: {pair.Value.Print()}",
             IDictionary dictionary => string.Join("\n", dictionary.Cast<object>().Select(obj => $"- {obj.Print()}")),
             IEnumerable enumerable => string.Join("\n", enumerable.Cast<object>().Select(obj => $"+ {obj.Print()}")),
             _ => value.ToString() ?? string.Empty,
         };
 
-    public static string Escape(this string value, string escapeValues) =>
+    private static string Escape(this string value, string escapeValues) =>
         escapeValues.Aggregate(value,
             (current, escapeValue) => current.Replace($"{escapeValue}", $"\\{escapeValue}"));
 
@@ -111,6 +111,8 @@ public static partial class Extensions
                 return "none";
             case string value:
                 return $"\"{value.Escape("\"")}\"";
+            case Enum @enum:
+                return $"\"{@enum.Print()}\"";
             case int or double or float or long or ulong or short or ushort or byte or sbyte or decimal or char:
                 return obj.ToString() ?? "none";
             case bool value:
@@ -180,7 +182,7 @@ public static partial class Extensions
             }
             default:
             {
-                //? get all public readable properties and convert to key-value typst strings
+                //? get all public-readable properties and convert to key-value typst strings
                 var properties = obj.GetType()
                     .GetProperties()
                     .Where(prop => prop.CanRead && Array.Exists(
@@ -221,9 +223,9 @@ public static partial class Extensions
 
 #endregion
 
-    public static void AddFromPrompt<T>(this List<T> list, string prompt)
+    public static void AddFromPrompt<T>(this List<T> list, string prompt) where T : class
     {
-        var textPrompt = Utility.SimplePrompt<T>(prompt);
+        TextPrompt<T> textPrompt =new TextPrompt<T>(prompt);
         T input;
 
         do
@@ -232,22 +234,6 @@ public static partial class Extensions
             if(input != null)
                 list.Add(input);
         } while(input != null && !string.IsNullOrWhiteSpace(input.ToString()));
-    }
-
-    public static List<string> AddFromPrompt(IEnumerable<string> list, string prompt)
-    {
-        var textPrompt = new TextPrompt<string?>(prompt).HideDefaultValue().AllowEmpty();
-        string? input;
-        var newlist = list.ToList();
-
-        do
-        {
-            input = AnsiConsole.Prompt(textPrompt);
-            if(!string.IsNullOrWhiteSpace(input))
-                newlist.Add(input);
-        } while(!string.IsNullOrWhiteSpace(input));
-
-        return newlist;
     }
 
     public static void EditFromPrompt(this List<string> description, string prompt)
@@ -283,5 +269,5 @@ public static partial class Extensions
     }
 
     [GeneratedRegex(@"(\w)([A-Z])")]
-    private static partial Regex NextToUppercaseRegex();
+    private static partial Regex NextWordToUppercaseRegex();
 }

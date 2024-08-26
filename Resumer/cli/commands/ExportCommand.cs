@@ -53,6 +53,15 @@ public class ExportCommand: Command<ExportCommandSettings>
                 .NotRequired()
             );
 
+        // ? select specific job details
+        if(jobs.Count != 0 && AnsiConsole.Confirm("Select specific job details?"))
+            foreach(var job in jobs)
+                if(job.Description.Count != 0)
+                    job.Description =
+                        AnsiConsole.Prompt(new MultiSelectionPrompt<string>().AddChoices(job.Description));
+                else
+                    CommandOutput.Warn($"No specific job descriptions found for \"{job.ToString().EscapeMarkup()}\"");
+
         if(!db.Skills.Any())
             CommandOutput.Warn("No skills found");
         else
@@ -85,7 +94,7 @@ public class ExportCommand: Command<ExportCommandSettings>
 
         var template = TypstTemplate.Default;
 
-        if(format == Formats.Pdf && db.Templates.Any())
+        if(format.IsTypstFormat() && db.Templates.Any())
             template = AnsiConsole.Prompt(new SelectionPrompt<TypstTemplate>()
                 .Title("Select template")
                 .AddChoices(db.Templates)

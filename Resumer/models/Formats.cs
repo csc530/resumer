@@ -32,17 +32,18 @@ namespace Resumer
 
     public static partial class Utility
     {
-        public static IEnumerable<string> FormatNames => Enum.GetNames<Formats>();
         public static IEnumerable<Formats> Formats => Enum.GetValues<Formats>();
 
         public static IEnumerable<Formats> TextFormats =>
             Formats.Where(x => x.HasFlag(models.Formats.Text) && x != models.Formats.Text);
 
-        public static IEnumerable<string> TextFormatNames => TextFormats.Select(x => x.ToString());
-
         public static IEnumerable<Formats> BinaryFormats =>
             Formats.Where(x => x.HasFlag(models.Formats.Binary) && x != models.Formats.Binary);
 
-        public static IEnumerable<string> BinaryFormatNames => BinaryFormats.Select(x => x.ToString());
+        public static bool IsTypstFormat(this Formats format) =>
+            format == models.Formats.Pdf ||
+            format == models.Formats.Typ ||
+            format == models.Formats.Svg ||
+            format == models.Formats.Png;
     }
 }

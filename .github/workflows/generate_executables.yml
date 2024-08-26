@@ -31,6 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v4
+        # ensure tags are fetched; https://github.com/adamralph/minver?tab=readme-ov-file#why-is-the-default-version-sometimes-used-in-github-actions-azure-pipelines-and-travis-ci-when-a-version-tag-exists-in-the-history
+          with:
+            fetch-depth: 0
+            filter: tree:0
         - name: Setup .NET
           uses: actions/setup-dotnet@v4
           with:
@@ -72,7 +76,7 @@ jobs:
           with:
               name: ${{ matrix.os }}_resumer_${{ env.tag }}
               path: ${{ matrix.os }}_resumer_${{ env.tag }}
-              
+
 
         - name: Set Output
           id: set-output
